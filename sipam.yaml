@@ -83,6 +83,85 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+  /prefixes/{prefixId}/ips:
+    get:
+      summary: Get Ips of a specified prefix
+      operationId: listPrefixIPs
+      tags:
+        - prefixes
+        - ips
+      parameters:
+        - name: prefixId
+          in: path
+          required: true
+          description: Get the ips from a specified prefix.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return the IPs requested.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IPs"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create an IP
+      operationId: createIPfromPrefix
+      tags:
+        - prefixes
+        - ips
+      responses:
+        201:
+          description: IP created and return it.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IP"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /prefixes/{prefixId}/ips/{ipId}:
+    get:
+      summary: Get Ips of a specified prefix
+      operationId: getPrefixIP
+      tags:
+        - prefixes
+        - ips
+      parameters:
+        - name: prefixId
+          in: path
+          required: true
+          description: Get the specified prefix.
+          schema:
+            type: string
+        - name: ipId
+          in: path
+          required: true
+          description: Get the specified ip from a specified prefix.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return the IPs requested.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IP"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 components:
   schemas:
     Pool:
