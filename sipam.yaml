@@ -23,7 +23,7 @@ paths:
             format: int32
       responses:
         200:
-          description: An paged array of subnets
+          description: An paged array of Prefixes
           headers:
             x-next:
               description: A link to the next page of responses
@@ -32,7 +32,7 @@ paths:
           content:
             application/json:    
               schema:
-                $ref: "#/components/schemas/Subnets"
+                $ref: "#/components/schemas/Prefixes"
         default:
           description: unexpected error
           content:
@@ -40,43 +40,43 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
     post:
-      summary: Create a Subnet
-      operationId: createSubnet
+      summary: Create a Prefix
+      operationId: createPrefix
       tags:
-        - subnets
+        - prefixes
       responses:
         201:
           description: Subnet created and return it.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Subnet"
+                $ref: "#/components/schemas/Prefix"
         default:
           description: unexpected error
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /subnets/{subnetId}:
+  /prefixes/{prefixId}:
     get:
-      summary: Info for a specific Subnet
-      operationId: getSubnet
+      summary: Info for a specific Prefix
+      operationId: getPrefix
       tags:
-        - subnets
+        - prefixes
       parameters:
-        - name: subnetId
+        - name: prefixId
           in: path
           required: true
-          description: The subnet to get information for.
+          description: The prefix to get information for.
           schema:
             type: string
       responses:
         200:
-          description: Return the Subnet requested.
+          description: Return the Prefix requested.
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Subnet"
+                $ref: "#/components/schemas/Prefix"
         default:
           description: unexpected error
           content:
@@ -89,14 +89,14 @@ components:
       type: object
       required:
         - name
-        - subnets
+        - prefixes
       properties:
         name:
           type: string
-        subnets:
+        prefixes:
           type: array
           items:
-            $ref: "#/components/schemas/Subnet"
+            $ref: "#/components/schemas/Prefix"
         max_cidr:
           type: object
           properties:
@@ -123,15 +123,14 @@ components:
           type: string
           format: ip
         parent:
-          $ref: "#/components/schemas/Subnet"
+          $ref: "#/components/schemas/Prefix"
         fqdn:
           type: string
           format: fqdn
         description:
           type: string
-        
-        
-    Subnet:
+
+    Prefix:
       type: object
       required:
         - ipnet
@@ -144,16 +143,20 @@ components:
           type: string
           format: ipnet
         parent:
-          $ref: "#/components/schemas/Subnet"
+          $ref: "#/components/schemas/Prefix"
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/Prefix"
         subdomain:
           type: string
           format: fqdn
         description:
           type: string
-    Subnets:
+    Prefixes:
       type: array
       items:
-        $ref: "#/components/schemas/Subnet"
+        $ref: "#/components/schemas/Prefix"
     Error:
       type: object
       required:
