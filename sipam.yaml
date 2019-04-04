@@ -114,11 +114,19 @@ components:
       type: array
       items:
         $ref: "#/components/schemas/Pool"
+    IPs:
+      type: array
+      items:
+        $ref: "#/components/schemas/IP"
     IP:
       type: object
       required:
         - ip
       properties:
+        ipId:
+          type: string
+          format: uuid
+          readOnly: true
         ip:
           type: string
           format: ip
@@ -131,13 +139,13 @@ components:
     Prefix:
       type: object
       required:
-        - ipnet
+        - prefix
       properties:
-        subnetId:
+        prefixId:
           type: string
           format: uuid
           readOnly: true
-        ipnet:
+        prefix:
           type: string
           format: ipnet
         parent:
