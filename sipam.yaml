@@ -122,8 +122,6 @@ components:
         ip:
           type: string
           format: ip
-        parent:
-          $ref: "#/components/schemas/Prefix"
         fqdn:
           type: string
           format: fqdn
