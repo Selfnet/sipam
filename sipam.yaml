@@ -7,12 +7,12 @@ info:
 servers:
   - url: http://sipam.selfnet.de/api/v1
 paths:
-  /subnets:
+  /prefixes:
     get:
-      summary: List all Subnets 
-      operationId: listSubnets
+      summary: List all Prefixes
+      operationId: listPrefixes
       tags:
-        - subnets
+        - prefixes
       parameters:
         - name: limit
           in: query
