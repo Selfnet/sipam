@@ -1,0 +1,255 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: Selfnet IPAM
+  license:
+    name: MIT
+servers:
+  - url: http://sipam.selfnet.de/api/v1
+paths:
+  /prefixes:
+    get:
+      summary: List all Prefixes
+      operationId: listPrefixes
+      tags:
+        - prefixes
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: An paged array of Prefixes
+          headers:
+            x-next:
+              description: A link to the next page of responses
+              schema:
+                type: string
+          content:
+            application/json:    
+              schema:
+                $ref: "#/components/schemas/Prefixes"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create a Prefix
+      operationId: createPrefix
+      tags:
+        - prefixes
+      responses:
+        201:
+          description: Subnet created and return it.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prefix"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /prefixes/{prefixId}:
+    get:
+      summary: Info for a specific Prefix
+      operationId: getPrefix
+      tags:
+        - prefixes
+      parameters:
+        - name: prefixId
+          in: path
+          required: true
+          description: The prefix to get information for.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return the Prefix requested.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prefix"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /prefixes/{prefixId}/ips:
+    get:
+      summary: Get Ips of a specified prefix
+      operationId: listPrefixIPs
+      tags:
+        - prefixes
+        - ips
+      parameters:
+        - name: prefixId
+          in: path
+          required: true
+          description: Get the ips from a specified prefix.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return the IPs requested.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IPs"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      summary: Create an IP
+      operationId: createIPfromPrefix
+      tags:
+        - prefixes
+        - ips
+      responses:
+        201:
+          description: IP created and return it.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IP"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /prefixes/{prefixId}/ips/{ipId}:
+    get:
+      summary: Get Ips of a specified prefix
+      operationId: getPrefixIP
+      tags:
+        - prefixes
+        - ips
+      parameters:
+        - name: prefixId
+          in: path
+          required: true
+          description: Get the specified prefix.
+          schema:
+            type: string
+        - name: ipId
+          in: path
+          required: true
+          description: Get the specified ip from a specified prefix.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Return the IPs requested.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/IP"
+        default:
+          description: unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+components:
+  schemas:
+    Pool:
+      type: object
+      required:
+        - name
+        - prefixes
+      properties:
+        name:
+          type: string
+        prefixes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Prefix"
+        max_cidr:
+          type: object
+          properties:
+            v6:
+              type: integer
+              format: int32
+              minimum: 16
+              maximum: 128
+            v4:
+              type: integer
+              format: int32
+              minimum: 8
+              maximum: 32
+    Pools:
+      type: array
+      items:
+        $ref: "#/components/schemas/Pool"
+    IPs:
+      type: array
+      items:
+        $ref: "#/components/schemas/IP"
+    IP:
+      type: object
+      required:
+        - ip
+      properties:
+        ipId:
+          type: string
+          format: uuid
+          readOnly: true
+        ip:
+          type: string
+          format: ip
+        fqdn:
+          type: string
+          format: fqdn
+        description:
+          type: string
+
+    Prefix:
+      type: object
+      required:
+        - prefix
+      properties:
+        prefixId:
+          type: string
+          format: uuid
+          readOnly: true
+        prefix:
+          type: string
+          format: ipnet
+        parent:
+          $ref: "#/components/schemas/Prefix"
+        children:
+          type: array
+          items:
+            $ref: "#/components/schemas/Prefix"
+        subdomain:
+          type: string
+          format: fqdn
+        description:
+          type: string
+    Prefixes:
+      type: array
+      items:
+        $ref: "#/components/schemas/Prefix"
+    Error:
+      type: object
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
