@@ -22,18 +22,19 @@ class PrefixViewSet(viewsets.ModelViewSet):
         ip_serializer = IPSerializer(ips, many=True, context=context)
         return Response(ip_serializer.data)
 
-    @ips.mapping.post
-    def create_ip(self, request, *args, **kwargs):
-        serializer = IPSerializer(data=request.data, many=isinstance(request.data, list))
-        if serializer.is_valid():
-            if isinstance(serializer.validated_data, list):
-                response_status = some_function_to_create_objects_in_batch(serializer.validated_data)
+    # This is not working (Look for an elegant way to implement it)
+    # @ips.mapping.post
+    # def create_ip(self, request, *args, **kwargs):
+    #     serializer = IPSerializer(data=request.data, many=isinstance(request.data, list))
+    #     if serializer.is_valid():
+    #         if isinstance(serializer.validated_data, list):
+    #             response_status = some_function_to_create_objects_in_batch(serializer.validated_data)
 
-                return Response(data, response_status)
+    #             return Response(data, response_status)
 
-            else:
-                response_status = some_function_to_create_objects_in_batch(serializer.validated_data)
+    #         else:
+    #             response_status = some_function_to_create_objects_in_batch(serializer.validated_data)
 
-            return Response(data, status=response_status)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #         return Response(data, status=response_status)
+    #     else:
+    #         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
