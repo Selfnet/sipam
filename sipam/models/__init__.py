@@ -1,3 +1,2 @@
-from .ip import IP
 from .pool import Pool
-from .prefix import Prefix
+from .cidr import CIDR

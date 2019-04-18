@@ -1,3 +1,2 @@
-from .ip import IPSerializer
-from .prefix import PrefixSerializer
+from .cidr import CIDRSerializer
 from .pool import PoolSerializer

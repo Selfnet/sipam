@@ -18,7 +18,7 @@ from django.urls import include, path
 from rest_framework import routers
 from sipam import views
 router = routers.DefaultRouter()
-router.register(r'prefixes', views.PrefixViewSet)
+router.register(r'cidr', views.CIDRViewSet)
 router.register(r'pools', views.PoolViewSet)
 
 # Wire up our API using automatic URL routing.
