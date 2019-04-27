@@ -14,6 +14,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='cidr',
             name='cidr',
-            field=netfields.fields.CidrAddressField(max_length=43, unique=True),
+            field=netfields.fields.CidrAddressField(
+                max_length=43, unique=True),
         ),
     ]

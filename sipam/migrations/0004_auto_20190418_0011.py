@@ -17,13 +17,15 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='CIDR',
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
+                ('id', models.UUIDField(default=uuid.uuid4,
+                                        editable=False, primary_key=True, serialize=False)),
                 ('created', models.DateTimeField(auto_now_add=True)),
                 ('edited', models.DateTimeField(auto_now=True)),
                 ('cidr', netfields.fields.CidrAddressField(max_length=43)),
                 ('fqdn', sipam.utilities.fields.URLField(blank=True, null=True)),
                 ('description', models.TextField(blank=True, null=True)),
-                ('pool', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='prefixes', to='sipam.Pool')),
+                ('pool', models.ForeignKey(blank=True, null=True,
+                                           on_delete=django.db.models.deletion.DO_NOTHING, related_name='prefixes', to='sipam.Pool')),
             ],
             options={
                 'ordering': ('cidr',),
