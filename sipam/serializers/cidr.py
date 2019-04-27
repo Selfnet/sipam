@@ -15,6 +15,7 @@ class CIDRSerializer(serializers.HyperlinkedModelSerializer):
         if data['cidr'].prefixlen in [128, 32]:
             data['flag'] = 'host'
         return data
+
     class Meta:
         model = CIDR
         fields = ('id', 'cidr', 'created', 'edited',

@@ -13,6 +13,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cidr',
             name='flag',
-            field=models.CharField(choices=[('reservation', 'reservation'), ('assignment', 'assignment'), ('host', 'host')], default='reservation', max_length=11),
+            field=models.CharField(choices=[('reservation', 'reservation'), (
+                'assignment', 'assignment'), ('host', 'host')], default='reservation', max_length=11),
         ),
     ]

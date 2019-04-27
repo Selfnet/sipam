@@ -28,7 +28,7 @@ class CIDR(models.Model):
         max_length=11,
         choices=FLAG_CHOICES,
         default=RESERVATION,
-        )
+    )
     objects = NetManager()
 
     class Meta:
