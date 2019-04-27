@@ -11,7 +11,7 @@ class CIDRSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = CIDR
         fields = ('id', 'cidr', 'created', 'edited',
-                  'children', 'pool', 'fqdn', 'description')
+                  'children', 'pool', 'flag', 'fqdn', 'description')
 
     def get_children(self, obj):
         return CIDRSerializer(
