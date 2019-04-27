@@ -46,18 +46,31 @@ exit
 1. Please note if you want the database and the management listen on localhost addresses you must
 edit the `docker-compose.yml` file.
 
-* create a `virtualenv` under `./env` in the project or under an other location.
+* create a `virtualenv` under `./env` in the project or under another location (if this differs from `./env` do not forget to add it to `.gitignore`).
   * `virtualenv --system-site-packages env`
   * `source env/bin/activate`
 * Install all requirements with
   * `pip install -r requirements.txt`
-* create a file `sipam/secret.py` add the variable `PASSWORD="<password>` 
+* create a file `sipam/secret.py` add the variable `PASSWORD="<password>` and `HOST="<hostname>"`
 
 ### Initialize the project
 
 ```bash
 source env/bin/activate
 python manage.py migrate  # this triggers all migrations for django
-python manage.py migrate sipam # this triggers all migrations from database.
-python manage.py 
+python manage.py migrate sipam # this triggers all migrations for the database of sipam.
+python manage.py runserver # runs the server
 ```
+
+### Add a base developer Database.
+
+
+Create some Base samples for a database `sipam.pgsql` can be imported for this purpose.
+```bash
+sudo cp ./sipam.pgsql /var/lib/postgres/data/sipam.pgsql # Ensure this is the right directory on your system
+sudo -iu postgres
+cd data
+psql -U sipam sipam < sipam.pgsql
+```
+
+Now the database should be filled with some sample data.
