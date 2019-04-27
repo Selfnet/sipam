@@ -62,10 +62,11 @@ python manage.py migrate sipam # this triggers all migrations for the database o
 python manage.py runserver # runs the server
 ```
 
-### Add a base developer Database.
+### Base developer Dataset.
+
+Create some Base Datase for the database `sipam`. `sipam.pgsql` can be imported for this purpose.
 
 
-Create some Base samples for a database `sipam.pgsql` can be imported for this purpose.
 ```bash
 sudo cp ./sipam.pgsql /var/lib/postgres/data/sipam.pgsql # Ensure this is the right directory on your system
 sudo -iu postgres
@@ -74,3 +75,8 @@ psql -U sipam sipam < sipam.pgsql
 ```
 
 Now the database should be filled with some sample data.
+
+### IP Functions:
+
+Postgres: https://www.postgresql.org/docs/11/functions-net.html
+Netfields: https://github.com/jimfunk/django-postgresql-netfields
