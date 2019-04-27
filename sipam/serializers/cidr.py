@@ -8,6 +8,13 @@ from .. import utilities
 class CIDRSerializer(serializers.HyperlinkedModelSerializer):
     children = serializers.SerializerMethodField()
 
+    def validate(self, data):
+        """
+        Check that the flag is correctly set for /32 and /128
+        """
+        if data['cidr'].prefixlen in [128, 32]:
+            data['flag'] = 'host'
+        return data
     class Meta:
         model = CIDR
         fields = ('id', 'cidr', 'created', 'edited',
