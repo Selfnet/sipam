@@ -3,17 +3,10 @@ from django.db import models
 from netfields import NetManager, CidrAddressField
 from .pool import Pool
 from ..utilities.fields import URLField
+from .enums import FlagChoices
 
 
 class CIDR(models.Model):
-    RESERVATION = 'reservation'
-    ASSIGNMENT = 'assignment'
-    HOST = 'host'
-    FLAG_CHOICES = (
-        (RESERVATION, 'reservation'),
-        (ASSIGNMENT, 'assignment'),
-        (HOST, 'host'),
-    )
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     created = models.DateTimeField(auto_now_add=True, editable=False)
     edited = models.DateTimeField(auto_now=True)
@@ -26,8 +19,8 @@ class CIDR(models.Model):
     description = models.TextField(blank=True, null=True)
     flag = models.CharField(
         max_length=11,
-        choices=FLAG_CHOICES,
-        default=RESERVATION,
+        choices=[(tag, tag.value) for tag in FlagChoices],
+        default=FlagChoices.RESERVATION,
     )
     objects = NetManager()
 
