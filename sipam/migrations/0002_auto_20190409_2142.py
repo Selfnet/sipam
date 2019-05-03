@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='prefix',
             name='subdomain',
-            field=sipam.utilities.fields.URLField(blank=True, null=True),
+            field=sipam.utilities.fields.FQDNField(blank=True, null=True),
         ),
     ]
