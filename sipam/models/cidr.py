@@ -2,7 +2,7 @@ import uuid
 from django.db import models
 from netfields import NetManager, CidrAddressField
 from .pool import Pool
-from ..utilities.fields import URLField
+from ..utilities.fields import FQDNField
 
 
 class CIDR(models.Model):
@@ -22,7 +22,7 @@ class CIDR(models.Model):
     # from self under the parent.
     pool = models.ForeignKey(Pool, blank=True, null=True,
                              on_delete=models.DO_NOTHING, related_name='prefixes')
-    fqdn = URLField(blank=True, null=True)
+    fqdn = FQDNField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     flag = models.CharField(
         max_length=11,
