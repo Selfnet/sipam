@@ -3,6 +3,7 @@
 ## Developer Initialization
 
 ### Docker Postgres
+
 * Install `docker`, `docker-compose` on a VM, PC, of your choice for the database Setup.
 * Create a `.env` file in the project directory with the following stuff inside.
 
@@ -25,7 +26,7 @@ docker-compose up -d # this starts both container for development
 
 ```bash
 sudo -iu postgres
-initdb -D /var/lib/postgres/data  # you can edit this path as you like
+initdb -D /var/lib/postgres/data  # you can edit this path as you like (only arch)
 exit
 systemctl start postgresql
 systemctl enable postgresql # this is optional if you want to start it on boot.
@@ -33,7 +34,7 @@ sudo -iu postgres
 createuser --interactive  # <sipam> say no to everything it will be a dump database user.
 createdb sipam -O sipam # first is database name second is username
 
-psql 
+psql
 \password sipam  # set the password from secret.py their two times
 GRANT ALL PRIVILEGES ON DATABASE sipam TO sipam;
 \q
@@ -46,17 +47,16 @@ exit
 1. Please note if you want the database and the management listen on localhost addresses you must
 edit the `docker-compose.yml` file.
 
-* create a `virtualenv` under `./env` in the project or under another location (if this differs from `./env` do not forget to add it to `.gitignore`).
-  * `virtualenv --system-site-packages env`
-  * `source env/bin/activate`
-* Install all requirements with
-  * `pip install -r requirements.txt`
+* This project uses [pipenv](https://github.com/pypa/pipenv) for dependency management.
+  * Setup is as easy as running `pipenv install`
+  * New packages can be added with `pipenv install <package>`
+  * If the package is only required for development purposes use `pipenv install --dev <package>`
 * create a file `sipam/secret.py` add the variable `PASSWORD="<password>` and `HOST="<hostname>"`
 
 ### Initialize the project
 
 ```bash
-source env/bin/activate
+pipenv shell
 python manage.py migrate  # this triggers all migrations for django
 python manage.py migrate sipam # this triggers all migrations for the database of sipam.
 python manage.py runserver # runs the server
