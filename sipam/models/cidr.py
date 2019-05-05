@@ -26,3 +26,21 @@ class CIDR(models.Model):
 
     class Meta:
         ordering = ('cidr',)
+
+    def assignLinknet(self, description: str, hostname=None):
+        """Assigns a new linknet from the pool to be used with physical nodes
+
+        Arguments:
+            description {str} -- Description of the use for this subnet
+            hostname {str} -- Hostname to use
+        """
+        pass
+
+    def assignIP(self, description: str, hostname=None):
+        """Assigns a new single ip to be used for VMs
+
+        Arguments:
+            description {str} -- Description of the use for this subnet
+            hostname {str} -- Hostname to use
+        """
+        pass

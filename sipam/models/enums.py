@@ -1,6 +1,6 @@
 from enum import Enum
 
-class FlagChoices(Enum):
+class FlagChoices(str, Enum):
     """Types of IP Assignments
     """
     RESERVATION = 'reservation'

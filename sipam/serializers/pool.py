@@ -8,4 +8,4 @@ class PoolSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Pool
-        fields = ('id', 'created', 'edited', 'prefixes', 'description')
+        fields = ('id', 'label', 'created', 'edited', 'prefixes', 'description')
