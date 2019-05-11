@@ -1,8 +1,5 @@
-from django.db.models import Q
 from rest_framework import serializers
-from rest_framework.decorators import action
 from sipam.models import CIDR
-from .. import utilities
 
 
 class CIDRSerializer(serializers.HyperlinkedModelSerializer):
@@ -23,8 +20,6 @@ class CIDRSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_children(self, obj):
         return CIDRSerializer(
-            [cidr for cidr in CIDR.objects.filter(
-                Q(cidr__net_contained=obj.cidr)
-            ) if utilities.subnet(cidr)],
+            obj.subcidr,
             many=True,
             read_only=True).data

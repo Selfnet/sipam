@@ -12,9 +12,19 @@ class HostType(str, Enum):
     PHYSICAL = 'physical'
     VIRTUAL = 'virtual'
 
+
 class FlagChoices(str, Enum):
     """Types of IP Assignments
     """
     RESERVATION = 'reservation'
     ASSIGNMENT = 'assignment'
     HOST = 'host'
+
+
+class CIDRType(str, Enum):
+    """
+        Types of CIDRs.
+        IP and Prefix
+    """
+    CIDR = 'cidr'
+    IP = 'ip'
