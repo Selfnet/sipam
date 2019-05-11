@@ -1,1 +1,1 @@
-from .functions import subnet
+from .functions import subcidr
