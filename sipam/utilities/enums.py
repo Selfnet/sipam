@@ -11,3 +11,10 @@ class HostType(str, Enum):
     """
     PHYSICAL = 'physical'
     VIRTUAL = 'virtual'
+
+class FlagChoices(str, Enum):
+    """Types of IP Assignments
+    """
+    RESERVATION = 'reservation'
+    ASSIGNMENT = 'assignment'
+    HOST = 'host'

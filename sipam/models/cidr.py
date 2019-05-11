@@ -3,7 +3,7 @@ from django.db import models
 from netfields import NetManager, CidrAddressField
 from .pool import Pool
 from ..utilities.fields import FQDNField
-from .enums import FlagChoices
+from ..utilities.enums import FlagChoices
 
 
 class CIDR(models.Model):
