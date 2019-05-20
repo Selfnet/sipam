@@ -42,15 +42,20 @@ router.register(r'pools', views.PoolViewSet)
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
+    # API
+    path('api/v1/', include(router.urls)),
+    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    # Only Documentation
     re_path(
         r'^swagger(?P<format>\.json|\.yaml)$',
         schema_view.without_ui(cache_timeout=0),
         name='schema-json'),
     re_path(
-        r'^swagger/$', 
+        r'^swagger/$',
         schema_view.with_ui(
             'swagger',
-            cache_timeout=0), 
+            cache_timeout=0),
         name='schema-swagger-ui'),
     re_path(
         r'^redoc/$',
@@ -58,8 +63,6 @@ urlpatterns = [
             'redoc',
             cache_timeout=0),
         name='schema-redoc'),
-    path('api/v1/', include(router.urls)),
-    path('auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 
 # urlpatterns = [

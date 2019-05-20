@@ -11,6 +11,8 @@ djangorestframework = "*"
 fqdn = "*"
 coreapi = "*"
 pyyaml = "*"
+apistar = "*"
+drfdocs = "*"
 drf-yasg = "*"
 
 [dev-packages]

@@ -43,9 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'sipam',
     'rest_framework',
-    'netfields',
     'drf_yasg',
-
+    'netfields',
 ]
 
 MIDDLEWARE = [
