@@ -9,7 +9,8 @@ class CIDRSerializer(serializers.HyperlinkedModelSerializer):
         """
         Check that the flag is correctly set for /32 and /128
         """
-        if data['cidr'].prefixlen in [128, 32]:
+        if (data['cidr'].version == 6 and data['cidr'].prefixlen == 128
+                or data['cidr'].version == 4 and data['cidr'].prefixlen == 32):
             data['flag'] = 'host'
         return data
 

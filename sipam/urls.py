@@ -25,7 +25,7 @@ router.register(r'pools', views.PoolViewSet)
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
 
-    path('api/', include(router.urls)),
+    path('api/v1/', include(router.urls)),
     path('auth/', include('rest_framework.urls', namespace='rest_framework'))
 ]
 

@@ -73,13 +73,13 @@ class CIDR(models.Model):
             return [cidr for cidr in self.directly(children, type=Invoke.CHILDREN) if not subcidr(cidr)]
 
     @property
-    def parents(self):
+    def supercidr(self):
         """
             :returns: the direct parent of self (by cidr)
         """
-        parents = CIDR.objects.filter(
+        supercidr = CIDR.objects.filter(
             cidr__net_contains=self.cidr)
-        return self.directly(parents, type=Invoke.PARENTS)
+        return self.directly(supercidr, type=Invoke.PARENTS)
 
     @property
     def subcidr(self):

@@ -9,6 +9,8 @@ django-netfields = "*"
 djangorestframework = "*"
 "psycopg2-binary" = "*"
 fqdn = "*"
+coreapi = "*"
+pyyaml = "*"
 
 [dev-packages]
 pylint = "*"
