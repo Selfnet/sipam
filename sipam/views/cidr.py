@@ -18,7 +18,7 @@ class CIDRViewSet(viewsets.ModelViewSet):
         """
         root = []
         for cidr in CIDR.objects.all():
-            if not cidr.parents:
+            if not cidr.supercidr:
                 root.append(cidr)
         return Response(
             CIDRSerializer(
@@ -28,13 +28,13 @@ class CIDRViewSet(viewsets.ModelViewSet):
                 context={'request': request}).data)
 
     @action(detail=True)
-    def parents(self, request, pk=None):
+    def supercidr(self, request, pk=None):
         """
-            API endpoint that allows direct parents to be viewed.
+            API endpoint that allows direct super cidr (network) to be viewed.
         """
         return Response(
             CIDRSerializer(
-                self.get_object().parents,
+                self.get_object().supercidr,
                 many=True,
                 read_only=True,
                 context={'request': request}).data
@@ -43,7 +43,7 @@ class CIDRViewSet(viewsets.ModelViewSet):
     @action(detail=True)
     def subcidr(self, request, pk=None):
         """
-        API endpoint that allows direct subcidr to be viewed.
+        API endpoint that allows direct subordinary cidr (networks) to be viewed.
         """
         return Response(
             CIDRSerializer(
