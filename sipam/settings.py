@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'sipam',
     'rest_framework',
     'netfields',
+    'drf_yasg',
 
 ]
 
