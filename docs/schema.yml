@@ -4,7 +4,7 @@ info:
   version: ''
 openapi: 3.0.0
 paths:
-  /api/cidr/:
+  /api/v1/cidr/:
     get:
       description: Get the Root Prefixes with their childrens
       operationId: cidr_list
@@ -22,7 +22,7 @@ paths:
       operationId: cidr_create
       tags:
       - cidr
-  /api/cidr/{id}/:
+  /api/v1/cidr/{id}/:
     delete:
       description: API endpoint that allows Prefixes to be viewed or edited.
       operationId: cidr_delete
@@ -75,7 +75,7 @@ paths:
           type: string
       tags:
       - cidr
-  /api/cidr/{id}/ips/:
+  /api/v1/cidr/{id}/ips/:
     get:
       description: API Endpoint that allows direct children ips to be viewed.
       operationId: cidr_ips
@@ -89,23 +89,10 @@ paths:
           type: string
       tags:
       - cidr
-  /api/cidr/{id}/parents/:
+  /api/v1/cidr/{id}/subcidr/:
     get:
-      description: API endpoint that allows direct parents to be viewed.
-      operationId: cidr_parents
-      parameters:
-      - in: path
-        name: id
-        required: true
-        schema:
-          description: A UUID string identifying this cidr.
-          title: id
-          type: string
-      tags:
-      - cidr
-  /api/cidr/{id}/subcidr/:
-    get:
-      description: API endpoint that allows direct subcidr to be viewed.
+      description: API endpoint that allows direct subordinary cidr (networks) to
+        be viewed.
       operationId: cidr_subcidr
       parameters:
       - in: path
@@ -117,7 +104,21 @@ paths:
           type: string
       tags:
       - cidr
-  /api/pools/:
+  /api/v1/cidr/{id}/supercidr/:
+    get:
+      description: API endpoint that allows direct super cidr (network) to be viewed.
+      operationId: cidr_supercidr
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          description: A UUID string identifying this cidr.
+          title: id
+          type: string
+      tags:
+      - cidr
+  /api/v1/pools/:
     get:
       description: List all pools
       operationId: pools_list
@@ -135,7 +136,7 @@ paths:
       operationId: pools_create
       tags:
       - pools
-  /api/pools/{id}/:
+  /api/v1/pools/{id}/:
     delete:
       description: API endpoint that allows Pools to be viewed or edited.
       operationId: pools_delete
