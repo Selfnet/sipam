@@ -68,7 +68,7 @@ class CIDR(models.Model):
         )
         assert isinstance(type, CIDRType)
         if type == CIDRType.CIDR:
-            return [cidr for cidr in self.directly(children, type=Invoke.CHILDREN) if subcidr(cidr)]
+            return [cidr for cidr in self.directly(children, type=Invoke.CHILDREN)]
         elif type == CIDRType.IP:
             return [cidr for cidr in self.directly(children, type=Invoke.CHILDREN) if not subcidr(cidr)]
 
