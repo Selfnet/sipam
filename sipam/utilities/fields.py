@@ -1,8 +1,8 @@
-import re
-from fqdn import FQDN
-from django.db.models import CharField
-from django.core.validators import deconstructible, ValidationError, _
 from django import forms
+from django.core.validators import ValidationError, _, deconstructible
+from django.db.models import CharField
+from fqdn import FQDN
+
 
 @deconstructible
 class FQDNValidator:

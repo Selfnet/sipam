@@ -1,0 +1,44 @@
+image: python:3.7-buster
+
+services:
+  - postgres:latest
+
+variables:
+  POSTGRES_USER: sipam
+  POSTGRES_PASSWORD: sipam
+  POSTGRES_DB: sipam
+  prometheus_multiproc_dir: /tmp
+
+default:
+  before_script:
+    - pip install pipenv
+
+stages:
+  - test
+
+flake8:
+  stage: test
+  script:
+    - pipenv install --dev
+    - pipenv --version
+    - pipenv run flake8 .
+
+security:
+  stage: test
+  script:
+    - pipenv check
+
+pylint:
+  stage: test
+  script:
+    - pipenv install --dev
+    - pipenv run pylint **/*.py
+  allow_failure: true
+
+# Should be activated later
+pytest:
+  stage: test
+  script:
+    - pipenv install --dev
+    - pipenv run coverage run -m pytest
+    - pipenv run coverage report

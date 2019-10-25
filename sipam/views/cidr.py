@@ -1,11 +1,12 @@
-from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
+
 from ..models import CIDR
 from ..serializers import CIDRSerializer
 
 
-class CIDRViewSet(viewsets.ModelViewSet):
+class CIDRViewSet(ModelViewSet):
     """
         API endpoint that allows Prefixes to be viewed or edited.
     """
@@ -14,7 +15,7 @@ class CIDRViewSet(viewsets.ModelViewSet):
 
     def list(self, request):
         """
-            Get the Root Prefixes with their childrens
+            Get the Root Prefixes with their children
         """
         root = []
         for cidr in CIDR.objects.all():
@@ -22,7 +23,7 @@ class CIDRViewSet(viewsets.ModelViewSet):
                 root.append(cidr)
         return Response(
             CIDRSerializer(
-                [cidr for cidr in root],
+                root,
                 many=True,
                 read_only=True,
                 context={'request': request}).data)

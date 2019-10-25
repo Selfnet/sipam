@@ -1,16 +1,17 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer, SerializerMethodField
+
 from sipam.models import CIDR
+from sipam.utilities.enums import IP
 
 
-class CIDRSerializer(serializers.HyperlinkedModelSerializer):
-    children = serializers.SerializerMethodField()
+class CIDRSerializer(ModelSerializer):
+    children = SerializerMethodField()
 
     def validate(self, data):
         """
         Check that the flag is correctly set for /32 and /128
         """
-        if (data['cidr'].version == 6 and data['cidr'].prefixlen == 128
-                or data['cidr'].version == 4 and data['cidr'].prefixlen == 32):
+        if data['cidr'].version == IP.v6 and data['cidr'].prefixlen == 128 or data['cidr'].version == IP.v4 and data['cidr'].prefixlen == 32:
             data['flag'] = 'host'
         return data
 
