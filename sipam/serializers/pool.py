@@ -1,9 +1,11 @@
-from rest_framework import serializers
+from rest_framework.serializers import ModelSerializer
+
 from sipam.models import Pool
+
 from ..serializers import CIDRSerializer
 
 
-class PoolSerializer(serializers.HyperlinkedModelSerializer):
+class PoolSerializer(ModelSerializer):
     prefixes = CIDRSerializer(many=True, read_only=True)
 
     class Meta:

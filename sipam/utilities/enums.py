@@ -22,9 +22,16 @@ class FlagChoices(str, Enum):
 
 
 class CIDRType(str, Enum):
-    """
-        Types of CIDRs.
-        IP and Prefix
+    """Types of CIDRs.
+       IP and Prefix
     """
     CIDR = 'cidr'
     IP = 'ip'
+
+
+class IP(int, Enum):
+    """Types of IP-Addresses
+    v4 and v6
+    """
+    v4 = 4
+    v6 = 6

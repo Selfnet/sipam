@@ -1,5 +1,8 @@
 # SIPAM
 
+[![pipeline status](https://git.selfnet.de/marcelf/sipam/badges/master/pipeline.svg)](https://git.selfnet.de/marcelf/sipam/commits/master)
+[![coverage report](https://git.selfnet.de/marcelf/sipam/badges/master/coverage.svg)](https://git.selfnet.de/marcelf/sipam/commits/master)
+
 ## Developer Initialization
 
 ### Docker Postgres
@@ -62,7 +65,7 @@ python manage.py migrate sipam # this triggers all migrations for the database o
 python manage.py runserver # runs the server
 ```
 
-### Base developer Dataset.
+### Base developer Dataset
 
 Create some Base Datase for the database `sipam`. `sipam.pgsql` can be imported for this purpose.
 
@@ -76,7 +79,7 @@ psql -U sipam sipam < sipam.pgsql
 
 Now the database should be filled with some sample data.
 
-### IP Functions:
+### IP Functions
 
 Postgres: https://www.postgresql.org/docs/11/functions-net.html
 Netfields: https://github.com/jimfunk/django-postgresql-netfields
