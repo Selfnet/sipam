@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory
 
-from sipam.models.error import NoSuchPrefix
+from sipam.utilities.error import NoSuchPrefix
 from sipam.serializers import PoolSerializer, AssignmentSerializer
 from sipam.utilities.enums import IP, HostType
 from sipam.views import PoolViewSet
