@@ -3,7 +3,7 @@ from ipaddress import IPv4Network
 import pytest
 from django.test import TestCase
 
-from sipam.models.error import NotEnoughSpace
+from sipam.utilities.error import NotEnoughSpace
 from sipam.utilities.enums import IP
 
 

@@ -5,7 +5,7 @@ from django.db.models import CharField, DateTimeField, Model, TextField
 
 from ..utilities.enums import IP, HostType
 from .cidr import CIDR
-from .error import NoSuchPrefix, NotEnoughSpace
+from ..utilities.error import NoSuchPrefix, NotEnoughSpace
 
 
 class Pool(Model):

@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from ..models import Pool
-from ..models.error import NoSuchPrefix
+from ..utilities.error import NoSuchPrefix
 from ..serializers import AssignmentSerializer, PoolSerializer
 from ..utilities.enums import IP
 

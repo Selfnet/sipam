@@ -6,9 +6,10 @@ from django.db import models, transaction
 from netfields import CidrAddressField, NetManager
 
 from ..utilities import subcidr
-from ..utilities.enums import CIDRType, FlagChoices, Invoke, IP
+from ..utilities.enums import IP, CIDRType, FlagChoices, Invoke
+from ..utilities.error import NotEnoughSpace
 from ..utilities.fields import FQDNField
-from .error import NotEnoughSpace
+from .tag import Tag
 
 
 class CIDR(models.Model):
@@ -28,6 +29,7 @@ class CIDR(models.Model):
         choices=[(tag, tag.value) for tag in FlagChoices],
         default=FlagChoices.RESERVATION,
     )
+    tags = models.ManyToManyField(Tag)
     objects = NetManager()
 
     class Meta:
