@@ -2,10 +2,12 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from sipam.models import CIDR
 from sipam.utilities.enums import IP
+from .label import LabelSerializer
 
 
 class CIDRSerializer(ModelSerializer):
     children = SerializerMethodField()
+    labels = SerializerMethodField()
 
     def validate(self, data):
         """
@@ -18,10 +20,16 @@ class CIDRSerializer(ModelSerializer):
     class Meta:
         model = CIDR
         fields = ('id', 'cidr', 'created', 'edited',
-                  'children', 'pool', 'flag', 'fqdn', 'description')
+                  'children', 'pool', 'flag', 'fqdn', 'description', 'labels')
 
     def get_children(self, obj):
         return CIDRSerializer(
             obj.subcidr,
+            many=True,
+            read_only=True).data
+
+    def get_labels(self, obj):
+        return LabelSerializer(
+            obj.labels,
             many=True,
             read_only=True).data
