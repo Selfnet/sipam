@@ -9,7 +9,7 @@ from ..utilities import subcidr
 from ..utilities.enums import IP, CIDRType, FlagChoices, Invoke
 from ..utilities.error import NotEnoughSpace
 from ..utilities.fields import FQDNField
-from .tag import Tag
+from .label import Label
 
 
 class CIDR(models.Model):
@@ -29,7 +29,7 @@ class CIDR(models.Model):
         choices=[(tag, tag.value) for tag in FlagChoices],
         default=FlagChoices.RESERVATION,
     )
-    tags = models.ManyToManyField(Tag)
+    labels = models.ManyToManyField(Label)
     objects = NetManager()
 
     class Meta:

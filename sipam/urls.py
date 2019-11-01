@@ -38,7 +38,7 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register(r'cidr', views.CIDRViewSet)
 router.register(r'pool', views.PoolViewSet)
-router.register(r'tag', views.TagViewSet)
+router.register(r'label', views.LabelViewSet)
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
