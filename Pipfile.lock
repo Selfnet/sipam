@@ -1,19 +1,19 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "44a5b8106f61a84f3d8870c8a09ffcd59d733c14eebda067b313206807662ad4"
+            "sha256": "60054cb0b4261f9da7fe99de07dd28280ffef1dc2bbdfae40a2fda159cbc4772"
         },
         "host-environment-markers": {
             "implementation_name": "cpython",
-            "implementation_version": "3.7.3",
+            "implementation_version": "3.6.9",
             "os_name": "posix",
             "platform_machine": "x86_64",
             "platform_python_implementation": "CPython",
             "platform_release": "4.19.72-gentoo",
             "platform_system": "Linux",
             "platform_version": "#2 SMP Wed Oct 16 14:07:42 CEST 2019",
-            "python_full_version": "3.7.3",
-            "python_version": "3.7",
+            "python_full_version": "3.6.9",
+            "python_version": "3.6",
             "sys_platform": "linux"
         },
         "pipfile-spec": 6,
@@ -103,6 +103,13 @@
                 "sha256:dc81cbf9775c6898a580f6f1f387c4777d12bd87abf0f5406018d32ccae71090"
             ],
             "version": "==3.10.3"
+        },
+        "drf-nested-routers": {
+            "hashes": [
+                "sha256:60c1e1f5cc801e757d26a8138e61c44419ef800c213c3640c5b6138e77d46762",
+                "sha256:46e5c3abc15c782cafafd7d75028e8f9121bbc6228e3599bbb48a3daa4585034"
+            ],
+            "version": "==0.91"
         },
         "drf-yasg": {
             "hashes": [
@@ -411,10 +418,10 @@
         },
         "flake8": {
             "hashes": [
-                "sha256:8e9dfa3cecb2400b3738a42c54c3043e821682b9c840b0448c0503f781130696",
-                "sha256:19241c1cbc971b9962473e4438a2ca19749a7dd002dd1a946eaba171b4114548"
+                "sha256:49356e766643ad15072a789a20915d3c91dc89fd313ccd71802303fd67e4deca",
+                "sha256:45681a117ecc81e870cbf1262835ae4af5e7a8b08e40b944a8a6e6b895914cfb"
             ],
-            "version": "==3.7.8"
+            "version": "==3.7.9"
         },
         "importlib-metadata": {
             "hashes": [

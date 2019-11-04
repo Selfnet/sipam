@@ -82,7 +82,7 @@ class PoolTest(TestCase):
         request = factory.post(reverse('pool-assign', kwargs={'pk': self.pool.id}), newAssignment)
 
         response = view(request, pk=self.pool.id)
-        assert response.status_code == 204
+        assert response.status_code == 201
 
         # Emtpy pool
         request = factory.post(reverse('pool-assign', kwargs={'pk': self.emptyPool.id}), newAssignment)

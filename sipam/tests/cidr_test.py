@@ -44,3 +44,6 @@ class CIDRTest(TestCase):
 
     def test_supercidr(self):
         assert self.cidr.supercidr is None
+
+    def test_get_labels(self):
+        assert isinstance(self.cidr.labelDict, dict)

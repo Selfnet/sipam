@@ -2,7 +2,6 @@ from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from sipam.models import CIDR
 from sipam.utilities.enums import IP
-from .label import LabelSerializer
 
 
 class CIDRSerializer(ModelSerializer):
@@ -28,8 +27,5 @@ class CIDRSerializer(ModelSerializer):
             many=True,
             read_only=True).data
 
-    def get_labels(self, obj):
-        return LabelSerializer(
-            obj.labels,
-            many=True,
-            read_only=True).data
+    def get_labels(self, obj) -> dict:
+        return obj.labelDict

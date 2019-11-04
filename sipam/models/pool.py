@@ -1,18 +1,17 @@
 from typing import List, Optional
 
 from django.db import transaction
-from django.db.models import CharField, DateTimeField, Model, TextField
+from django.db.models import CharField, TextField
 
 from ..utilities.enums import IP, HostType
 from .cidr import CIDR
 from ..utilities.error import NoSuchPrefix, NotEnoughSpace
+from .base import BaseModel
 
 
-class Pool(Model):
+class Pool(BaseModel):
     id = CharField(max_length=10, primary_key=True)
     label = CharField(max_length=100, null=False)
-    created = DateTimeField(auto_now_add=True, editable=False)
-    edited = DateTimeField(auto_now=True)
     description = TextField(blank=True, null=True)
 
     @property
