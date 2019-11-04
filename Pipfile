@@ -17,6 +17,7 @@ pyyaml = "*"
 apistar = "*"
 drf-yasg = "*"
 django-prometheus = "*"
+drf-nested-routers = "*"
 
 
 [dev-packages]

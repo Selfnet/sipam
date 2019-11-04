@@ -17,7 +17,8 @@ Including another URLconf
 from django.urls import include, path, re_path
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
-from rest_framework import permissions, routers
+from rest_framework import permissions
+from rest_framework_nested import routers
 
 from sipam import views
 
@@ -38,13 +39,16 @@ schema_view = get_schema_view(
 router = routers.DefaultRouter()
 router.register(r'cidr', views.CIDRViewSet)
 router.register(r'pool', views.PoolViewSet)
-router.register(r'label', views.LabelViewSet)
+
+cidr_router = routers.NestedSimpleRouter(router, r'cidr', lookup='cidr')
+cidr_router.register(r'labels', views.LabelViewSet, basename='cidr-labels')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     # API
     path('api/v1/', include(router.urls)),
+    path('api/v1/', include(cidr_router.urls)),
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # Only Documentation

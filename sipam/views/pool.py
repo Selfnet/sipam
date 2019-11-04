@@ -60,7 +60,7 @@ class PoolViewSet(ModelViewSet):
             return Response(status=status.HTTP_507_INSUFFICIENT_STORAGE)
 
         # Successfully assigned
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_201_CREATED)
 
     @assign.mapping.delete
     def deleteAssignment(self, request, pk=None):

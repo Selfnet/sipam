@@ -9,13 +9,11 @@ from ..utilities import subcidr
 from ..utilities.enums import IP, CIDRType, FlagChoices, Invoke
 from ..utilities.error import NotEnoughSpace
 from ..utilities.fields import FQDNField
-from .label import Label
+from .base import BaseModel
 
 
-class CIDR(models.Model):
+class CIDR(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    edited = models.DateTimeField(auto_now=True)
     cidr = CidrAddressField(unique=True)
     # TODO: should migrate all prefixes and ips
     # from self under the parent.
@@ -29,7 +27,6 @@ class CIDR(models.Model):
         choices=[(tag, tag.value) for tag in FlagChoices],
         default=FlagChoices.RESERVATION,
     )
-    labels = models.ManyToManyField(Label)
     objects = NetManager()
 
     class Meta:
@@ -113,6 +110,15 @@ class CIDR(models.Model):
             IP -- Version (IP.v4 or IP.v6)
         """
         return IP(self.cidr.version)
+
+    @property
+    def labelDict(self) -> dict:
+        """Get labels as key value pair
+
+        Returns:
+            dict -- Labels as key-value pair
+        """
+        return {label['name']: label['value'] for label in self.labels.all()}
 
     @transaction.atomic
     def assignLinknet(self, description: str, hostname=None):

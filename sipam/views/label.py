@@ -7,13 +7,23 @@ from ..serializers import LabelSerializer
 
 class LabelViewSet(ModelViewSet):
     """
-        API endpoint that allows PLabels to be added and removed from a network.
+        API endpoint that allows Labels to be added and removed from a network.
     """
-    queryset = Label.objects.all()
     serializer_class = LabelSerializer
 
-    def list(self, request):
+    def get_queryset(self):
+        return Label.objects.filter(cidr__pk=self.kwargs['cidr_pk'])
+
+    def list(self, request, cidr_pk=None):
         """
-            Get all tags
+            Get labels as key-value pair
         """
-        return Response(LabelSerializer(Label.objects.all(), many=True, read_only=True, context={'request': request}).data)
+        queryset = Label.objects.filter(cidr__pk=cidr_pk)
+        labels = LabelSerializer(queryset,
+                                 many=True,
+                                 read_only=True,
+                                 context={'request': request}).data
+
+        labelDict = {label['name']: label['value'] for label in labels}
+
+        return Response(labelDict)
