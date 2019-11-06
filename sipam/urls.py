@@ -37,11 +37,11 @@ schema_view = get_schema_view(
 
 
 router = routers.DefaultRouter()
-router.register(r'cidr', views.CIDRViewSet, base_name='cidrs')
+router.register(r'cidr', views.CIDRViewSet, basename='cidr')
 router.register(r'pool', views.PoolViewSet)
 
 cidr_router = routers.NestedSimpleRouter(router, r'cidr', lookup='cidr')
-cidr_router.register(r'labels', views.LabelViewSet, base_name='labels')
+cidr_router.register(r'labels', views.LabelViewSet, basename='cidr-labels')
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
