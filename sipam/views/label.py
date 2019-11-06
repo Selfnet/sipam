@@ -19,10 +19,11 @@ class LabelViewSet(ModelViewSet):
             Get labels as key-value pair
         """
         queryset = Label.objects.filter(cidr_id=cidr_pk)
-        labels = LabelSerializer(queryset,
-                                 many=True,
-                                 read_only=True,
-                                 context={'request': request}).data
+        labels = LabelSerializer(
+            queryset,
+            many=True,
+            read_only=True,
+            context={'request': request}).data
 
         labelDict = {label['name']: label['value'] for label in labels}
 
