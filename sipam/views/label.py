@@ -1,5 +1,5 @@
-from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
 
 from ..models import Label
 from ..serializers import LabelSerializer
@@ -12,13 +12,13 @@ class LabelViewSet(ModelViewSet):
     serializer_class = LabelSerializer
 
     def get_queryset(self):
-        return Label.objects.filter(cidr__pk=self.kwargs['cidr_pk'])
+        return Label.objects.filter(cidr_id=self.kwargs['cidr_pk'])
 
     def list(self, request, cidr_pk=None):
         """
             Get labels as key-value pair
         """
-        queryset = Label.objects.filter(cidr__pk=cidr_pk)
+        queryset = Label.objects.filter(cidr_id=cidr_pk)
         labels = LabelSerializer(queryset,
                                  many=True,
                                  read_only=True,
