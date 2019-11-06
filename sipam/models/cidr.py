@@ -118,7 +118,7 @@ class CIDR(BaseModel):
         Returns:
             dict -- Labels as key-value pair
         """
-        return {label['name']: label['value'] for label in self.labels.all()}
+        return {label.name: label.value for label in self.labels.all()}
 
     @transaction.atomic
     def assignLinknet(self, description: str, hostname=None):
