@@ -74,3 +74,24 @@ class LabelTest(TestCase):
 
         assert response.status_code == 204
         assert self.cidr.labelDict['WithLabelKey'] == updatedLabel['WithLabelKey']
+
+    def test_delete_label(self):
+        # Create a label
+        self.cidr.labels.create(name='DeleteLabelKey', value='DeleteLabelValue')
+        assert self.cidr.labelDict['DeleteLabelKey'] == 'DeleteLabelValue'
+
+        factory = APIRequestFactory()
+        view = LabelViewSet.as_view({'delete': 'destroy'})
+
+        request = factory.delete(reverse('cidr-labels-detail', kwargs={'pk': 'DeleteLabelKey', 'cidr_pk': self.cidr.id}))
+
+        response = view(request, pk='DeleteLabelKey', cidr_pk=self.cidr.id)
+
+        assert response.status_code == 204
+        assert self.cidr.labelDict.get('DeleteLabelKey', None) is None
+
+        # Try to delete a label which does not exist
+        request = factory.delete(reverse('cidr-labels-detail', kwargs={'pk': 'DeleteNonExistingLabelKey', 'cidr_pk': self.cidr.id}))
+
+        response = view(request, pk='DeleteNonExistingLabelKey', cidr_pk=self.cidr.id)
+        assert response.status_code == 404
