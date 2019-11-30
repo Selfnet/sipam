@@ -1,3 +1,5 @@
+from typing import List
+
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from sipam.models import CIDR
@@ -21,11 +23,17 @@ class CIDRSerializer(ModelSerializer):
         fields = ('id', 'cidr', 'created', 'edited',
                   'children', 'pool', 'flag', 'fqdn', 'description', 'labels')
 
-    def get_children(self, obj):
-        return CIDRSerializer(
-            obj.subcidr,
-            many=True,
-            read_only=True).data
+    def get_children(self, obj) -> List[str]:
+        return obj.getChildIDs()
 
     def get_labels(self, obj) -> dict:
         return obj.labelDict
+
+
+class RecursiveCIDRSerializer(CIDRSerializer):
+
+    def get_children(self, obj) -> List['CIDR']:
+        return RecursiveCIDRSerializer(
+            obj.subcidr,
+            many=True,
+            read_only=True).data
