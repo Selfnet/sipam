@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from ..models import Label, CIDR
+from ..models import Label
 from ..serializers import LabelSerializer
 
 
@@ -33,13 +33,22 @@ class LabelViewSet(ModelViewSet):
     def update(self, request, pk=None, cidr_pk=None):
         """Updates a given label
         """
-        cidr = CIDR.objects.get(pk=cidr_pk)
-
-        if cidr.labelDict.get(pk, None) is None:
+        try:
+            label = Label.objects.get(name=pk, cidr=cidr_pk)
+        except Label.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        label = cidr.labels.get(name=pk)
         label.value = request.data[pk]
         label.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def destroy(self, request, pk=None, cidr_pk=None):
+        """Delete this label
+        """
+        try:
+            Label.objects.get(name=pk, cidr=cidr_pk).delete()
+        except Label.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         return Response(status=status.HTTP_204_NO_CONTENT)
