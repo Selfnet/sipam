@@ -1,7 +1,8 @@
-from rest_framework.viewsets import ModelViewSet
+from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.viewsets import ModelViewSet
 
-from ..models import Label
+from ..models import Label, CIDR
 from ..serializers import LabelSerializer
 
 
@@ -28,3 +29,17 @@ class LabelViewSet(ModelViewSet):
         labelDict = {label['name']: label['value'] for label in labels}
 
         return Response(labelDict)
+
+    def update(self, request, pk=None, cidr_pk=None):
+        """Updates a given label
+        """
+        cidr = CIDR.objects.get(pk=cidr_pk)
+
+        if cidr.labelDict.get(pk, None) is None:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        label = cidr.labels.get(name=pk)
+        label.value = request.data[pk]
+        label.save()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
