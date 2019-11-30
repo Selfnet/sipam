@@ -1,6 +1,7 @@
 import copy
 import uuid
 from ipaddress import ip_address, ip_network
+from typing import List, Tuple
 
 from django.db import models, transaction
 from netfields import CidrAddressField, NetManager
@@ -63,7 +64,7 @@ class CIDR(BaseModel):
         del undirect
         return direct
 
-    def getChildren(self, cidrType: CIDRType):
+    def getChildren(self, cidrType: CIDRType) -> List['CIDR']:
         children = CIDR.objects.filter(
             cidr__net_contained=self.cidr
         )
@@ -74,7 +75,7 @@ class CIDR(BaseModel):
         return [cidr for cidr in self.directly(children, invoke=Invoke.CHILDREN) if not subcidr(cidr)]
 
     @property
-    def supercidr(self):
+    def supercidr(self) -> 'CIDR':
         """
             :returns: the direct parent of self (by cidr)
         """
@@ -88,14 +89,22 @@ class CIDR(BaseModel):
         return parent[0]
 
     @property
-    def subcidr(self):
+    def subcidr(self) -> List['CIDR']:
         """
             :returns: the direct subcidr of self (by cidr)
         """
         return self.getChildren(cidrType=CIDRType.CIDR)
 
+    def getChildIDs(self) -> List[str]:
+        """Get the IDs of every child
+
+        Returns:
+            List[str] -- List of child IDs
+        """
+        return [child.id for child in self.subcidr + self.ips]
+
     @property
-    def ips(self):
+    def ips(self) -> List['CIDR']:
         """
             :returns: the direct ips allocated under this prefix
         """
@@ -121,7 +130,7 @@ class CIDR(BaseModel):
         return {label.name: label.value for label in self.labels.all()}
 
     @transaction.atomic
-    def assignLinknet(self, description: str, hostname=None):
+    def assignLinknet(self, description: str, hostname=None) -> Tuple['CIDR', 'CIDR', 'CIDR']:
         """Assigns a new linknet from the pool to be used with physical nodes
 
         Arguments:
@@ -140,7 +149,7 @@ class CIDR(BaseModel):
 
         return net, gateway, ip
 
-    def assignIP(self, description: str, hostname=None):
+    def assignIP(self, description: str, hostname=None) -> 'CIDR':
         """Assigns a new single ip to be used for VMs
 
         Arguments:
@@ -154,7 +163,7 @@ class CIDR(BaseModel):
 
         return self.assignNet(size, description, hostname, flag=FlagChoices.HOST)
 
-    def assignNet(self, size: int, description: str, hostname=None, flag=FlagChoices.RESERVATION):
+    def assignNet(self, size: int, description: str, hostname=None, flag=FlagChoices.RESERVATION) -> 'CIDR':
         """Assign a subnet of requested size from this network
 
         Arguments:
