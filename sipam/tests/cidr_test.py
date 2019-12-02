@@ -8,6 +8,7 @@ from rest_framework.test import APIRequestFactory
 from sipam.utilities.enums import IP
 from sipam.utilities.error import NotEnoughSpace
 from sipam.views import CIDRViewSet
+from sipam.models import CIDR
 
 
 @pytest.mark.usefixtures('testCIDR')
@@ -103,3 +104,20 @@ class CIDRTest(TestCase):
             request = factory.get(reverse(f'cidr-{action}', kwargs={'pk': self.cidr.id}))
             response = view(request, pk=self.cidr.id)
             assert response.status_code == 200
+
+    def test_create_by_post(self):
+        factory = APIRequestFactory()
+        view = CIDRViewSet.as_view({'post': 'create'})
+
+        newCIDR = {
+            'cidr': '100.64.0.0/10',
+            'description': 'Internal Network as defined in RFC6598',
+            'flag': 'reservation'
+        }
+
+        request = factory.post(reverse('cidr-list'), newCIDR)
+        response = view(request)
+        assert response.status_code == 201
+        newObj = CIDR.objects.get(id=response.data['id'])
+        assert str(newObj.cidr) == newCIDR['cidr']
+        assert str(newObj.flag) == newCIDR['flag']
