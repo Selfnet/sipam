@@ -12,10 +12,11 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 try:
-    from .secret import PASSWORD, HOST
+    from .secret import PASSWORD, HOST, REDIS_HOST
 except ImportError:
     PASSWORD = 'sipam'
     HOST = 'postgres'
+    REDIS_HOST = 'redis'
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -103,14 +104,14 @@ DATABASES = {
 }
 
 CACHES = {
-    "default": {
-        "BACKEND": "django_prometheus.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+    'default': {
+        'BACKEND': 'django_prometheus.cache.backends.redis.RedisCache',
+        'LOCATION': f'redis://{REDIS_HOST}:6379/1',
         'TIMEOUT': 60 * 60 * 2,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient"
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
         },
-        "KEY_PREFIX": "sipam"
+        'KEY_PREFIX': 'sipam'
     }
 }
 
