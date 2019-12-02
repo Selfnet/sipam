@@ -103,17 +103,25 @@ DATABASES = {
     }
 }
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django_prometheus.cache.backends.redis.RedisCache',
-        'LOCATION': f'redis://{REDIS_HOST}:6379/1',
-        'TIMEOUT': 60 * 60 * 2,
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient'
-        },
-        'KEY_PREFIX': 'sipam'
+if REDIS_HOST is not None:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django_prometheus.cache.backends.redis.RedisCache',
+            'LOCATION': f'redis://{REDIS_HOST}:6379/1',
+            'TIMEOUT': 60 * 60 * 2,
+            'OPTIONS': {
+                'CLIENT_CLASS': 'django_redis.client.DefaultClient'
+            },
+            'KEY_PREFIX': 'sipam'
+        }
     }
-}
+else:
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache'
+        }
+    }
+
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
