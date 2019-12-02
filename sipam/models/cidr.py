@@ -25,7 +25,7 @@ class CIDR(BaseModel):
     description = models.TextField(blank=True, null=True)
     flag = models.CharField(
         max_length=11,
-        choices=[(tag, tag.value) for tag in FlagChoices],
+        choices=[(tag.value, tag.value) for tag in FlagChoices],
         default=FlagChoices.RESERVATION,
     )
     objects = NetManager()
