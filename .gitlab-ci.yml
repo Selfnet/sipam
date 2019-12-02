@@ -1,8 +1,5 @@
 image: python:3.7-buster
 
-services:
-  - postgres:latest
-
 variables:
   POSTGRES_USER: sipam
   POSTGRES_PASSWORD: sipam
@@ -37,6 +34,9 @@ pylint:
 
 # Should be activated later
 pytest:
+  services:
+    - postgres:latest
+    - redis:latest
   stage: test
   script:
     - pipenv install --dev
