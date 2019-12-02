@@ -17,7 +17,7 @@ class CIDRViewSet(ModelViewSet):
     queryset = CIDR.objects.all()
     serializer_class = CIDRSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['cidr', 'fqdn', 'description', 'labels__value']
+    search_fields = ['cidr', 'fqdn', 'description', 'labels__value', 'labels__name']
 
     @method_decorator(cache_page(60))
     def list(self, request):
