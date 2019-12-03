@@ -31,7 +31,7 @@ class CIDRViewSet(ModelViewSet):
 
         # No filter, so prune the dataset to the root networks
         else:
-            queryset = [cidr for cidr in self.queryset if not cidr.supercidr]
+            queryset = [cidr for cidr in self.queryset if cidr.supercidr is None]
 
         # Only to this, if explicitly requested, increases load
         if self.request.query_params.get('full', False):
