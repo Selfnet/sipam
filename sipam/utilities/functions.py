@@ -1,6 +1,7 @@
-from .enums import IP
-from typing import Union
 from ipaddress import IPv4Network, IPv6Network
+from typing import Union
+
+from .enums import IP
 
 
 def subcidr(cidr: Union[IPv4Network, IPv6Network]) -> bool:
