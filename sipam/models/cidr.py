@@ -37,8 +37,7 @@ class CIDR(BaseModel):
         """
             This method ensures that only direct neighbours are shown
             :param objects: this defines the array of objects calculated
-            :param invoke: should be of type Invoke. else it will fail.
-            :returns: the direct neighbours above or under self.
+            :returns: the direct neighbours under self.
         """
 
         for obj in objects:
@@ -59,8 +58,6 @@ class CIDR(BaseModel):
         """
             :returns: the direct parent of self (by cidr)
         """
-        # this is the greatest cidr in the chain. should be the parent of
-        # our object, because CIDR is alway sorted by cidr
         return CIDR.objects.filter(
             cidr__net_contains=self.cidr
         ).last()
