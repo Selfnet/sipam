@@ -1,13 +1,13 @@
-import copy
 import uuid
 from ipaddress import ip_address, ip_network
 from typing import List, Tuple
 
 from django.db import models, transaction
+from django.utils.functional import cached_property
 from netfields import CidrAddressField, NetManager
 
 from ..utilities import subcidr
-from ..utilities.enums import IP, CIDRType, FlagChoices, Invoke
+from ..utilities.enums import IP, CIDRType, FlagChoices
 from ..utilities.error import NotEnoughSpace
 from ..utilities.fields import FQDNField
 from .base import BaseModel
@@ -33,13 +33,14 @@ class CIDR(BaseModel):
     class Meta:
         ordering = ('cidr',)
 
-    def directly(self, objects, invoke=Invoke.CHILDREN):
+    def directly(self, objects: List['CIDR']):
         """
             This method ensures that only direct neighbours are shown
             :param objects: this defines the array of objects calculated
             :param invoke: should be of type Invoke. else it will fail.
             :returns: the direct neighbours above or under self.
         """
+<<<<<<< Updated upstream
         direct = []
         undirect = []
         assert isinstance(invoke, Invoke)
@@ -63,32 +64,34 @@ class CIDR(BaseModel):
                 break
         del undirect
         return direct
+=======
+
+        for obj in objects:
+            if obj.supercidr == self:
+                yield obj
+>>>>>>> Stashed changes
 
     def getChildren(self, cidrType: CIDRType) -> List['CIDR']:
         children = CIDR.objects.filter(
             cidr__net_contained=self.cidr
         )
-        assert isinstance(cidrType, CIDRType)
         if cidrType == CIDRType.CIDR:
-            return self.directly(children, invoke=Invoke.CHILDREN)
+            return [cidr for cidr in self.directly(children)]
 
-        return [cidr for cidr in self.directly(children, invoke=Invoke.CHILDREN) if not subcidr(cidr)]
+        return [cidr for cidr in self.directly(children) if not subcidr(cidr.cidr)]
 
-    @property
+    @cached_property
     def supercidr(self) -> 'CIDR':
         """
             :returns: the direct parent of self (by cidr)
         """
-        supercidr = CIDR.objects.filter(
-            cidr__net_contains=self.cidr)
-        parent = self.directly(supercidr, invoke=Invoke.PARENTS)
+        # this is the greatest cidr in the chain. should be the parent of
+        # our object, because CIDR is alway sorted by cidr
+        return CIDR.objects.filter(
+            cidr__net_contains=self.cidr
+        ).last()
 
-        if len(parent) == 0:
-            return None
-
-        return parent[0]
-
-    @property
+    @cached_property
     def subcidr(self) -> List['CIDR']:
         """
             :returns: the direct subcidr of self (by cidr)

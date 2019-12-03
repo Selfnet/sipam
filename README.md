@@ -83,3 +83,21 @@ Now the database should be filled with some sample data.
 
 Postgres: https://www.postgresql.org/docs/11/functions-net.html
 Netfields: https://github.com/jimfunk/django-postgresql-netfields
+
+
+## Frontend Development
+
+Install `@vue/cli`
+* Archlinux
+  * yay -S vue-cli
+* Others
+  * npm install --global @vue/cli
+
+## Read Fixture Data into dev server
+
+
+```bash
+# exclude auth and contentypes view.
+python manage.py loaddata -e auth -e contenttypes /home/cellebyte/Downloads/nipap_import.json
+
+```
