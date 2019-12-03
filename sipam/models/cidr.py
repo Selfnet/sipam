@@ -3,7 +3,6 @@ from ipaddress import ip_address, ip_network
 from typing import List, Tuple
 
 from django.db import models, transaction
-from django.utils.functional import cached_property
 from netfields import CidrAddressField, NetManager
 
 from ..utilities import subcidr
@@ -53,7 +52,7 @@ class CIDR(BaseModel):
 
         return [cidr for cidr in self.directly(children) if not subcidr(cidr.cidr)]
 
-    @cached_property
+    @property
     def supercidr(self) -> 'CIDR':
         """
             :returns: the direct parent of self (by cidr)
@@ -62,7 +61,7 @@ class CIDR(BaseModel):
             cidr__net_contains=self.cidr
         ).last()
 
-    @cached_property
+    @property
     def subcidr(self) -> List['CIDR']:
         """
             :returns: the direct subcidr of self (by cidr)
