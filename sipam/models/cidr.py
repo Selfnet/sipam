@@ -5,7 +5,8 @@ from typing import List, Tuple
 from django.db import models, transaction
 from netfields import CidrAddressField, NetManager
 
-from ..utilities import subcidr
+import sipam.utilities as utilities
+
 from ..utilities.enums import IP, CIDRType, FlagChoices
 from ..utilities.error import NotEnoughSpace
 from ..utilities.fields import FQDNField
@@ -50,7 +51,7 @@ class CIDR(BaseModel):
         if cidrType == CIDRType.CIDR:
             return [cidr for cidr in self.directly(children)]
 
-        return [cidr for cidr in self.directly(children) if not subcidr(cidr.cidr)]
+        return [cidr for cidr in self.directly(children) if not utilities.subcidr(cidr.cidr)]
 
     @property
     def supercidr(self) -> 'CIDR':
