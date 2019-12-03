@@ -40,36 +40,10 @@ class CIDR(BaseModel):
             :param invoke: should be of type Invoke. else it will fail.
             :returns: the direct neighbours above or under self.
         """
-<<<<<<< Updated upstream
-        direct = []
-        undirect = []
-        assert isinstance(invoke, Invoke)
-        for i, obj in enumerate(objects):
-            before = len(undirect)
-            compare = copy.copy(list(objects))
-            compare.pop(i)
-            for compare_object in compare:
-                if invoke == Invoke.CHILDREN:
-                    if obj.cidr.subnet_of(compare_object.cidr):
-                        undirect.append(obj)
-                        break
-                elif invoke == Invoke.PARENTS:
-                    if obj.cidr.supernet_of(compare_object.cidr):
-                        undirect.append(obj)
-                        break
-            del compare
-            if before == len(undirect):
-                direct.append(obj)
-            if len(direct) + len(undirect) == len(objects):
-                break
-        del undirect
-        return direct
-=======
 
         for obj in objects:
             if obj.supercidr == self:
                 yield obj
->>>>>>> Stashed changes
 
     def getChildren(self, cidrType: CIDRType) -> List['CIDR']:
         children = CIDR.objects.filter(
