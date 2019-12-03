@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from ..models import CIDR
-from ..serializers import CIDRSerializer, RecursiveCIDRSerializer
+from ..serializers import CIDRSerializer
 
 
 class CIDRViewSet(ModelViewSet):
@@ -21,15 +21,6 @@ class CIDRViewSet(ModelViewSet):
         for cidr in CIDR.objects.all():
             if not cidr.supercidr:
                 root.append(cidr)
-
-        if self.request.query_params.get('full', False):
-            return Response(
-                RecursiveCIDRSerializer(
-                    root,
-                    many=True,
-                    read_only=True,
-                    context={'request': request}).data)
-
         return Response(
             CIDRSerializer(
                 root,

@@ -3,7 +3,7 @@ from ipaddress import IPv4Network
 import pytest
 from django.test import TestCase
 
-from sipam.utilities.error import NotEnoughSpace
+from sipam.models.error import NotEnoughSpace
 from sipam.utilities.enums import IP
 
 
@@ -44,6 +44,3 @@ class CIDRTest(TestCase):
 
     def test_supercidr(self):
         assert self.cidr.supercidr is None
-
-    def test_get_labels(self):
-        assert isinstance(self.cidr.labelDict, dict)

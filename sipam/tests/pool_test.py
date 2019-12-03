@@ -5,7 +5,7 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory
 
-from sipam.utilities.error import NoSuchPrefix
+from sipam.models.error import NoSuchPrefix
 from sipam.serializers import PoolSerializer, AssignmentSerializer
 from sipam.utilities.enums import IP, HostType
 from sipam.views import PoolViewSet
@@ -82,7 +82,7 @@ class PoolTest(TestCase):
         request = factory.post(reverse('pool-assign', kwargs={'pk': self.pool.id}), newAssignment)
 
         response = view(request, pk=self.pool.id)
-        assert response.status_code == 201
+        assert response.status_code == 204
 
         # Emtpy pool
         request = factory.post(reverse('pool-assign', kwargs={'pk': self.emptyPool.id}), newAssignment)

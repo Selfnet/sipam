@@ -1,8 +1,5 @@
 [run]
 source = ./
-branch = True
-
-[report]
 omit =
     */tests/*
     */migrations/*
@@ -12,6 +9,7 @@ omit =
     manage.py
     settings.py
 
+[report]
 show_missing = True
 skip_covered = True
 exclude_lines =

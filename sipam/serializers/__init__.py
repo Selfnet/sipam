@@ -1,4 +1,3 @@
-from .assignment import AssignmentSerializer
-from .cidr import CIDRSerializer, RecursiveCIDRSerializer
+from .cidr import CIDRSerializer
 from .pool import PoolSerializer
-from .label import LabelSerializer
+from .assignment import AssignmentSerializer
