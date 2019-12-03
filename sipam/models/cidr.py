@@ -1,20 +1,20 @@
 import copy
 import uuid
 from ipaddress import ip_address, ip_network
+from typing import List, Tuple
 
 from django.db import models, transaction
 from netfields import CidrAddressField, NetManager
 
 from ..utilities import subcidr
-from ..utilities.enums import CIDRType, FlagChoices, Invoke, IP
+from ..utilities.enums import IP, CIDRType, FlagChoices, Invoke
+from ..utilities.error import NotEnoughSpace
 from ..utilities.fields import FQDNField
-from .error import NotEnoughSpace
+from .base import BaseModel
 
 
-class CIDR(models.Model):
+class CIDR(BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    created = models.DateTimeField(auto_now_add=True, editable=False)
-    edited = models.DateTimeField(auto_now=True)
     cidr = CidrAddressField(unique=True)
     # TODO: should migrate all prefixes and ips
     # from self under the parent.
@@ -64,7 +64,7 @@ class CIDR(models.Model):
         del undirect
         return direct
 
-    def getChildren(self, cidrType: CIDRType):
+    def getChildren(self, cidrType: CIDRType) -> List['CIDR']:
         children = CIDR.objects.filter(
             cidr__net_contained=self.cidr
         )
@@ -75,7 +75,7 @@ class CIDR(models.Model):
         return [cidr for cidr in self.directly(children, invoke=Invoke.CHILDREN) if not subcidr(cidr)]
 
     @property
-    def supercidr(self):
+    def supercidr(self) -> 'CIDR':
         """
             :returns: the direct parent of self (by cidr)
         """
@@ -89,14 +89,22 @@ class CIDR(models.Model):
         return parent[0]
 
     @property
-    def subcidr(self):
+    def subcidr(self) -> List['CIDR']:
         """
             :returns: the direct subcidr of self (by cidr)
         """
         return self.getChildren(cidrType=CIDRType.CIDR)
 
+    def getChildIDs(self) -> List[str]:
+        """Get the IDs of every child
+
+        Returns:
+            List[str] -- List of child IDs
+        """
+        return [child.id for child in self.subcidr + self.ips]
+
     @property
-    def ips(self):
+    def ips(self) -> List['CIDR']:
         """
             :returns: the direct ips allocated under this prefix
         """
@@ -112,8 +120,17 @@ class CIDR(models.Model):
         """
         return IP(self.cidr.version)
 
+    @property
+    def labelDict(self) -> dict:
+        """Get labels as key value pair
+
+        Returns:
+            dict -- Labels as key-value pair
+        """
+        return {label.name: label.value for label in self.labels.all()}
+
     @transaction.atomic
-    def assignLinknet(self, description: str, hostname=None):
+    def assignLinknet(self, description: str, hostname=None) -> Tuple['CIDR', 'CIDR', 'CIDR']:
         """Assigns a new linknet from the pool to be used with physical nodes
 
         Arguments:
@@ -132,7 +149,7 @@ class CIDR(models.Model):
 
         return net, gateway, ip
 
-    def assignIP(self, description: str, hostname=None):
+    def assignIP(self, description: str, hostname=None) -> 'CIDR':
         """Assigns a new single ip to be used for VMs
 
         Arguments:
@@ -146,7 +163,7 @@ class CIDR(models.Model):
 
         return self.assignNet(size, description, hostname, flag=FlagChoices.HOST)
 
-    def assignNet(self, size: int, description: str, hostname=None, flag=FlagChoices.RESERVATION):
+    def assignNet(self, size: int, description: str, hostname=None, flag=FlagChoices.RESERVATION) -> 'CIDR':
         """Assign a subnet of requested size from this network
 
         Arguments:

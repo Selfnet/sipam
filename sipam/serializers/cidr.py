@@ -1,3 +1,5 @@
+from typing import List
+
 from rest_framework.serializers import ModelSerializer, SerializerMethodField
 
 from sipam.models import CIDR
@@ -6,6 +8,7 @@ from sipam.utilities.enums import IP
 
 class CIDRSerializer(ModelSerializer):
     children = SerializerMethodField()
+    labels = SerializerMethodField()
 
     def validate(self, data):
         """
@@ -18,10 +21,19 @@ class CIDRSerializer(ModelSerializer):
     class Meta:
         model = CIDR
         fields = ('id', 'cidr', 'created', 'edited',
-                  'children', 'pool', 'flag', 'fqdn', 'description')
+                  'children', 'pool', 'flag', 'fqdn', 'description', 'labels')
 
-    def get_children(self, obj):
-        return CIDRSerializer(
+    def get_children(self, obj) -> List[str]:
+        return obj.getChildIDs()
+
+    def get_labels(self, obj) -> dict:
+        return obj.labelDict
+
+
+class RecursiveCIDRSerializer(CIDRSerializer):
+
+    def get_children(self, obj) -> List['CIDR']:
+        return RecursiveCIDRSerializer(
             obj.subcidr,
             many=True,
             read_only=True).data

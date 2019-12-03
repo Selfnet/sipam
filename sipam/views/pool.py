@@ -5,7 +5,7 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from ..models import Pool
-from ..models.error import NoSuchPrefix
+from ..utilities.error import NoSuchPrefix
 from ..serializers import AssignmentSerializer, PoolSerializer
 from ..utilities.enums import IP
 
@@ -60,7 +60,7 @@ class PoolViewSet(ModelViewSet):
             return Response(status=status.HTTP_507_INSUFFICIENT_STORAGE)
 
         # Successfully assigned
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response(status=status.HTTP_201_CREATED)
 
     @assign.mapping.delete
     def deleteAssignment(self, request, pk=None):
