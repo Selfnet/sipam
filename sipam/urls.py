@@ -21,6 +21,7 @@ from rest_framework import permissions
 from rest_framework_nested import routers
 
 from sipam import views
+from accounts.urls import router as auth_router
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -49,6 +50,7 @@ urlpatterns = [
     # API
     path('api/v1/', include(router.urls)),
     path('api/v1/', include(cidr_router.urls)),
+    path('api/v1/', include(auth_router.urls)),
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # Only Documentation

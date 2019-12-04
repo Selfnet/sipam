@@ -2,6 +2,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
+
 from ..models import Label
 from ..serializers import LabelSerializer
 
@@ -11,6 +13,7 @@ class LabelViewSet(ModelViewSet):
         API endpoint that allows Labels to be added and removed from a network.
     """
     serializer_class = LabelSerializer
+    permission_classes = [ReadOnlyToken | WriteToken | UserAccess]
 
     def get_queryset(self):
         return Label.objects.filter(cidr_id=self.kwargs['cidr_pk'])

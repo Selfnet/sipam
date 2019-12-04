@@ -1,10 +1,13 @@
 from django.shortcuts import get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
+
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
+
+from accounts.permissions import ReadOnlyToken, WriteToken, UserAccess
 
 from ..models import CIDR
 from ..serializers import CIDRSerializer, RecursiveCIDRSerializer
@@ -18,6 +21,8 @@ class CIDRViewSet(ModelViewSet):
     serializer_class = CIDRSerializer
     filter_backends = [SearchFilter]
     search_fields = ['cidr', 'fqdn', 'description', 'labels__value', 'labels__name']
+
+    permission_classes = [ReadOnlyToken | WriteToken | UserAccess]
 
     @method_decorator(cache_page(60))
     def list(self, request):

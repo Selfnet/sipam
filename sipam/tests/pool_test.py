@@ -3,7 +3,7 @@ from ipaddress import IPv4Network
 import pytest
 from django.test import TestCase
 from django.urls import reverse
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIRequestFactory, force_authenticate
 
 from sipam.utilities.error import NoSuchPrefix
 from sipam.serializers import PoolSerializer, AssignmentSerializer
@@ -11,7 +11,7 @@ from sipam.utilities.enums import IP, HostType
 from sipam.views import PoolViewSet
 
 
-@pytest.mark.usefixtures('testPool', 'emptyPool')
+@pytest.mark.usefixtures('testPool', 'emptyPool', 'testToken', 'testAdmin')
 class PoolTest(TestCase):
     """Test pool creation and assignments
     """
@@ -46,6 +46,12 @@ class PoolTest(TestCase):
 
         request = factory.get(reverse('pool-list'))
 
+        # We set no authentication here
+        response = view(request)
+        assert response.status_code == 401
+
+        # This time
+        force_authenticate(request, token=self.token)
         response = view(request)
         assert response.status_code == 200
 
@@ -54,6 +60,7 @@ class PoolTest(TestCase):
         view = PoolViewSet.as_view({'get': 'retrieve'})
 
         request = factory.get(reverse('pool-detail', kwargs={'pk': self.pool.id}))
+        force_authenticate(request, token=self.token)
 
         response = view(request, pk=self.pool.id)
         assert response.status_code == 200
@@ -80,12 +87,14 @@ class PoolTest(TestCase):
 
         # Continue with a request with valid data
         request = factory.post(reverse('pool-assign', kwargs={'pk': self.pool.id}), newAssignment)
+        force_authenticate(request, token=self.token)
 
         response = view(request, pk=self.pool.id)
         assert response.status_code == 201
 
         # Emtpy pool
         request = factory.post(reverse('pool-assign', kwargs={'pk': self.emptyPool.id}), newAssignment)
+        force_authenticate(request, token=self.token)
 
         response = view(request, pk=self.emptyPool.id)
         assert response.status_code == 507

@@ -3,15 +3,15 @@ from ipaddress import IPv4Network
 import pytest
 from django.test import TestCase
 from django.urls import reverse
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIRequestFactory, force_authenticate
 
+from sipam.models import CIDR
 from sipam.utilities.enums import IP
 from sipam.utilities.error import NotEnoughSpace
 from sipam.views import CIDRViewSet
-from sipam.models import CIDR
 
 
-@pytest.mark.usefixtures('testCIDR')
+@pytest.mark.usefixtures('testCIDR', 'testToken', 'testAdmin')
 class CIDRTest(TestCase):
 
     def setUp(self):
@@ -58,11 +58,19 @@ class CIDRTest(TestCase):
 
         request = factory.get(reverse('cidr-list'))
 
+        # No authentication - this should fail
+        response = view(request)
+        assert response.status_code == 401
+
+        # This time we set the user
+        force_authenticate(request, user=self.admin, token=self.token)
         response = view(request)
         assert response.status_code == 200
 
         # Also test the full subtree query parameter
         request = factory.get(reverse('cidr-list'), {'full': True})
+        force_authenticate(request, user=self.admin, token=self.token)
+
         response = view(request)
         assert response.status_code == 200
 
@@ -71,6 +79,7 @@ class CIDRTest(TestCase):
         view = CIDRViewSet.as_view({'get': 'retrieve'})
 
         request = factory.get(reverse('cidr-detail', kwargs={'pk': self.cidr.id}))
+        force_authenticate(request, user=self.admin, token=self.token)
 
         response = view(request, pk=self.cidr.id)
         assert response.status_code == 200
@@ -82,6 +91,8 @@ class CIDRTest(TestCase):
 
         # Also test the full subtree query parameter
         request = factory.get(reverse('cidr-detail', kwargs={'pk': self.cidr.id}), {'full': True})
+        force_authenticate(request, user=self.admin, token=self.token)
+
         response = view(request, pk=self.cidr.id)
         assert response.status_code == 200
 
@@ -91,6 +102,8 @@ class CIDRTest(TestCase):
 
         # Search for a cidr
         request = factory.get(reverse('cidr-list'), {'search': str(self.cidr.cidr)})
+        force_authenticate(request, user=self.admin, token=self.token)
+
         response = view(request)
         assert response.status_code == 200
         assert len(response.data) == 1
@@ -102,6 +115,8 @@ class CIDRTest(TestCase):
         for action in ['supercidr', 'subcidr', 'ips']:
             view = CIDRViewSet.as_view({'get': action})
             request = factory.get(reverse(f'cidr-{action}', kwargs={'pk': self.cidr.id}))
+            force_authenticate(request, user=self.admin, token=self.token)
+
             response = view(request, pk=self.cidr.id)
             assert response.status_code == 200
 
@@ -116,6 +131,8 @@ class CIDRTest(TestCase):
         }
 
         request = factory.post(reverse('cidr-list'), newCIDR)
+        force_authenticate(request, user=self.admin, token=self.token)
+
         response = view(request)
         assert response.status_code == 201
         newObj = CIDR.objects.get(id=response.data['id'])

@@ -4,10 +4,12 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
+from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
+
 from ..models import Pool
-from ..utilities.error import NoSuchPrefix
 from ..serializers import AssignmentSerializer, PoolSerializer
 from ..utilities.enums import IP
+from ..utilities.error import NoSuchPrefix
 
 
 class PoolViewSet(ModelViewSet):
@@ -16,6 +18,8 @@ class PoolViewSet(ModelViewSet):
     """
     queryset = Pool.objects.all()
     serializer_class = PoolSerializer
+
+    permission_classes = [ReadOnlyToken | WriteToken | UserAccess]
 
     def list(self, request):
         """List all pools

@@ -35,7 +35,25 @@ ALLOWED_HOSTS = []
 REST_FRAMEWORK = {
     #    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     #    'PAGE_SIZE': 100
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'accounts.auth_classes.FlaggedTokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'accounts.permissions.AuthenticatedReadOnly'
+    ]
 }
+
+AUTHENTICATION_BACKENDS = [
+    'accounts.auth_backends.SelfnetLDAPAuth',
+    'django.contrib.auth.backends.ModelBackend'
+]
+
+AUTH_USER_MODEL = 'accounts.User'
+
+LDAP_SERVER = "ldaps://aaa.selfnet.de"
+BASEDN_UID = "ou=people,dc=selfnet,dc=de"
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -46,10 +64,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_prometheus',
-    'sipam',
     'rest_framework',
     'drf_yasg',
     'netfields',
+    'sipam',
+    'accounts'
 ]
 
 MIDDLEWARE = [
