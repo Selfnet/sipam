@@ -16,7 +16,8 @@ try:
 except ImportError:
     PASSWORD = 'sipam'
     HOST = 'postgres'
-    REDIS_HOST = 'redis'
+    REDIS_HOST = None  # set to 'redis' once django-redis has been released
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
