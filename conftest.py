@@ -1,6 +1,7 @@
 import pytest
 
 from sipam.models import CIDR, Pool
+from accounts.models import User, FlaggedToken
 
 
 @pytest.fixture(scope='class')
@@ -51,3 +52,40 @@ def testPool(request, testCIDR, fullCIDR) -> Pool:
 
     request.cls.cidr.pool = request.cls.pool
     request.cls.cidr.save()
+
+@pytest.fixture(scope='class')
+def testUser(request):
+    username = 'test'
+    password = 'very_secure'
+
+    User.objects.create(username=username, password=password)
+    request.cls.user = User.objects.get(username=username)
+
+    request.cls.username = username
+    request.cls.password = password
+
+@pytest.fixture(scope='class')
+def testAdmin(request):
+    username = 'Admin'
+    password = 'very_very_secure'
+
+    User.objects.create(username=username, password=password)
+    request.cls.admin = User.objects.get(username=username)
+
+    # Set admin flag
+    request.cls.admin.is_staff = True
+    request.cls.admin.save()
+
+    request.cls.admin_username = username
+    request.cls.admin_password = password
+
+@pytest.fixture(scope='class')
+def testToken(request, testAdmin, testUser):
+    admin = User.objects.get(username='Admin')
+    user = User.objects.get(username='test')
+
+    token = FlaggedToken.objects.create(user=admin, write=True)
+    rtoken = FlaggedToken.objects.create(user=user, write=False)
+
+    request.cls.token = token
+    request.cls.rtoken = rtoken
