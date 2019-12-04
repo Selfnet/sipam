@@ -25,14 +25,6 @@ security:
   script:
     - pipenv check
 
-pylint:
-  stage: test
-  script:
-    - pipenv install --dev
-    - pipenv run pylint **/*.py
-  allow_failure: true
-
-# Should be activated later
 pytest:
   services:
     - postgres:latest
