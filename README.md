@@ -35,6 +35,7 @@ systemctl start postgresql
 systemctl enable postgresql # this is optional if you want to start it on boot.
 sudo -iu postgres
 createuser --interactive  # <sipam> say no to everything it will be a dump database user.
+ALTER USER sipam CREATEDB; # For pytest
 createdb sipam -O sipam # first is database name second is username
 
 psql
@@ -55,6 +56,7 @@ edit the `docker-compose.yml` file.
   * New packages can be added with `pipenv install <package>`
   * If the package is only required for development purposes use `pipenv install --dev <package>`
 * create a file `sipam/secret.py` add the variable `PASSWORD="<password>` and `HOST="<hostname>"`
+* If you have a local redis instance set the `REDIS_HOSTNAME` accordingly in `sipam/secret.py`. If you set it to `None` a dummy cache (aka. none) will be used.
 
 ### Initialize the project
 
@@ -65,10 +67,11 @@ python manage.py migrate sipam # this triggers all migrations for the database o
 python manage.py runserver # runs the server
 ```
 
+## Backend Development
+
 ### Base developer Dataset
 
 Create some Base Datase for the database `sipam`. `sipam.pgsql` can be imported for this purpose.
-
 
 ```bash
 sudo cp ./sipam.pgsql /var/lib/postgres/data/sipam.pgsql # Ensure this is the right directory on your system
@@ -79,10 +82,39 @@ psql -U sipam sipam < sipam.pgsql
 
 Now the database should be filled with some sample data.
 
+### Read Fixture Data into dev server
+
+This is an import of the existing nipap database.
+The fixture can be found in a well-known place (just ask)
+
+```bash
+# exclude auth and contentypes view.
+python manage.py loaddata -e auth -e contenttypes /tmp/nipap_import.json
+
+```
+
+### Testing
+
+Make sure you have a user with createdb privileges (pytest will automatically setup a test database and delete it afterwards).
+
+Tests can be run with `pytest -s` (`-s` will not eat print statements).
+
+The actual testcases are in each app in the `tests` subfolder.
+Pytests autodetection will find new ones.
+
+When interested in getting coverage data run
+
+```bash
+coverage run --source './'  -m pytest
+coverage report -m
+```
+
+Happy testing.
+
 ### IP Functions
 
-Postgres: https://www.postgresql.org/docs/11/functions-net.html
-Netfields: https://github.com/jimfunk/django-postgresql-netfields
+- Postgres: https://www.postgresql.org/docs/11/functions-net.html
+- Netfields: https://github.com/jimfunk/django-postgresql-netfields
 
 
 ## Frontend Development
@@ -92,12 +124,3 @@ Install `@vue/cli`
   * yay -S vue-cli
 * Others
   * npm install --global @vue/cli
-
-## Read Fixture Data into dev server
-
-
-```bash
-# exclude auth and contentypes view.
-python manage.py loaddata -e auth -e contenttypes /home/cellebyte/Downloads/nipap_import.json
-
-```
