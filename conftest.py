@@ -53,6 +53,7 @@ def testPool(request, testCIDR, fullCIDR) -> Pool:
     request.cls.cidr.pool = request.cls.pool
     request.cls.cidr.save()
 
+
 @pytest.fixture(scope='class')
 def testUser(request):
     username = 'test'
@@ -63,6 +64,7 @@ def testUser(request):
 
     request.cls.username = username
     request.cls.password = password
+
 
 @pytest.fixture(scope='class')
 def testAdmin(request):
@@ -78,6 +80,7 @@ def testAdmin(request):
 
     request.cls.admin_username = username
     request.cls.admin_password = password
+
 
 @pytest.fixture(scope='class')
 def testToken(request, testAdmin, testUser):

@@ -3,9 +3,9 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-
-from accounts.views import TokenViewSet
 from accounts.models import FlaggedToken
+from accounts.views import TokenViewSet
+
 
 @pytest.mark.usefixtures('testToken', 'testAdmin', 'testUser')
 class TokenTest(TestCase):
@@ -29,7 +29,6 @@ class TokenTest(TestCase):
         force_authenticate(request, token=self.token)
         response = view(request)
         assert response.status_code == 403
-
 
         # The user should be able to authenticate, but get an empty list
         force_authenticate(request, user=self.user)
