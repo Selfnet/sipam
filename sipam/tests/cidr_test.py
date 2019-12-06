@@ -30,6 +30,7 @@ class CIDRTest(TestCase):
     def test_assign_net(self):
         subNet = self.cidr.assignNet(25, 'Other half')
         assert subNet.cidr.prefixlen == 25
+        assert subNet.parent == self.cidr
 
     def test_assign_ip(self):
         ip = self.cidr.assignIP('Some IP', 'mail')
@@ -39,8 +40,11 @@ class CIDRTest(TestCase):
         net, gw, ip = self.cidr.assignLinknet('Some net')
 
         assert net.cidr.prefixlen == 31
+        assert net.parent == self.cidr
         assert gw.cidr.prefixlen == 32
+        assert gw.parent == net
         assert ip.cidr.prefixlen == 32
+        assert ip.parent == net
 
     def test_get_ips(self):
         assert isinstance(self.cidr.ips, list)
@@ -138,3 +142,19 @@ class CIDRTest(TestCase):
         newObj = CIDR.objects.get(id=response.data['id'])
         assert str(newObj.cidr) == newCIDR['cidr']
         assert str(newObj.flag) == newCIDR['flag']
+
+        # We've got a parent object, create a subnet and check whether it shows up in the tree.
+
+        subCidr = {
+            'cidr': '100.64.123.0/24',
+            'description': 'Some test subnet within a parent network',
+            'flag': 'reservation'
+        }
+
+        request = factory.post(reverse('cidr-list'), subCidr)
+        force_authenticate(request, user=self.admin, token=self.token)
+
+        response = view(request)
+        assert response.status_code == 201
+        subCIDR = CIDR.objects.get(id=response.data['id'])
+        assert newObj == subCIDR.parent

@@ -14,12 +14,6 @@ class Pool(BaseModel):
     label = CharField(max_length=100, null=False)
     description = TextField(blank=True, null=True)
 
-    @property
-    def prefixes(self):
-        """Get all prefixes attached to a pool
-        """
-        return CIDR.objects.filter(pool=self)  # pragma: no cover
-
     def getPrefixes(self, version: IP = None) -> List[CIDR]:
         """Get prefixes for this pool selectable by IPv4 or IPv6
 
@@ -74,7 +68,7 @@ class Pool(BaseModel):
                 assign = prefix.assignLinknet(description, hostname)
                 break
 
-            # When the not enough space exception is thrown we continue with the next subnet
+            # When there is not enough space an exception is thrown, we continue with the next subnet
             except NotEnoughSpace:
                 continue
 

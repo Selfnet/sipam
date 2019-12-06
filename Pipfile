@@ -18,8 +18,8 @@ apistar = "*"
 drf-yasg = "*"
 django-prometheus = "*"
 drf-nested-routers = "*"
-django-redis = "*"
 "ldap3" = "*"
+django-mptt = "*"
 
 
 [dev-packages]

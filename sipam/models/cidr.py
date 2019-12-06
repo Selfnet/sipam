@@ -4,20 +4,19 @@ from typing import List, Tuple
 
 from django.db import models, transaction
 from netfields import CidrAddressField, NetManager
-
+from mptt.models import MPTTModel, TreeForeignKey
 import sipam.utilities as utilities
 
-from ..utilities.enums import IP, CIDRType, FlagChoices
+from ..utilities.enums import IP, FlagChoices
 from ..utilities.error import NotEnoughSpace
 from ..utilities.fields import FQDNField
 from .base import BaseModel
 
 
-class CIDR(BaseModel):
+class CIDR(MPTTModel, BaseModel):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     cidr = CidrAddressField(unique=True)
-    # TODO: should migrate all prefixes and ips
-    # from self under the parent.
+    parent = TreeForeignKey('self', on_delete=models.CASCADE, null=True, blank=True, related_name='children')
     pool = models.ForeignKey('Pool', blank=True, null=True,
                              on_delete=models.DO_NOTHING,
                              related_name='prefixes')
@@ -33,41 +32,19 @@ class CIDR(BaseModel):
     class Meta:
         ordering = ('cidr',)
 
-    def directly(self, objects: List['CIDR']):
-        """
-            This method ensures that only direct neighbours are shown
-            :param objects: this defines the array of objects calculated
-            :returns: the direct neighbours under self.
-        """
-
-        for obj in objects:
-            if obj.supercidr == self:
-                yield obj
-
-    def getChildren(self, cidrType: CIDRType) -> List['CIDR']:
-        children = CIDR.objects.filter(
-            cidr__net_contained=self.cidr
-        )
-        if cidrType == CIDRType.CIDR:
-            return [cidr for cidr in self.directly(children)]
-
-        return [cidr for cidr in self.directly(children) if not utilities.subcidr(cidr.cidr)]
-
     @property
     def supercidr(self) -> 'CIDR':
         """
             :returns: the direct parent of self (by cidr)
         """
-        return CIDR.objects.filter(
-            cidr__net_contains=self.cidr
-        ).last()
+        return self.parent
 
     @property
     def subcidr(self) -> List['CIDR']:
         """
             :returns: the direct subcidr of self (by cidr)
         """
-        return self.getChildren(cidrType=CIDRType.CIDR)
+        return list(self.get_children())
 
     def getChildIDs(self) -> List[str]:
         """Get the IDs of every child
@@ -75,14 +52,14 @@ class CIDR(BaseModel):
         Returns:
             List[str] -- List of child IDs
         """
-        return [child.id for child in self.subcidr + self.ips]
+        return [child.id for child in self.get_children()]
 
     @property
     def ips(self) -> List['CIDR']:
         """
             :returns: the direct ips allocated under this prefix
         """
-        return self.getChildren(cidrType=CIDRType.IP)
+        return [cidr for cidr in self.get_children() if not utilities.subcidr(cidr.cidr)]
 
     @property
     def version(self) -> IP:
@@ -177,7 +154,7 @@ class CIDR(BaseModel):
             newNet = next(subnets)
 
             # Instantiate new object and persist
-            newCIDR = CIDR(cidr=newNet, description=description, fqdn=hostname, flag=flag)
+            newCIDR = CIDR(cidr=newNet, description=description, fqdn=hostname, flag=flag, parent=self)
             newCIDR.save()
             return newCIDR
 
@@ -225,6 +202,6 @@ class CIDR(BaseModel):
         newNet = ip_network(newNet)
 
         # Instantiate new object and persist
-        newCIDR = CIDR(cidr=newNet, description=description, fqdn=hostname, flag=flag)
+        newCIDR = CIDR(cidr=newNet, description=description, fqdn=hostname, flag=flag, parent=self)
         newCIDR.save()
         return newCIDR

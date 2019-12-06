@@ -28,7 +28,6 @@ security:
 pytest:
   services:
     - postgres:latest
-    - redis:latest
   stage: test
   script:
     - pipenv install --dev

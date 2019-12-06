@@ -1,13 +1,14 @@
-from django.shortcuts import get_object_or_404
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
+from ipaddress import ip_network
 
+from django.shortcuts import get_object_or_404
+from netfields.functions import Masklen
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from accounts.permissions import ReadOnlyToken, WriteToken, UserAccess
+from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
 
 from ..models import CIDR
 from ..serializers import CIDRSerializer, RecursiveCIDRSerializer
@@ -24,21 +25,19 @@ class CIDRViewSet(ModelViewSet):
 
     permission_classes = [ReadOnlyToken | WriteToken | UserAccess]
 
-    @method_decorator(cache_page(60))
     def list(self, request):
         """
             Get the Root Prefixes with their children
         """
-
         # If a search term is available apply it to the queryset
-        if self.request.query_params.get('search', None):
+        if self.request.query_params.get('search', False):
             queryset = self.filter_queryset(self.queryset)
 
         # No filter, so prune the dataset to the root networks
         else:
-            queryset = [cidr for cidr in self.queryset if cidr.supercidr is None]
+            queryset = CIDR.objects.filter(parent=None)
 
-        # Only to this, if explicitly requested, increases load
+        # Only do this, if explicitly requested, increases load
         if self.request.query_params.get('full', False):
             return Response(
                 RecursiveCIDRSerializer(
@@ -54,7 +53,6 @@ class CIDRViewSet(ModelViewSet):
                 read_only=True,
                 context={'request': request}).data)
 
-    @method_decorator(cache_page(60))
     def retrieve(self, request, pk=None):
         cidr = get_object_or_404(self.queryset, pk=pk)
 
@@ -68,6 +66,30 @@ class CIDRViewSet(ModelViewSet):
             self.serializer_class(
                 cidr,
                 context={'request': request}).data)
+
+    def create(self, request):
+        """Create a new cidr object by automatically detecting parents
+        """
+
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+
+        if not serializer.is_valid():
+            return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
+
+        data = serializer.validated_data
+
+        # Check whether there is a parent node and if so take the nearest parent
+        ip = ip_network(data['cidr'])
+
+        parent = CIDR.objects.filter(cidr__net_contains=ip).order_by(Masklen('cidr').desc()).first()
+
+        cidr = CIDR(**data, parent=parent)
+        cidr.save()
+
+        return Response(self.serializer_class(
+            cidr,
+            context={'request': request}).data,
+            status=status.HTTP_201_CREATED)
 
     @action(detail=True)
     def supercidr(self, request, pk=None):
