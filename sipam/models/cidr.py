@@ -23,6 +23,7 @@ class CIDR(MPTTModel, BaseModel):
     fqdn = FQDNField(blank=True, null=True)
     description = models.TextField(blank=True, null=True)
     flag = models.CharField(
+        blank=False,
         max_length=11,
         choices=[(tag.value, tag.value) for tag in FlagChoices],
         default=FlagChoices.RESERVATION,
@@ -52,7 +53,7 @@ class CIDR(MPTTModel, BaseModel):
         Returns:
             List[str] -- List of child IDs
         """
-        return [child.id for child in self.get_children()]
+        return [child.id for child in CIDR.objects.filter(parent=self).order_by('cidr').all()]
 
     @property
     def ips(self) -> List['CIDR']:

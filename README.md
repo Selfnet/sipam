@@ -78,6 +78,9 @@ sudo cp ./sipam.pgsql /var/lib/postgres/data/sipam.pgsql # Ensure this is the ri
 sudo -iu postgres
 cd data
 psql -U sipam sipam < sipam.pgsql
+
+# Flush the database
+./manage.py sqlflush | ./manage.py dbshell
 ```
 
 Now the database should be filled with some sample data.
@@ -124,3 +127,13 @@ Install `@vue/cli`
   * yay -S vue-cli
 * Others
   * npm install --global @vue/cli
+
+### Running
+
+For local development `npm run serve` and the development Django server are sufficient.
+To make life easier it is recommended to generate an API Token and create a file called `.env.development.local` in the [`frontend/sipam`](frontend/sipam) directory.
+This file should contain the following line:
+
+```
+VUE_APP_AUTH_TOKEN="Token <YOUR TOKEN>"
+```

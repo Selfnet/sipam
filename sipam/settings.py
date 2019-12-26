@@ -66,13 +66,21 @@ INSTALLED_APPS = [
     'django_prometheus',
     'rest_framework',
     'drf_yasg',
+    'corsheaders',
     'netfields',
     'mptt',
     'sipam',
     'accounts'
 ]
 
+CORS_ORIGIN_WHITELIST = []
+CORS_ORIGIN_REGEX_WHITELIST = [
+    r"^http://localhost:\d+$",
+    r"^http://127.0.0.1:\d+",
+]
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django_prometheus.middleware.PrometheusBeforeMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

@@ -1,0 +1,13 @@
+{
+  "GENERAL": {
+    "LOGIN": "Login",
+    "LOGOUT": "Logout",
+    "LANGUAGE": {
+      "CHANGE_LANGUAGE": "Language",
+      "ENGLISH": "English",
+      "GERMAN": "German"
+    },
+    "BACK": "Back",
+    "SUBMIT": "Submit"
+  }
+}

@@ -10,4 +10,11 @@ class PoolSerializer(ModelSerializer):
 
     class Meta:
         model = Pool
-        fields = ('id', 'label', 'created', 'edited', 'prefixes', 'description')
+        fields = (
+            'id',
+            'label',
+            'description',
+            'created',
+            'edited',
+            'prefixes'
+        )
