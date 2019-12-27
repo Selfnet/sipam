@@ -2,13 +2,15 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Cidrs from './views/CIDRs.vue';
+import Login from './views/Login.vue';
+
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/home',
       name: 'Home',
       component: Home,
     },
@@ -17,6 +19,11 @@ export default new Router({
       name: 'Cidr',
       component: Cidrs,
 
+    },
+    {
+      path: '/',
+      name: 'Login',
+      component: Login,
     },
     {
       path: '/about',

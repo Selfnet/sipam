@@ -1,13 +1,34 @@
 {
   "GENERAL": {
-    "LOGIN": "Login",
-    "LOGOUT": "Logout",
+    "PASSWORD": {
+      "PLACEHOLDER": "Password",
+      "DESCRIPTION": "Please insert your password."
+    },
+    "UID": {
+      "PLACEHOLDER": "LDAP username",
+      "DESCRIPTION": "Please insert your LDAP username."
+    },
+    "LOGIN": {
+      "LABEL": "Sign In",
+      "DESCRIPTION": "Please sign in."
+    },
+    "LOGOUT": {
+      "LABEL": "Sign Out",
+      "DESCRIPTION": "Please sign out."
+    },
     "LANGUAGE": {
       "CHANGE_LANGUAGE": "Language",
       "ENGLISH": "English",
       "GERMAN": "German"
     },
-    "BACK": "Back",
-    "SUBMIT": "Submit"
+    "SEARCH": {
+      "PLACEHOLDER": "Search"
+    },
+    "BUTTON": {
+      "BACK": "Back",
+      "SUBMIT": "Submit",
+      "SAVE": "Save",
+      "SEARCH": "Search"
+    }
   }
 }

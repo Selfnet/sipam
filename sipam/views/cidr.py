@@ -99,7 +99,7 @@ class CIDRViewSet(ModelViewSet):
         return Response(
             CIDRSerializer(
                 self.get_object().supercidr,
-                many=True,
+                many=False,
                 read_only=True,
                 context={'request': request}).data
         )
