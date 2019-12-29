@@ -49,68 +49,69 @@
 </template>
 
 <script>
-  import { mapGetters, mapState, mapActions } from 'vuex'
-  export default {
-    name: "cidr-form",
-    props: {
-      cidr: Object,
-      edit: Boolean,
-      parentCIDR: String,
-    },
-    data() {
-      return {
-        form: {
-          cidr: '',
-          fqdn: '',
-          flag: 'reservation',
-          description: '',
-        },
-        flags: ['assignment', 'host', 'reservation'],
-        show: true
-      }
-    },
-    created() {
-      if (this.parentCIDR) {
-        this.form.cidr = this.parentCIDR
-      }
-      if (this.cidr) {
-        this.form.cidr = this.cidr.cidr
-        this.form.fqdn = this.cidr.fqdn
-        this.form.flag = this.cidr.flag
-        this.form.description = this.cidr.description
-      }
-    },
-    methods: {
-      ...mapActions({
-        updateCIDR: 'CIDR/UPDATE_CIDR',
-        createCIDR: 'CIDR/CREATE_CIDR',
-      }),
-      onSubmit(evt) {
-        evt.preventDefault()
-        if (this.edit) {
-          this.updateCIDR({
-            cidrID: this.cidr.id,
-            formData: this.form
-          })
-        } else {
-          this.createCIDR(this.form)
-        }
-        // TODO: Refactor this
-        this.$emit('cidr-form-close')
+import { mapActions } from 'vuex';
+
+export default {
+  name: 'cidr-form',
+  props: {
+    cidr: Object,
+    edit: Boolean,
+    parentCIDR: String,
+  },
+  data() {
+    return {
+      form: {
+        cidr: '',
+        fqdn: '',
+        flag: 'reservation',
+        description: '',
       },
-      onReset(evt) {
-        evt.preventDefault()
-        // Reset our form values
-        this.form.cidr = ''
-        this.form.fqdn = ''
-        this.form.flag = 'reservation'
-        this.form.description = ''
-        // Trick to reset/clear native browser form validation state
-        this.show = false
-        this.$nextTick(() => {
-          this.show = true
-        })
-      }
+      flags: ['assignment', 'host', 'reservation'],
+      show: true,
+    };
+  },
+  created() {
+    if (this.parentCIDR) {
+      this.form.cidr = this.parentCIDR;
     }
-  }
+    if (this.cidr) {
+      this.form.cidr = this.cidr.cidr;
+      this.form.fqdn = this.cidr.fqdn;
+      this.form.flag = this.cidr.flag;
+      this.form.description = this.cidr.description;
+    }
+  },
+  methods: {
+    ...mapActions({
+      updateCIDR: 'CIDR/UPDATE_CIDR',
+      createCIDR: 'CIDR/CREATE_CIDR',
+    }),
+    onSubmit(evt) {
+      evt.preventDefault();
+      if (this.edit) {
+        this.updateCIDR({
+          cidrID: this.cidr.id,
+          formData: this.form,
+        });
+      } else {
+        this.createCIDR(this.form);
+      }
+      // TODO: Refactor this
+      this.$emit('cidr-form-close');
+    },
+    onReset(evt) {
+      evt.preventDefault();
+      // Reset our form values
+      this.form.cidr = '';
+      this.form.fqdn = '';
+      this.form.flag = 'reservation';
+      this.form.description = '';
+      // Trick to reset/clear native browser form validation state
+      this.show = false;
+      this.$nextTick(() => {
+        this.show = true;
+      });
+    },
+  },
+};
 </script>

@@ -2,35 +2,40 @@
   <b-container>
     <b-list-group>
       <b-list-group-item>
-        <tree-item class="item" :item="cidr" @make-folder="makeFolder" @add-item="addItem"></tree-item>
+        <tree-item
+          class="item"
+          :item="cidr"
+          @make-folder="makeFolder"
+          @add-item="addItem">
+        </tree-item>
       </b-list-group-item>
     </b-list-group>
   </b-container>
 </template>
 
 <script>
-import Vue from "vue";
-import TreeItem from "./TreeItem.vue";
+import Vue from 'vue';
+import TreeItem from './TreeItem.vue';
 
 export default {
-  name: "tree",
+  name: 'tree',
   props: {
     cidr: Object,
   },
   components: {
-    TreeItem
+    TreeItem,
   },
   methods: {
     makeFolder(item) {
-      Vue.set(item, "children", []);
+      Vue.set(item, 'children', []);
       this.addItem(item);
     },
     addItem(item) {
       item.children.push({
-        name: "new stuff"
+        name: 'new stuff',
       });
-    }
-  }
+    },
+  },
 };
 </script>
 <style lang="scss">

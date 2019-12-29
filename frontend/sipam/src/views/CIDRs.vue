@@ -9,8 +9,8 @@
       </div>
 </template>
 <script>
-import Tree from '@/components/Tree.vue'
-import { mapGetters, mapState, mapActions } from 'vuex'
+import { mapGetters, mapState, mapActions } from 'vuex';
+import Tree from '@/components/Tree.vue';
 
 export default {
   components: {
@@ -20,7 +20,7 @@ export default {
     return {
       loading: true,
       cidrs: [],
-    }
+    };
   },
   computed: {
   },
@@ -31,23 +31,23 @@ export default {
     ...mapActions({
       fetchCIDRs: 'CIDR/FETCH_CIDRS',
       searchCIDR: 'CIDR/SEARCH_CIDR',
-    })
+    }),
   },
   created() {
     this.fetchCIDRs().then(() => {
-      this.cidrs = this.getCIDRs()
-    })
+      this.cidrs = this.getCIDRs();
+    });
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === 'Search/SET_QUERY' && mutation.payload.length > 0) {
         this.searchCIDR(mutation.payload).then(() => {
-          this.cidrs = this.getCIDRs()
-        })
+          this.cidrs = this.getCIDRs();
+        });
       } else if (mutation.type === 'Search/SET_QUERY' && mutation.payload.length === 0) {
         this.fetchCIDRs().then(() => {
-          this.cidrs = this.getCIDRs()
-        })
+          this.cidrs = this.getCIDRs();
+        });
       }
     });
-  }
+  },
 };
 </script>
