@@ -66,17 +66,12 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapState } from 'vuex';
 import LanguagePicker from './components/LanguagePicker.vue';
 
 export default {
   components: {
     LanguagePicker,
-  },
-  data() {
-    return {
-      user: 'User',
-    };
   },
   methods: {
     ...mapGetters('Auth', {
@@ -87,6 +82,9 @@ export default {
     }),
   },
   computed: {
+    ...mapState('Auth', {
+      user: 'username',
+    }),
     ...mapGetters('Search', {
       getQuery: 'query',
     }),

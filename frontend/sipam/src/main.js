@@ -31,6 +31,28 @@ Vue.config.productionTip = false;
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 axios.defaults.timeout = 1000;
 axios.defaults.headers.accept = 'application/json';
+
+axios.interceptors.response.use(
+  response => response, (error) => {
+    const status = error.response ? error.response.status : null;
+
+    if (status === 401) {
+      return store.dispatch('Auth/REFRESH', {
+        token: store.getters['Auth/token'],
+        callback: () => {
+          // eslint-disable-next-line no-param-reassign
+          error.config.headers.Authorization = `Bearer ${store.getters['Auth/token']}`;
+          // eslint-disable-next-line no-param-reassign
+          error.config.baseURL = undefined;
+          return axios.request(error.config);
+        },
+      });
+    }
+
+    return Promise.reject(error);
+  },
+);
+
 const i18n = new I18n();
 Language.init(i18n);
 
