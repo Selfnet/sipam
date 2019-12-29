@@ -26,7 +26,7 @@ export default new Router({
       component: Pools,
     },
     {
-      path: '/',
+      path: '/login',
       name: 'Login',
       component: Login,
     },

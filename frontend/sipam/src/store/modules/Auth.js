@@ -25,6 +25,7 @@ export default {
     },
     DELETE_TOKEN(state) {
       state.token = {};
+      state.loggedIn = false;
       axios.defaults.headers.Authorization = undefined;
     },
   },
@@ -40,6 +41,9 @@ export default {
       } else {
         console.log('Cannot Login.');
       }
+    },
+    async LOGOUT({ commit }) {
+      commit('DELETE_TOKEN');
     },
     async VERIFY_ACCESS({ commit }, { token }) {
       const response = await authAPI.verifyAccess(token);

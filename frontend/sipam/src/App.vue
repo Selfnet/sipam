@@ -6,7 +6,7 @@
       sticky
       variant="light"
     >
-      <b-navbar-brand to="/home">
+      <b-navbar-brand to="/home ">
         <img
           src="./assets/imgs/logo.svg"
           alt="Selfnet Logo"
@@ -20,7 +20,7 @@
         id="nav-collapse"
         is-nav
       >
-        <b-navbar-nav>
+        <b-navbar-nav v-if="getLoggedIn()">
           <b-nav-item to="/home">Home</b-nav-item>
           <b-nav-item to="/pools">Pools</b-nav-item>
           <b-nav-item to="/cidrs">CIDR</b-nav-item>
@@ -48,8 +48,14 @@
             <template v-slot:button-content>
               <em>{{ user }}</em>
             </template>
-            <b-dropdown-item to="/">{{$t("GENERAL.LOGIN.LABEL")}}</b-dropdown-item>
-            <b-dropdown-item to="/logout">{{$t("GENERAL.LOGOUT.LABEL")}}</b-dropdown-item>
+            <b-dropdown-item
+              v-if="getLoggedIn()"
+              @click=logout
+            >{{$t("GENERAL.LOGOUT.LABEL")}}</b-dropdown-item>
+            <b-dropdown-item
+              to="/login"
+              v-else
+            >{{$t("GENERAL.LOGIN.LABEL")}}</b-dropdown-item>
           </b-nav-item-dropdown>
         </b-navbar-nav>
       </b-collapse>
@@ -60,7 +66,7 @@
   </div>
 </template>
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import LanguagePicker from './components/LanguagePicker.vue';
 
 export default {
@@ -71,6 +77,14 @@ export default {
     return {
       user: 'User',
     };
+  },
+  methods: {
+    ...mapGetters('Auth', {
+      getLoggedIn: 'loggedIn',
+    }),
+    ...mapActions({
+      logout: 'Auth/LOGOUT',
+    }),
   },
   computed: {
     ...mapGetters('Search', {
