@@ -8,27 +8,27 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapState, mapActions } from "vuex";
-import Pool from "@/components/Pool.vue";
+import { mapGetters, mapActions } from 'vuex';
+import Pool from '@/components/Pool.vue';
 
 export default {
   components: {
-    Pool
+    Pool,
   },
   data() {
     return {
       loading: true,
-      pools: []
+      pools: [],
     };
   },
   computed: {},
   methods: {
     ...mapActions({
-      fetchPools: "Pool/FETCH_POOLS"
+      fetchPools: 'Pool/FETCH_POOLS',
     }),
-    ...mapGetters("Pool", {
-      getPools: "pools"
-    })
+    ...mapGetters('Pool', {
+      getPools: 'pools',
+    }),
   },
 
   created() {
@@ -36,6 +36,6 @@ export default {
       this.pools = this.getPools();
       this.loading = false;
     });
-  }
+  },
 };
 </script>

@@ -2,34 +2,32 @@ import axios from 'axios';
 
 
 export default {
-  async getCSRF(request) {
-    console.log(request);
-  },
-  async isLoggedIn() {
-    console.log(axios.get(''));
-  },
-  async loginFailed(request) {
-    console.log(request);
-    console.log(request.response);
-    console.log('Cannot login.');
-    return false;
-  },
-  async loginSuccessful(request) {
-    console.log(request);
-    console.log(request.data);
-    return true;
-  },
   async login(username, password) {
-    await axios({
-      method: 'get', url: '/auth/login/', baseURL: 'http://127.0.0.1:8000',
-    })
-      .then(request => this.getCSRF(request))
-      .catch(request => console.log(request));
-    await axios({
-      method: 'post', url: '/auth/login/', auth: { username, password }, baseURL: 'http://127.0.0.1:8000',
-    })
-      .then(request => this.loginSuccessful(request))
-      .catch(request => console.log(request));
+    const response = await axios.post('/jwt/', { username, password });
+    return response;
   },
-
+  async refresh(token) {
+    if ('refresh' in token) {
+      const response = await axios.post('/jwt/refresh/', { refresh: token.refresh });
+      return response;
+    }
+    console.log('Cannot find a refresh token.');
+    return undefined;
+  },
+  async verifyAccess(token) {
+    if ('access' in token) {
+      const response = await axios.post('/jwt/verify/', { token: token.access });
+      return response;
+    }
+    console.log('Cannot find a access token.');
+    return undefined;
+  },
+  async verifyRefresh(token) {
+    if ('refresh' in token) {
+      const response = await axios.post('/jwt/verify', { token: token.refresh });
+      return response;
+    }
+    console.log('Cannot find a refresh token.');
+    return undefined;
+  },
 };

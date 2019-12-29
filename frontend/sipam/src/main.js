@@ -31,9 +31,6 @@ Vue.config.productionTip = false;
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
 axios.defaults.timeout = 1000;
 axios.defaults.headers.accept = 'application/json';
-axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-axios.defaults.xsrfCookieName = 'csrftoken';
-
 const i18n = new I18n();
 Language.init(i18n);
 

@@ -60,21 +60,22 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions } from "vuex";
+import { mapGetters, mapState, mapActions } from 'vuex';
+
 export default {
-  name: "pool-form",
+  name: 'pool-form',
   props: {
     pool: Object,
-    edit: Boolean
+    edit: Boolean,
   },
   data() {
     return {
       form: {
-        id: "",
-        label: "",
-        description: ""
+        id: '',
+        label: '',
+        description: '',
       },
-      show: true
+      show: true,
     };
   },
   created() {
@@ -86,34 +87,34 @@ export default {
   },
   methods: {
     ...mapActions({
-      updatePool: "Pool/UPDATE_POOL",
-      createPool: "Pool/CREATE_POOL"
+      updatePool: 'Pool/UPDATE_POOL',
+      createPool: 'Pool/CREATE_POOL',
     }),
     onSubmit(evt) {
       evt.preventDefault();
       if (this.edit) {
         this.updatePool({
           poolID: this.pool.id,
-          formData: this.form
+          formData: this.form,
         });
       } else {
         this.createPool(this.form);
       }
       // TODO: Refactor this
-      this.$emit("pool-form-close");
+      this.$emit('pool-form-close');
     },
     onReset(evt) {
       evt.preventDefault();
       // Reset our form values
-      this.form.id = "";
-      this.form.label = "";
-      this.form.description = "";
+      this.form.id = '';
+      this.form.label = '';
+      this.form.description = '';
       // Trick to reset/clear native browser form validation state
       this.show = false;
       this.$nextTick(() => {
         this.show = true;
       });
-    }
-  }
+    },
+  },
 };
 </script>

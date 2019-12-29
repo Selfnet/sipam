@@ -43,7 +43,9 @@
 </template>
 
 <script>
-import auth from '@/services/api/Auth';
+import {
+  mapGetters, mapActions,
+} from 'vuex';
 
 export default {
   name: 'Login',
@@ -54,10 +56,28 @@ export default {
     };
   },
   methods: {
-    login() {
-      if (auth.login(this.username, this.password)) {
+    ...mapGetters('Auth', {
+      getToken: 'token',
+      getLoggedIn: 'loggedIn',
+    }),
+    ...mapActions({
+      postLogin: 'Auth/POST_LOGIN',
+    }),
+    loginFailed(data) {
+      console.log(data);
+      console.log('Login Failed.');
+    },
+    loginSuccessfull() {
+      if (this.getLoggedIn()) {
         this.$router.push({ path: 'home' });
+      } else {
+        this.$router.push({ path: 'login' });
       }
+    },
+    login() {
+      this.postLogin({ username: this.username, password: this.password })
+        .then(() => this.loginSuccessfull())
+        .catch(data => this.loginFailed(data));
     },
   },
 };
