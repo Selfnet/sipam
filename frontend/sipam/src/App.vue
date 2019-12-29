@@ -6,7 +6,7 @@
       sticky
       variant="light"
     >
-      <b-navbar-brand to="/">
+      <b-navbar-brand to="/home">
         <img
           src="./assets/imgs/logo.svg"
           alt="Selfnet Logo"
