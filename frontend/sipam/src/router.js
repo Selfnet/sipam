@@ -2,6 +2,8 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
 import Cidrs from './views/CIDRs.vue';
+import Pools from './views/Pools.vue';
+
 
 Vue.use(Router);
 
@@ -14,9 +16,13 @@ export default new Router({
     },
     {
       path: '/cidrs',
-      name: 'Cidr',
+      name: 'CIDR',
       component: Cidrs,
-
+    },
+    {
+      path: '/pools',
+      name: 'Pool',
+      component: Pools,
     },
     {
       path: '/about',
