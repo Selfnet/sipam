@@ -1,14 +1,12 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Home from './views/Home.vue';
-import Cidrs from './views/CIDRs.vue';
 import Login from './views/Login.vue';
-import Pools from './views/Pools.vue';
-
+import store from './store/store';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/home',
@@ -18,12 +16,12 @@ export default new Router({
     {
       path: '/cidrs',
       name: 'CIDR',
-      component: Cidrs,
+      component: () => import(/* webpackChunkName: "cidrs" */ './views/CIDRs.vue'),
     },
     {
       path: '/pools',
       name: 'Pool',
-      component: Pools,
+      component: () => import(/* webpackChunkName: "pools" */ './views/Pools.vue'),
     },
     {
       path: '/login',
@@ -38,5 +36,20 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
     },
+    {
+      path: '*',
+      redirect: '/login',
+    },
   ],
 });
+
+router.beforeEach((to, from, next) => {
+  if (to.fullPath === '/login') {
+    next();
+    return;
+  }
+  if (!store.getters['Auth/loggedIn']) next('/login');
+  else next();
+});
+
+export default router;
