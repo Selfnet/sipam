@@ -14,7 +14,6 @@ import store from './store/store';
 import router from './router';
 import App from './App.vue';
 
-
 // Icons
 library.add(faPlusCircle, faMinusCircle, faCog);
 Vue.component('fai', FontAwesomeIcon);

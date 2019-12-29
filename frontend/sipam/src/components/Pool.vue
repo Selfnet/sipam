@@ -44,33 +44,33 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions } from "vuex";
-import PoolForm from "@/components/PoolForm.vue";
+import { mapGetters, mapState, mapActions } from 'vuex';
+import PoolForm from '@/components/PoolForm.vue';
 
 export default {
-  name: "pool",
+  name: 'pool',
   props: {
-    poolID: String
+    poolID: String,
   },
   components: {
-    "pool-form": PoolForm
+    'pool-form': PoolForm,
   },
   data() {
     return {
       showEditForm: false,
-      showCreateForm: false
+      showCreateForm: false,
     };
   },
   computed: {
-    ...mapState("Pool", {
+    ...mapState('Pool', {
       pool(state) {
         return state.pools[this.poolID];
-      }
-    })
+      },
+    }),
   },
   methods: {
     ...mapActions({
-      deletePool: "Pool/DELETE_POOL"
+      deletePool: 'Pool/DELETE_POOL',
     }),
     confirmDelete() {
       this.$bvModal
@@ -79,27 +79,27 @@ export default {
             this.pool.description
           }")`,
           {
-            title: "Please Confirm",
-            size: "sm",
-            buttonSize: "sm",
-            okVariant: "danger",
-            okTitle: "YES",
-            cancelTitle: "NO",
-            footerClass: "p-2",
+            title: 'Please Confirm',
+            size: 'sm',
+            buttonSize: 'sm',
+            okVariant: 'danger',
+            okTitle: 'YES',
+            cancelTitle: 'NO',
+            footerClass: 'p-2',
             hideHeaderClose: false,
-            centered: true
-          }
+            centered: true,
+          },
         )
-        .then(value => {
+        .then((value) => {
           if (value) {
             this.deletePool(this.poolID);
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err);
         });
-    }
-  }
+    },
+  },
 };
 </script>
 
