@@ -19,9 +19,13 @@ from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 from rest_framework_nested import routers
-
-from sipam import views
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView
+)
 from accounts.urls import router as auth_router
+from sipam import views
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -51,6 +55,10 @@ urlpatterns = [
     path('api/v1/', include(router.urls)),
     path('api/v1/', include(cidr_router.urls)),
     path('api/v1/', include(auth_router.urls)),
+    # Authentication
+    path('api/v1/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/v1/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/v1/jwt/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # Only Documentation
