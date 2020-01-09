@@ -35,7 +35,9 @@ systemctl start postgresql
 systemctl enable postgresql # this is optional if you want to start it on boot.
 sudo -iu postgres
 createuser --interactive  # <sipam> say no to everything it will be a dump database user.
+psql
 ALTER USER sipam CREATEDB; # For pytest
+exit
 createdb sipam -O sipam # first is database name second is username
 
 psql
