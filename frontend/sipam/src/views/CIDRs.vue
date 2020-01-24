@@ -9,7 +9,7 @@
       </div>
 </template>
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import Tree from '@/components/Tree.vue';
 
 export default {
@@ -37,6 +37,7 @@ export default {
     this.fetchCIDRs().then(() => {
       this.cidrs = this.getCIDRs();
     });
+    // eslint-disable-next-line no-unused-vars
     this.$store.subscribe((mutation, state) => {
       if (mutation.type === 'Search/SET_QUERY' && mutation.payload.length > 0) {
         this.searchCIDR(mutation.payload).then(() => {

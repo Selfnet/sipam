@@ -17,7 +17,9 @@ export default {
       return cidrs;
     },
     getByID: state => nodeID => state.cidrs[nodeID],
-    getChildrenByParentID: (state, getters) => parentID => getters.getByID(parentID).children.map(childID => state.cidrs[childID]),
+    getChildrenByParentID: (state, getters) => parentID => getters.getByID(parentID).children.map(
+      childID => state.cidrs[childID],
+    ),
   },
 
   mutations: {
