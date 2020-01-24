@@ -3,16 +3,22 @@ from typing import List, Optional
 from django.db import transaction
 from django.db.models import CharField, TextField
 
-from ..utilities.enums import IP, HostType
-from .cidr import CIDR
+from ..utilities.enums import IP, HostType, PoolType
 from ..utilities.error import NoSuchPrefix, NotEnoughSpace
 from .base import BaseModel
+from .cidr import CIDR
 
 
 class Pool(BaseModel):
     id = CharField(max_length=10, primary_key=True)
     label = CharField(max_length=100, null=False)
     description = TextField(blank=True, null=True)
+    poolType = CharField(
+        blank=False,
+        max_length=12,
+        choices=[(tag.value, tag.value) for tag in PoolType],
+        default=PoolType.ARBITRARY,
+    )
 
     def getPrefixes(self, version: IP = None) -> List[CIDR]:
         """Get prefixes for this pool selectable by IPv4 or IPv6

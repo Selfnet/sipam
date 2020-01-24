@@ -30,3 +30,10 @@ class IP(int, Enum):
     """
     v4 = 4
     v6 = 6
+
+class PoolType(str, Enum):
+    """Types of a Pool
+    """
+    HOST = 'Host Linknet'
+    VM = 'VM Linknet'
+    ARBITRARY = 'Arbitrary'

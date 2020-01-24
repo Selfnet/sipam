@@ -5,9 +5,9 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from sipam.utilities.error import NoSuchPrefix
-from sipam.serializers import PoolSerializer, AssignmentSerializer
+from sipam.serializers import AssignmentSerializer, PoolSerializer
 from sipam.utilities.enums import IP, HostType
+from sipam.utilities.error import NoSuchPrefix
 from sipam.views import PoolViewSet
 
 
@@ -38,7 +38,7 @@ class PoolTest(TestCase):
     def test_pool_serializer(self):
         serializer = PoolSerializer(instance=self.pool)
 
-        assert set(serializer.data.keys()) == set(['id', 'label', 'created', 'edited', 'prefixes', 'description'])
+        assert set(serializer.data.keys()) == set(['id', 'label', 'prefixes', 'poolType', 'description'])
 
     def test_pool_view(self):
         factory = APIRequestFactory()

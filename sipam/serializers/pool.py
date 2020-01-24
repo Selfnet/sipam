@@ -14,7 +14,6 @@ class PoolSerializer(ModelSerializer):
             'id',
             'label',
             'description',
-            'created',
-            'edited',
+            'poolType',
             'prefixes'
         )
