@@ -9,6 +9,7 @@ export default {
   async refresh(token) {
     if ('refresh' in token) {
       const response = await axios.post('/jwt/refresh/', { refresh: token.refresh });
+      console.log(response);
       return response;
     }
     console.log('Cannot find a refresh token.');

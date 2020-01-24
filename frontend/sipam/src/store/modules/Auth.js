@@ -66,7 +66,11 @@ export default {
     },
     async REFRESH({ commit }, { token, callback }) {
       const response = await authAPI.refresh(token);
-      if (response.status === 200) {
+
+      // No refresh token - handle this case first
+      if (typeof response === 'undefined') {
+        commit('UPDATE_LOGGED_IN', false);
+      } else if (response.status === 200) {
         commit('SAVE_TOKEN', response.data);
         commit('UPDATE_LOGGED_IN', true);
       } else if (response.status === 401) {
