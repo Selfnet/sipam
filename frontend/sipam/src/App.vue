@@ -60,7 +60,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <b-container id="content">
+    <b-container id="site-container">
       <router-view />
     </b-container>
   </div>
@@ -129,22 +129,11 @@ export default {
   box-shadow: 0 0 5px #ff5a17 !important;
 }
 #site-container {
-  margin-top: 90px;
-  background-color: rgba(
-    239,
-    239,
-    239,
-    0.9
-  ); /*Background of the main containers*/
-
-  border-radius: 10px;
-  border-style: solid;
-  border-width: 1px;
+  margin-top: 10px;
 
   margin-bottom: 50px;
 
-  padding-left: 40px;
-  padding-right: 50px;
+  padding-top: 10px;
   padding-bottom: 20px;
   font-size: medium;
 }

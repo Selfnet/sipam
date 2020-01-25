@@ -32,6 +32,15 @@
         ></b-form-input>
       </b-form-group>
 
+      <b-form-group id="input-group-3" label="Default Assignment Type" label-for="input-pool-type">
+        <b-form-select
+          id="input-pool-type"
+          v-model="form.poolType"
+          :options="poolTypes"
+          required
+        ></b-form-select>
+      </b-form-group>
+
       <b-form-group
         id="input-group-4"
         label="Description"
@@ -74,8 +83,10 @@ export default {
         id: '',
         label: '',
         description: '',
+        poolType: 'Arbitrary',
       },
       show: true,
+      poolTypes: ['Host Linknet', 'VM Linknet', 'Arbitrary'],
     };
   },
   created() {
@@ -83,6 +94,7 @@ export default {
       this.form.id = this.pool.id;
       this.form.label = this.pool.label;
       this.form.description = this.pool.description;
+      this.form.poolType = this.pool.poolType;
     }
   },
   methods: {

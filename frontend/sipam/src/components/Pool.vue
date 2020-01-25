@@ -44,7 +44,7 @@
 </template>
 
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import PoolForm from '@/components/PoolForm.vue';
 
 export default {
@@ -107,8 +107,9 @@ export default {
 .pool {
   border-bottom: 1px solid lightgray;
   display: grid;
-  grid-template-columns: 20% 5% 40% 20%;
+  grid-template-columns: 20% 40% 20%;
   grid-gap: 10px;
   margin: 2px;
+  padding: 5px;
 }
 </style>
