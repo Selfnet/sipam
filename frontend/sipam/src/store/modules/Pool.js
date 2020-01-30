@@ -10,6 +10,7 @@ export default {
 
   getters: {
     pools: state => Object.keys(state.pools),
+    poolList: state => Object.values(state.pools),
   },
 
   mutations: {
