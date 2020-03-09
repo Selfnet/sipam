@@ -293,4 +293,11 @@ textarea:focus {
   outline: 0;
   box-shadow: 0 0 5px #ff5a17 !important;
 }
+.bold {
+  font-weight: bold;
+}
+.pointer {
+  cursor: pointer;
+}
+
 </style>

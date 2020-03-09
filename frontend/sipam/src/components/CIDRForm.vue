@@ -15,7 +15,12 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-2" label="FQDN:" label-for="input-fqdn" v-if="form.flag === 'host'">
+      <b-form-group
+        id="input-group-2"
+        label="FQDN:"
+        label-for="input-fqdn"
+        v-if="form.flag === 'host'"
+      >
         <b-form-input
           id="input-fqdn"
           v-model="form.fqdn"
@@ -98,6 +103,11 @@ export default {
         value: pool.id,
         text: `${pool.label} - ${pool.description}`,
       }));
+      // Add an "unassigned" option at the front
+      this.pools.unshift({
+        value: null,
+        text: 'No Pool',
+      });
     });
   },
   methods: {

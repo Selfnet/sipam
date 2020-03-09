@@ -32,6 +32,9 @@ export default {
       const response = await poolAPI.getPools();
       if (response.status === 200) {
         commit('SET_POOLS', response.data);
+        response.data.forEach((pool) => {
+          commit('CIDR/SET_CIDRS', pool.prefixes, { root: true });
+        });
       }
     },
     async UPDATE_POOL({ commit }, { poolID, formData }) {
@@ -54,6 +57,14 @@ export default {
       const response = await poolAPI.deletePool(poolID);
       if (response.status === 204) {
         commit('DELETE_POOL', poolID);
+      } else {
+        console.log(response);
+      }
+    },
+    async ASSIGN({ commit }, poolID, assignmentData) {
+      const response = await poolAPI.assign(poolID, assignmentData);
+      if (response.status === 201) {
+        commit('CIDR/SET_CIDRS', response.data, { root: true });
       } else {
         console.log(response);
       }

@@ -91,11 +91,3 @@ export default {
   },
 };
 </script>
-<style lang="scss" scoped>
-.bold {
-  font-weight: bold;
-}
-.pointer {
-  cursor: pointer;
-}
-</style>

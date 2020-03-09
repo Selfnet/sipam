@@ -20,5 +20,8 @@ export default {
     const response = await axios.delete(`/pool/${id}/`);
     return response;
   },
-
+  async assign(id, assignmentData) {
+    const response = await axios.post(`/pool/${id}/assign/`, assignmentData);
+    return response;
+  },
 };
