@@ -3,7 +3,7 @@ from typing import List, Optional
 from django.db import transaction
 from django.db.models import CharField, TextField
 
-from ..utilities.enums import IP, HostType, PoolType
+from ..utilities.enums import IP, PoolType
 from ..utilities.error import NoSuchPrefix, NotEnoughSpace
 from .base import BaseModel
 from .cidr import CIDR
@@ -40,12 +40,11 @@ class Pool(BaseModel):
         return [prefix for prefix in prefixes if prefix.version == version]
 
     @transaction.atomic
-    def assignFromPool(self, version: IP, hostType: HostType, description: str, hostname: str) -> Optional[CIDR]:
+    def assignFromPool(self, version: IP, description: str, hostname: str) -> Optional[CIDR]:
         """Assign a Network or IP from this pool
 
         Arguments:
             version {IP} -- v4 or v6
-            hostType {HostType} -- Physical or virtual (determines linknet or IP)
             description {str} -- Description of the new net
             hostname {str} -- Hostname for this host
 
@@ -66,13 +65,14 @@ class Pool(BaseModel):
         for prefix in prefixes:
             try:
                 # VMs get an IP, then the inner loop is cancelled
-                if hostType == HostType.VIRTUAL:
+                if self.poolType == PoolType.VM:
                     assign = prefix.assignIP(description, hostname)
                     break
 
-                # Phsyical hosts get a linknet then cancel
-                assign = prefix.assignLinknet(description, hostname)
-                break
+                if self.poolType == PoolType.HOST:
+                    # Phsyical hosts get a linknet then cancel
+                    assign = prefix.assignLinknet(description, hostname)
+                    break
 
             # When there is not enough space an exception is thrown, we continue with the next subnet
             except NotEnoughSpace:

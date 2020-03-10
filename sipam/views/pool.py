@@ -41,7 +41,6 @@ class PoolViewSet(ModelViewSet):
         if not serializer.is_valid():
             return Response(status=status.HTTP_412_PRECONDITION_FAILED)
 
-        hostType = serializer.data['hostType']
         description = serializer.data['description']
         hostname = serializer.data['hostname']
 
@@ -51,7 +50,7 @@ class PoolViewSet(ModelViewSet):
         noprefix = {}
         for IPType in IP:
             try:
-                result[IPType] = pool.assignFromPool(IPType, hostType, description, hostname)
+                result[IPType] = pool.assignFromPool(IPType, description, hostname)
             except NoSuchPrefix:
                 noprefix[IPType] = True
 
