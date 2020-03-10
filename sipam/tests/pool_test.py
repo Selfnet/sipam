@@ -40,7 +40,7 @@ class PoolTest(TestCase):
     def test_pool_serializer(self):
         serializer = PoolSerializer(instance=self.pool)
 
-        assert set(serializer.data.keys()) == set(['id', 'label', 'prefixes', 'poolType', 'description'])
+        assert set(serializer.data.keys()) == set(['id', 'label', 'prefixes', 'poolType', 'description', 'defaultDomain'])
 
     def test_pool_view(self):
         factory = APIRequestFactory()

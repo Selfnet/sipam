@@ -35,3 +35,4 @@ python_version = "3.7"
 [scripts]
 dev = "python manage.py runserver"
 test = "pytest -sv"
+lint = "flake8 ."

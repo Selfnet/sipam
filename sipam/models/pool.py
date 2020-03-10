@@ -11,14 +11,15 @@ from .cidr import CIDR
 
 class Pool(BaseModel):
     id = CharField(max_length=10, primary_key=True)
-    label = CharField(max_length=100, null=False)
-    description = TextField(blank=True, null=True)
+    label = CharField(max_length=100, blank=False)
+    description = TextField(blank=True)
     poolType = CharField(
         blank=False,
         max_length=12,
         choices=[(tag.value, tag.value) for tag in PoolType],
         default=PoolType.ARBITRARY,
     )
+    defaultDomain = CharField(max_length=100, blank=True)
 
     def getPrefixes(self, version: IP = None) -> List[CIDR]:
         """Get prefixes for this pool selectable by IPv4 or IPv6

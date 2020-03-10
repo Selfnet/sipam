@@ -43,6 +43,18 @@
 
       <b-form-group
         id="input-group-4"
+        label="Default Domain Name"
+        label-for="input-domain"
+      >
+        <b-form-input
+          id="input-domain"
+          v-model="form.defaultDomain"
+          placeholder="server.selfnet.de"
+        ></b-form-input>
+      </b-form-group>
+
+      <b-form-group
+        id="input-group-5"
         label="Description"
         label-for="input-desc"
       >
@@ -84,6 +96,7 @@ export default {
         label: '',
         description: '',
         poolType: 'Arbitrary',
+        defaultDomain: '',
       },
       show: true,
       poolTypes: ['Host Linknet', 'VM Linknet', 'Arbitrary'],
@@ -95,6 +108,7 @@ export default {
       this.form.label = this.pool.label;
       this.form.description = this.pool.description;
       this.form.poolType = this.pool.poolType;
+      this.form.defaultDomain = this.pool.defaultDomain;
     }
   },
   methods: {
@@ -121,6 +135,7 @@ export default {
       this.form.id = '';
       this.form.label = '';
       this.form.description = '';
+      this.form.defaultDomain = '';
       // Trick to reset/clear native browser form validation state
       this.show = false;
       this.$nextTick(() => {

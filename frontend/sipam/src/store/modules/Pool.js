@@ -61,7 +61,8 @@ export default {
         console.log(response);
       }
     },
-    async ASSIGN({ commit }, poolID, assignmentData) {
+    async ASSIGN({ commit }, { poolID, assignmentData }) {
+      console.log(assignmentData);
       const response = await poolAPI.assign(poolID, assignmentData);
       if (response.status === 201) {
         commit('CIDR/SET_CIDRS', response.data, { root: true });
