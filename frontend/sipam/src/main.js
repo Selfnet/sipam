@@ -33,17 +33,22 @@ axios.defaults.headers.accept = 'application/json';
 
 axios.interceptors.response.use(
   response => response, (error) => {
+    const originalRequest = error.config;
     const status = error.response ? error.response.status : null;
 
-    if (status === 401) {
+    if (status === 401 && originalRequest.url === `${axios.baseURL}/jwt/refresh/`) {
+      store.dispatch('Auth/DELETE_TOKEN');
+      router.push('/login');
+      return Promise.reject(error);
+    }
+    if (status === 401 && !originalRequest.retry) {
+      originalRequest.retry = true;
       return store.dispatch('Auth/REFRESH', {
         token: store.getters['Auth/token'],
         callback: () => {
           // eslint-disable-next-line no-param-reassign
-          error.config.headers.Authorization = `Bearer ${store.getters['Auth/token']}`;
-          // eslint-disable-next-line no-param-reassign
-          error.config.baseURL = undefined;
-          return axios.request(error.config);
+          axios.defaults.headers.common.Authorization = `Bearer ${store.getters['Auth/token'].access}`;
+          return axios.request(originalRequest);
         },
       });
     }
