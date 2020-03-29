@@ -1,75 +1,35 @@
 import pytest
+from django.core.management import call_command
 
 from accounts.models import FlaggedToken, User
 from sipam.models import CIDR, Pool
-from sipam.utilities.enums import PoolType
+
+
+@pytest.fixture(scope='session')
+def django_db_setup(django_db_setup, django_db_blocker):
+    with django_db_blocker.unblock():
+        call_command('loaddata', 'sample_pool_nets.json')
+        CIDR._tree_manager.rebuild()
 
 
 @pytest.fixture(scope='class')
-def testCIDR(request) -> CIDR:
-    """Create a test network to work with
-
-    Returns:
-        CIDR -- The test network as CIDR object
+def testData(request) -> CIDR:
+    """Attach test data to be easily accessible from tests
+    Test data are imported in the previous step
     """
-    CIDR.objects.create(cidr='10.3.141.0/24', description='TestNet')
+    # Pin CIDRs to request objects
     request.cls.cidr = CIDR.objects.get(cidr='10.3.141.0/24')
-
-    CIDR.objects.create(cidr='10.3.142.0/24', description='TestNet for LinkNet pool')
     request.cls.cidrLink = CIDR.objects.get(cidr='10.3.142.0/24')
+    request.cls.cidrEmpty = CIDR.objects.get(cidr='10.3.143.0/24')
+    request.cls.cidrSmallEmpty = CIDR.objects.get(cidr='10.3.144.0/28')
 
+    # Pin Pools to request objects
+    request.cls.emptyPool = Pool.objects.get(id='testEmpty')
+    request.cls.linkPool = Pool.objects.get(id='SRV')
+    request.cls.pool = Pool.objects.get(id='vm')
 
-@pytest.fixture(scope='class')
-def fullCIDR(request) -> CIDR:
-    """Create a test network to work with
-
-    Returns:
-        CIDR -- The test network as CIDR object
-    """
     CIDR.objects.create(cidr='10.2.71.82/32', description='TestNet')
     request.cls.fullcidr = CIDR.objects.get(cidr='10.2.71.82/32')
-
-
-@pytest.fixture(scope='class')
-def emptyPool(request) -> Pool:
-    """Create an empty pool to test this special case
-
-    Returns:
-        Pool -- An empty test pool to use
-    """
-    Pool.objects.create(id='testEmpty', label='testEmpty', description='Empty Test Pool')
-    request.cls.emptyPool = Pool.objects.get(id='testEmpty')
-
-
-@pytest.fixture(scope='class')
-def testLinkPool(request, testCIDR) -> Pool:
-    """Create a test pool to work with
-
-    Returns:
-        Pool -- A test pool to use
-    """
-    Pool.objects.create(id='testLink', label='test', description='Test Link Pool', poolType=PoolType.HOST)
-    request.cls.linkPool = Pool.objects.get(id='testLink')
-
-    request.cls.cidrLink.pool = request.cls.linkPool
-    request.cls.cidrLink.save()
-
-
-@pytest.fixture(scope='class')
-def testHostPool(request, testCIDR, fullCIDR) -> Pool:
-    """Create a test pool to work with
-
-    Returns:
-        Pool -- A test pool to use
-    """
-    Pool.objects.create(id='testHost', label='test', description='Test Host Pool', poolType=PoolType.VM)
-    request.cls.pool = Pool.objects.get(id='testHost')
-
-    request.cls.fullcidr.pool = request.cls.pool
-    request.cls.fullcidr.save()
-
-    request.cls.cidr.pool = request.cls.pool
-    request.cls.cidr.save()
 
 
 @pytest.fixture(scope='class')

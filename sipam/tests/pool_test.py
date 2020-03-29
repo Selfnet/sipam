@@ -11,17 +11,17 @@ from sipam.utilities.error import NoSuchPrefix
 from sipam.views import PoolViewSet
 
 
-@pytest.mark.usefixtures('testLinkPool', 'testHostPool', 'emptyPool', 'testToken', 'testAdmin')
+@pytest.mark.usefixtures('testData', 'testToken', 'testAdmin')
 class PoolTest(TestCase):
     """Test pool creation and assignments
     """
 
     def test_get_pool(self):
-        assert self.pool.id == 'testHost'
-        assert self.linkPool.id == 'testLink'
+        assert self.pool.id == 'vm'
+        assert self.linkPool.id == 'SRV'
         assert self.emptyPool.id == 'testEmpty'
         assert len(self.emptyPool.getPrefixes()) == 0
-        assert len(self.pool.getPrefixes()) == 2
+        assert len(self.pool.getPrefixes()) == 3
         assert len(self.linkPool.getPrefixes()) == 1
 
     def test_assign_from_empty_pool(self):

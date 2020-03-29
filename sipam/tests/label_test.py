@@ -3,11 +3,11 @@ from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from sipam.views import LabelViewSet
 from sipam.serializers import LabelSerializer
+from sipam.views import LabelViewSet
 
 
-@pytest.mark.usefixtures('testCIDR', 'testToken', 'testAdmin')
+@pytest.mark.usefixtures('testData', 'testToken', 'testAdmin')
 class LabelTest(TestCase):
 
     def setUp(self):
