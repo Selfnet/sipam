@@ -3,8 +3,9 @@ from ipaddress import ip_address, ip_network
 from typing import List, Tuple
 
 from django.db import models, transaction
-from netfields import CidrAddressField, NetManager
 from mptt.models import MPTTModel, TreeForeignKey
+from netfields import CidrAddressField, NetManager
+
 import sipam.utilities as utilities
 
 from ..utilities.enums import IP, FlagChoices
@@ -45,7 +46,7 @@ class CIDR(MPTTModel, BaseModel):
         """
             :returns: the direct subcidr of self (by cidr)
         """
-        return list(self.get_children())
+        return list(CIDR.objects.filter(parent=self).order_by('cidr').all())
 
     def getChildIDs(self) -> List[str]:
         """Get the IDs of every child
@@ -96,7 +97,13 @@ class CIDR(MPTTModel, BaseModel):
 
         net = self.assignNet(size, description)
 
-        gateway = net.assignNet(size + 1, 'Gateway', flag=FlagChoices.ASSIGNMENT)
+        # Assign gateway ip manually because network adress = assignment is prohibited by assign net
+        gateway_ip = str(net.cidr.network_address) + "/" + str(size + 1)
+        gateway_ip = ip_network(gateway_ip)
+        gateway = CIDR(cidr=gateway_ip, description='Gateway', flag=FlagChoices.ASSIGNMENT, parent=net)
+        gateway.save()
+
+        # Now use assignIP to not do the assign workaround again
         ip = net.assignIP(description, hostname)
 
         return net, gateway, ip
@@ -115,7 +122,7 @@ class CIDR(MPTTModel, BaseModel):
 
         return self.assignNet(size, description, hostname, flag=FlagChoices.HOST)
 
-    def assignNet(self, size: int, description: str, hostname=None, flag=FlagChoices.RESERVATION) -> 'CIDR':
+    def assignNet(self, size: int, description: str, hostname=None, flag=FlagChoices.RESERVATION, offset=1) -> 'CIDR':
         """Assign a subnet of requested size from this network
 
         Arguments:
@@ -125,6 +132,7 @@ class CIDR(MPTTModel, BaseModel):
         Keyword Arguments:
             hostname {[type]} -- Hostname to use (default: {None})
             flag: {FlagChoices} -- Network type (reservation, assignment, host)
+            offset: {int} -- Offset from the network address (e.g. to allow network address assignments)
         """
 
         def getStartAddress(net: CidrAddressField, size: int) -> int:
@@ -150,8 +158,11 @@ class CIDR(MPTTModel, BaseModel):
 
         gapSize = 2**(self.cidr.max_prefixlen - size)
 
+        # When the network is empty, take first
         if len(self.subcidr) == 0:
+            # Make use of ipaddress functions to get all subnets of requested size
             subnets = self.cidr.subnets(new_prefix=size)
+            next(subnets)
             newNet = next(subnets)
 
             # Instantiate new object and persist
@@ -159,15 +170,15 @@ class CIDR(MPTTModel, BaseModel):
             newCIDR.save()
             return newCIDR
 
+        # Non empty network --> find best place
         smallestGap = None
 
+        # Check whether there is enough space before the first child
         firstChild = self.subcidr[0]
-
-        firstGap = int(self.cidr.network_address) - int(firstChild.cidr.network_address)
-
+        firstGap = int(firstChild.cidr.network_address) - int(self.cidr.network_address + offset)
         if firstGap >= gapSize:
             smallestGap = {
-                'address': self.cidr.network_address,
+                'address': self.cidr.network_address + offset,
                 'length': firstGap
             }
 

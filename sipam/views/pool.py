@@ -47,7 +47,6 @@ class PoolViewSet(ModelViewSet):
         if serializer.data['useDefaultDomain']:
             hostname = hostname + '.' + pool.defaultDomain
 
-        print(hostname)
         # Try to assign an ip for v4 and v6, if NoSuchPrefix is raised we
         # assume the pool is not intented to be used with this network type
         result = {}
