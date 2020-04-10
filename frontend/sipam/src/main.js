@@ -45,11 +45,7 @@ axios.interceptors.response.use(
       originalRequest.retry = true;
       return store.dispatch('Auth/REFRESH', {
         token: store.getters['Auth/token'],
-        callback: () => {
-          // eslint-disable-next-line no-param-reassign
-          axios.defaults.headers.common.Authorization = `Bearer ${store.getters['Auth/token'].access}`;
-          return axios.request(originalRequest);
-        },
+        callback: () => axios.request(originalRequest),
       });
     }
 
