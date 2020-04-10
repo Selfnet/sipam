@@ -44,7 +44,7 @@ export default {
       const parentID = state.cidrs[payload].parent;
       state.cidrs[parentID].children.splice(state.cidrs[parentID].children.indexOf(payload), 1);
       // Now delete the actual item
-      delete state.cidrs[payload];
+      Vue.delete(state.cidrs, payload);
     },
     OVERRIDE_CIDRS(state, payload) {
       state.root = new Set();

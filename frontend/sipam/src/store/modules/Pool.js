@@ -9,8 +9,6 @@ export default {
   },
 
   getters: {
-    pools: state => Object.keys(state.pools),
-    poolList: state => Object.values(state.pools),
   },
 
   mutations: {
@@ -23,7 +21,7 @@ export default {
       Vue.set(state.pools, payload.id, payload);
     },
     DELETE_POOL(state, payload) {
-      delete state.pools[payload];
+      Vue.delete(state.pools, payload);
     },
   },
 
@@ -64,6 +62,7 @@ export default {
     async ASSIGN({ commit }, { poolID, assignmentData }) {
       console.log(assignmentData);
       const response = await poolAPI.assign(poolID, assignmentData);
+      console.log(response.data);
       if (response.status === 201) {
         commit('CIDR/SET_CIDRS', response.data, { root: true });
       } else {

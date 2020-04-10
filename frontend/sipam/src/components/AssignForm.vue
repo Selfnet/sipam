@@ -9,19 +9,14 @@
         label="Hostname:"
         label-for="input-hostname"
       >
-        <div class="customFormAlign">
-        <b-form-input
+        <b-input-group :append="form.useDefaultDomain ? defaultDomain: ''">
+          <b-form-input
           id="input-hostname"
           v-model="form.hostname"
           required
           placeholder="hostname"
         ></b-form-input>
-        <b-form-input v-if="form.useDefaultDomain"
-          id="input-domain"
-          v-model="defaultDomain"
-          readonly
-        ></b-form-input>
-        </div>
+        </b-input-group>
       </b-form-group>
 
       <b-form-group
@@ -91,10 +86,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.customFormAlign {
-  display: grid;
-  grid-template-columns: 60% 40%;
-}
-</style>
