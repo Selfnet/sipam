@@ -26,7 +26,13 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#ar^t6d7k&nnvi7$&8g#9plu^6c)9qzg%-k+dtjrcxu7d(z6*_'
+SECRET_KEY = os.environ.get('secret_key') or '#ar^t6d7k&nnvi7$&8g#9plu^6c)9qzg%-k+dtjrcxu7d(z6*_'
+
+# OIDC configuration
+OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
+OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
+OIDC_DRF_AUTH_BACKEND = 'mozilla_django_oidc.auth.OIDCAuthenticationBackend'
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,6 +43,7 @@ REST_FRAMEWORK = {
     #    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     #    'PAGE_SIZE': 100
     'DEFAULT_AUTHENTICATION_CLASSES': [
+        'mozilla_django_oidc.contrib.drf.OIDCAuthentication',  # must be the first class.
         'accounts.auth_classes.FlaggedTokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
@@ -48,8 +55,11 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     'accounts.auth_backends.SelfnetLDAPAuth',
-    'django.contrib.auth.backends.ModelBackend'
+    'django.contrib.auth.backends.ModelBackend',
+    'mozilla_django_oidc.auth.OIDCAuthenticationBackend'
 ]
+
+
 
 AUTH_USER_MODEL = 'accounts.User'
 
@@ -70,6 +80,7 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'netfields',
+    'mozilla_django_oidc',  # must be after django.contrib.auth
     'mptt',
     'sipam',
     'accounts'
