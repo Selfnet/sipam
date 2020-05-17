@@ -9,6 +9,7 @@ export default {
   },
 
   getters: {
+    poolList: state => Object.values(state.pools),
   },
 
   mutations: {
@@ -60,9 +61,7 @@ export default {
       }
     },
     async ASSIGN({ commit }, { poolID, assignmentData }) {
-      console.log(assignmentData);
       const response = await poolAPI.assign(poolID, assignmentData);
-      console.log(response.data);
       if (response.status === 201) {
         commit('CIDR/SET_CIDRS', response.data, { root: true });
       } else {
