@@ -55,7 +55,7 @@ export default {
     }),
   },
   created() {
-    this.$store.subscribe((mutation) => {
+    this.unsubscribe = this.$store.subscribe((mutation) => {
       if (
         mutation.type === 'CIDR/SET_CIDR'
         && mutation.payload.parent === this.item.id
@@ -89,13 +89,8 @@ export default {
       });
     },
   },
+  beforeDestroy() {
+    this.unsubscribe();
+  },
 };
 </script>
-<style lang="scss" scoped>
-.bold {
-  font-weight: bold;
-}
-.pointer {
-  cursor: pointer;
-}
-</style>

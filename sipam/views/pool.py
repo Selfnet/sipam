@@ -41,9 +41,11 @@ class PoolViewSet(ModelViewSet):
         if not serializer.is_valid():
             return Response(status=status.HTTP_412_PRECONDITION_FAILED)
 
-        hostType = serializer.data['hostType']
         description = serializer.data['description']
         hostname = serializer.data['hostname']
+
+        if serializer.data['useDefaultDomain']:
+            hostname = hostname + '.' + pool.defaultDomain
 
         # Try to assign an ip for v4 and v6, if NoSuchPrefix is raised we
         # assume the pool is not intented to be used with this network type
@@ -51,7 +53,7 @@ class PoolViewSet(ModelViewSet):
         noprefix = {}
         for IPType in IP:
             try:
-                result[IPType] = pool.assignFromPool(IPType, hostType, description, hostname)
+                result[IPType] = pool.assignFromPool(IPType, description, hostname)
             except NoSuchPrefix:
                 noprefix[IPType] = True
 

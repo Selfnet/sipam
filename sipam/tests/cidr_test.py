@@ -11,7 +11,7 @@ from sipam.utilities.error import NotEnoughSpace
 from sipam.views import CIDRViewSet
 
 
-@pytest.mark.usefixtures('testCIDR', 'testToken', 'testAdmin')
+@pytest.mark.usefixtures('testData', 'testToken', 'testAdmin')
 class CIDRTest(TestCase):
 
     def setUp(self):
@@ -24,27 +24,33 @@ class CIDRTest(TestCase):
 
     def test_assign_first(self):
         # Should fit
-        sub = self.cidr.assignNet(32, 'Single IP')
-        assert sub.cidr == IPv4Network('10.3.141.0/32')
+        sub = self.cidrEmpty.assignNet(32, 'Single IP')
+        assert sub.cidr == IPv4Network('10.3.143.1/32')
 
     def test_assign_net(self):
-        subNet = self.cidr.assignNet(25, 'Other half')
+        subNet = self.cidrEmpty.assignNet(25, 'Other half')
         assert subNet.cidr.prefixlen == 25
-        assert subNet.parent == self.cidr
+        assert subNet.parent == self.cidrEmpty
 
     def test_assign_ip(self):
         ip = self.cidr.assignIP('Some IP', 'mail')
-        assert ip.cidr.prefixlen == 32
+        assert ip.cidr == IPv4Network('10.3.141.11/32')
 
     def test_assign_linknet(self):
-        net, gw, ip = self.cidr.assignLinknet('Some net')
+        net, gw, ip = self.cidrLink.assignLinknet('Some net')
 
         assert net.cidr.prefixlen == 31
-        assert net.parent == self.cidr
+        assert net.parent == self.cidrLink
         assert gw.cidr.prefixlen == 32
         assert gw.parent == net
         assert ip.cidr.prefixlen == 32
         assert ip.parent == net
+
+    def test_assign_until_full(self):
+        # Should raise an exception
+        with pytest.raises(NotEnoughSpace):
+            for i in range(17):
+                assert self.cidrSmallEmpty.assignIP(f'Some IP No {i}', f'mail-{i}')
 
     def test_get_ips(self):
         assert isinstance(self.cidr.ips, list)

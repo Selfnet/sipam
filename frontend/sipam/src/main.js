@@ -28,7 +28,7 @@ Vue.config.productionTip = false;
 // Axios Connection Config
 // TODO: Move to webpack envs
 axios.defaults.baseURL = process.env.VUE_APP_API_URL;
-axios.defaults.timeout = 1000;
+axios.defaults.timeout = 15000;
 axios.defaults.headers.accept = 'application/json';
 
 axios.interceptors.response.use(

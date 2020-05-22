@@ -15,7 +15,12 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-2" label="FQDN:" label-for="input-fqdn">
+      <b-form-group
+        id="input-group-2"
+        label="FQDN:"
+        label-for="input-fqdn"
+        v-if="form.flag === 'host'"
+      >
         <b-form-input
           id="input-fqdn"
           v-model="form.fqdn"
@@ -32,7 +37,15 @@
         ></b-form-select>
       </b-form-group>
 
-      <b-form-group id="input-group-4" label="Description:" label-for="input-desc">
+      <b-form-group id="input-group-4" label="Pool:" label-for="input-pool">
+        <b-form-select
+          id="input-pool"
+          v-model="form.pool"
+          :options="pools"
+        ></b-form-select>
+      </b-form-group>
+
+      <b-form-group id="input-group-5" label="Description:" label-for="input-desc">
         <b-form-textarea
           id="input-desc"
           v-model="form.description"
@@ -49,7 +62,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'cidr-form',
@@ -64,10 +77,12 @@ export default {
         cidr: '',
         fqdn: '',
         flag: 'reservation',
+        pool: null,
         description: '',
       },
       flags: ['assignment', 'host', 'reservation'],
       show: true,
+      pools: [],
     };
   },
   created() {
@@ -78,13 +93,31 @@ export default {
       this.form.cidr = this.cidr.cidr;
       this.form.fqdn = this.cidr.fqdn;
       this.form.flag = this.cidr.flag;
+      this.form.pool = this.cidr.pool;
       this.form.description = this.cidr.description;
     }
+    // Fetch Pools so they can be shown in a dropdown list
+    this.fetchPools().then(() => {
+      // Generate a list of objects with value/text keys which can be interpreted by the select form
+      this.pools = this.getPools().map(pool => ({
+        value: pool.id,
+        text: `${pool.label} - ${pool.description}`,
+      }));
+      // Add an "unassigned" option at the front
+      this.pools.unshift({
+        value: null,
+        text: 'No Pool',
+      });
+    });
   },
   methods: {
     ...mapActions({
       updateCIDR: 'CIDR/UPDATE_CIDR',
       createCIDR: 'CIDR/CREATE_CIDR',
+      fetchPools: 'Pool/FETCH_POOLS',
+    }),
+    ...mapGetters('Pool', {
+      getPools: 'poolList',
     }),
     onSubmit(evt) {
       evt.preventDefault();
@@ -99,6 +132,7 @@ export default {
       // TODO: Refactor this
       this.$emit('cidr-form-close');
     },
+
     onReset(evt) {
       evt.preventDefault();
       // Reset our form values

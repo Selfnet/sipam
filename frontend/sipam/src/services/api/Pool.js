@@ -21,4 +21,8 @@ export default {
     return response;
   },
 
+  async assign(id, assignmentData) {
+    const response = await axios.post(`/pool/${id}/assign/`, assignmentData);
+    return response;
+  },
 };

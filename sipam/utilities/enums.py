@@ -1,13 +1,6 @@
 from enum import Enum
 
 
-class HostType(str, Enum):
-    """Types of host to differentiate in a pool
-    """
-    PHYSICAL = 'physical'
-    VIRTUAL = 'virtual'
-
-
 class FlagChoices(str, Enum):
     """Types of IP Assignments
     """

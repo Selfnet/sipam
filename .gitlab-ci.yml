@@ -6,15 +6,13 @@ variables:
   POSTGRES_DB: sipam
   prometheus_multiproc_dir: /tmp
 
-default:
-  before_script:
-    - pip install pipenv
-
 stages:
   - test
 
 flake8:
   stage: test
+  before_script:
+    - pip install pipenv
   script:
     - pipenv install --dev
     - pipenv --version
@@ -22,6 +20,10 @@ flake8:
 
 security:
   stage: test
+  variables:
+    PIPENV_PYUP_API_KEY: ""
+  before_script:
+    - pip install pipenv
   script:
     - pipenv check
 
@@ -29,7 +31,12 @@ pytest:
   services:
     - postgres:latest
   stage: test
+  before_script:
+    - pip install pipenv
   script:
     - pipenv install --dev
     - pipenv run coverage run -m pytest
     - pipenv run coverage report
+
+include:
+  - template: Code-Quality.gitlab-ci.yml

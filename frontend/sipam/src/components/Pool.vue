@@ -1,7 +1,13 @@
 <template>
-  <div class="pool">
-    <div>
-      <span>{{ pool.label }}</span>
+  <div>
+    <div class="pool">
+    <div class="label">
+      <fai
+        @click="showPrefixes = !showPrefixes"
+        :icon="showPrefixes ? 'minus-circle': 'plus-circle'"
+        class="pointer"
+      />
+      <span @click="showPrefixes = !showPrefixes" class="bold pointer">{{ pool.label }}</span>
       <b-dropdown
         id="editPool"
         variant="outline"
@@ -38,7 +44,35 @@
       <span class="description">{{ pool.description }}</span>
     </div>
     <div>
-      <b-button variant="primary">Assign</b-button>
+      <b-button variant="primary" @click="showAssignForm = !showAssignForm">Assign</b-button>
+        <b-modal
+          v-model="showAssignForm"
+          title="New Assignment"
+        >
+          <template v-slot:modal-footer="{ cancel }">
+            <b-button
+              size="sm"
+              variant="outline-danger"
+              @click="cancel()"
+            >Cancel</b-button>
+          </template>
+          <assign-form
+            :pool="pool"
+            v-on:assign-form-close="showAssignForm = !showAssignForm"
+          >
+          </assign-form>
+        </b-modal>
+    </div>
+    </div>
+    <div>
+      <b-collapse id="show-prefixes" v-model="showPrefixes">
+      <b-card>
+        <div v-for="prefix in pool.prefixes"
+         :key="prefix.id">
+          <cidr :cidrID="prefix.id"></cidr>
+        </div>
+      </b-card>
+      </b-collapse>
     </div>
   </div>
 </template>
@@ -46,6 +80,8 @@
 <script>
 import { mapState, mapActions } from 'vuex';
 import PoolForm from '@/components/PoolForm.vue';
+import AssignForm from '@/components/AssignForm.vue';
+import CIDR from '@/components/CIDR.vue';
 
 export default {
   name: 'pool',
@@ -54,11 +90,15 @@ export default {
   },
   components: {
     'pool-form': PoolForm,
+    'assign-form': AssignForm,
+    cidr: CIDR,
   },
   data() {
     return {
       showEditForm: false,
       showCreateForm: false,
+      showAssignForm: false,
+      showPrefixes: false,
     };
   },
   computed: {
@@ -111,5 +151,10 @@ export default {
   grid-gap: 10px;
   margin: 2px;
   padding: 5px;
+}
+
+.label {
+  display: grid;
+  grid-template-columns: 15% 50% 10%;
 }
 </style>

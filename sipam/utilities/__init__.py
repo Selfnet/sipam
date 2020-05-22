@@ -1,3 +1,3 @@
-from .enums import IP, CIDRType, FlagChoices, HostType
+from .enums import IP, CIDRType, FlagChoices
 from .fields import FQDNField, FQDNValidator
 from .functions import subcidr

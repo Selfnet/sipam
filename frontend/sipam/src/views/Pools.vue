@@ -30,7 +30,7 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapActions, mapState } from 'vuex';
 import Pool from '@/components/Pool.vue';
 import PoolForm from '@/components/PoolForm.vue';
 
@@ -43,23 +43,21 @@ export default {
   data() {
     return {
       loading: true,
-      pools: [],
       showCreateForm: false,
     };
   },
-  computed: {},
+  computed: {
+    ...mapState('Pool', {
+      pools: state => Object.keys(state.pools),
+    }),
+  },
   methods: {
     ...mapActions({
       fetchPools: 'Pool/FETCH_POOLS',
     }),
-    ...mapGetters('Pool', {
-      getPools: 'pools',
-    }),
   },
-
   created() {
     this.fetchPools().then(() => {
-      this.pools = this.getPools();
       this.loading = false;
     });
   },

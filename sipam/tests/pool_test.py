@@ -6,31 +6,33 @@ from django.urls import reverse
 from rest_framework.test import APIRequestFactory, force_authenticate
 
 from sipam.serializers import AssignmentSerializer, PoolSerializer
-from sipam.utilities.enums import IP, HostType
+from sipam.utilities.enums import IP
 from sipam.utilities.error import NoSuchPrefix
 from sipam.views import PoolViewSet
 
 
-@pytest.mark.usefixtures('testPool', 'emptyPool', 'testToken', 'testAdmin')
+@pytest.mark.usefixtures('testData', 'testToken', 'testAdmin')
 class PoolTest(TestCase):
     """Test pool creation and assignments
     """
 
     def test_get_pool(self):
-        assert self.pool.id == 'test'
+        assert self.pool.id == 'vm'
+        assert self.linkPool.id == 'SRV'
         assert self.emptyPool.id == 'testEmpty'
         assert len(self.emptyPool.getPrefixes()) == 0
-        assert len(self.pool.getPrefixes()) == 2
+        assert len(self.pool.getPrefixes()) == 3
+        assert len(self.linkPool.getPrefixes()) == 1
 
     def test_assign_from_empty_pool(self):
         with pytest.raises(NoSuchPrefix):
-            assert self.emptyPool.assignFromPool(IP.v4, HostType.VIRTUAL, 'Desc', 'host')
+            assert self.emptyPool.assignFromPool(IP.v4, 'Desc', 'host')
 
     def test_assign_from_pool(self):
-        ip = self.pool.assignFromPool(IP.v4, HostType.VIRTUAL, 'Desc', 'host')
+        ip = self.pool.assignFromPool(IP.v4, 'Desc', 'host')
         assert isinstance(ip.cidr, IPv4Network)
 
-        net, gw, ip = self.pool.assignFromPool(IP.v4, HostType.PHYSICAL, 'Desc', 'physhost')
+        net, gw, ip = self.linkPool.assignFromPool(IP.v4, 'Desc', 'physhost')
         assert isinstance(net.cidr, IPv4Network)
         assert isinstance(gw.cidr, IPv4Network)
         assert isinstance(ip.cidr, IPv4Network)
@@ -38,7 +40,7 @@ class PoolTest(TestCase):
     def test_pool_serializer(self):
         serializer = PoolSerializer(instance=self.pool)
 
-        assert set(serializer.data.keys()) == set(['id', 'label', 'prefixes', 'poolType', 'description'])
+        assert set(serializer.data.keys()) == set(['id', 'label', 'prefixes', 'poolType', 'description', 'defaultDomain'])
 
     def test_pool_view(self):
         factory = APIRequestFactory()
@@ -71,17 +73,9 @@ class PoolTest(TestCase):
 
         newAssignment = {
             'hostname': 'Test',
-            'hostType': 'HostType.VIRTUA',  # Intended mistake
             'description': 'Test'
         }
 
-        # Test serializer with invalid data
-        serializer = AssignmentSerializer(data=newAssignment)
-        assert not serializer.is_valid()
-
-        newAssignment['hostType'] = 'HostType.VIRTUAL'
-
-        # Now it should be valid
         serializer = AssignmentSerializer(data=newAssignment)
         assert serializer.is_valid()
 

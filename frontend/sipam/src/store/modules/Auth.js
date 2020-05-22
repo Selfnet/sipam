@@ -26,7 +26,7 @@ export default {
       state.username = payload;
     },
     SAVE_TOKEN(state, payload) {
-      state.token = payload;
+      state.token = Object.assign({}, state.token, payload);
       axios.defaults.headers.Authorization = `Bearer ${state.token.access}`;
       state.loggedIn = true;
     },
@@ -74,6 +74,7 @@ export default {
         commit('SAVE_TOKEN', response.data);
         commit('UPDATE_LOGGED_IN', true);
       } else if (response.status === 401) {
+        console.log('Refresh unauthorized');
         commit('UPDATE_LOGGED_IN', false);
       } else {
         console.log(response);

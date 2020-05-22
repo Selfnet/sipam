@@ -15,5 +15,6 @@ class PoolSerializer(ModelSerializer):
             'label',
             'description',
             'poolType',
-            'prefixes'
+            'defaultDomain',
+            'prefixes',
         )
