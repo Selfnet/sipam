@@ -12,11 +12,20 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 from datetime import timedelta
+from django.contrib.auth import get_user_model
+from rest_framework.exceptions import AuthenticationFailed
 try:
     from .secret import PASSWORD, HOST
 except ImportError:
     PASSWORD = 'sipam'
     HOST = 'postgres'
+
+import warnings
+
+from django.core.cache import CacheKeyWarning
+# ignore cache key warning from drf-oidc-provider
+warnings.simplefilter("ignore", CacheKeyWarning)
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -28,14 +37,60 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('secret_key') or '#ar^t6d7k&nnvi7$&8g#9plu^6c)9qzg%-k+dtjrcxu7d(z6*_'
 
-# OIDC configuration
-OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
-OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
-OIDC_DRF_AUTH_BACKEND = 'mozilla_django_oidc.auth.OIDCAuthenticationBackend'
 
+def get_user_by_email(request, id_token):
+    User = get_user_model()
+    try:
+        user = User.objects.get(email=id_token.get('email'))
+    except User.DoesNotExist:
+        msg = _('Invalid Authorization header. User not found.')
+        raise AuthenticationFailed(msg)
+    return user
+
+
+# OIDC configuration (Relevant for SIAM)
+# OIDC_RP_CLIENT_ID = OIDC_RP_CLIENT_ID
+# OIDC_RP_CLIENT_SECRET = OIDC_RP_CLIENT_SECRET
+# OIDC_RP_SIGN_ALGO = 'RS256'
+# OIDC_OP_JWKS_ENDPOINT = 'https://sap.selfnet.de/auth/realms/master/protocol/openid-connect/certs'
+# OIDC_DRF_AUTH_BACKEND = 'mozilla_django_oidc.auth.OIDCAuthenticationBackend'
+# OIDC_OP_AUTHORIZATION_ENDPOINT = "https://sap.selfnet.de/auth/realms/master/protocol/openid-connect/auth"
+# OIDC_OP_TOKEN_ENDPOINT = "https://sap.selfnet.de/auth/realms/master/protocol/openid-connect/token"
+# OIDC_OP_USER_ENDPOINT = "https://sap.selfnet.de/auth/realms/master/protocol/openid-connect/userinfo"
+# # OIDC_TOKEN_USE_BASIC_AUTH = True
+# LOGIN_REDIRECT_URL = "/api/v1"
+# LOGOUT_REDIRECT_URL = "/"
+
+# OIDC configuration drf-oidc-auth
+OIDC_AUTH = {
+    # Specify OpenID Connect endpoint. Configuration will be
+    # automatically done based on the discovery document found
+    # at <endpoint>/.well-known/openid-configuration
+    'OIDC_ENDPOINT': 'https://sap.selfnet.de/auth/realms/master',
+
+    # Accepted audiences the ID Tokens can be issued to
+    'OIDC_AUDIENCES': ('myapp',),
+
+    # (Optional) Function that resolves id_token into user.
+    # This function receives a request and an id_token dict and expects to
+    # return a User object. The default implementation tries to find the user
+    # based on username (natural key) taken from the 'sub'-claim of the
+    # id_token.
+    'OIDC_RESOLVE_USER_FUNCTION': get_user_by_email,
+
+    # (Optional) Token prefix in JWT authorization header (default 'JWT')
+    'BEARER_AUTH_HEADER_PREFIX': 'OpenID',
+}
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
+MEMCACHE_MAX_KEY_LENGTH = 1024
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}
 
 ALLOWED_HOSTS = []
 
@@ -43,8 +98,8 @@ REST_FRAMEWORK = {
     #    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     #    'PAGE_SIZE': 100
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        'mozilla_django_oidc.contrib.drf.OIDCAuthentication',  # must be the first class.
         'accounts.auth_classes.FlaggedTokenAuthentication',
+        'oidc_auth.authentication.BearerTokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
@@ -56,9 +111,7 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = [
     'accounts.auth_backends.SelfnetLDAPAuth',
     'django.contrib.auth.backends.ModelBackend',
-    'mozilla_django_oidc.auth.OIDCAuthenticationBackend'
 ]
-
 
 
 AUTH_USER_MODEL = 'accounts.User'
@@ -80,7 +133,6 @@ INSTALLED_APPS = [
     'drf_yasg',
     'corsheaders',
     'netfields',
-    'mozilla_django_oidc',  # must be after django.contrib.auth
     'mptt',
     'sipam',
     'accounts'
@@ -103,7 +155,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_prometheus.middleware.PrometheusAfterMiddleware',
-
 ]
 
 ROOT_URLCONF = 'sipam.urls'
