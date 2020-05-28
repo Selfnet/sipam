@@ -43,7 +43,7 @@ def get_user_by_email(request, id_token):
     try:
         user = User.objects.get(email=id_token.get('email'))
     except User.DoesNotExist:
-        msg = _('Invalid Authorization header. User not found.')
+        msg = 'Invalid Authorization header. User not found.'
         raise AuthenticationFailed(msg)
     return user
 
