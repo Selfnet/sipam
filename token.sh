@@ -27,4 +27,4 @@ TOKEN=$(curl -L -X POST "$KEYCLOAK_URL" \
 --data-urlencode "username=$USERNAME" \
 --data-urlencode "password=$PASSWORD" | jq -r '.access_token')
 
-curl -H "Authorization: OpenID $TOKEN" http://localhost:8000/api/v1/cidr/
+curl -H "Authorization: OpenID_Bearer $TOKEN" http://localhost:8000/api/v1/cidr/
