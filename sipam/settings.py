@@ -12,8 +12,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 from datetime import timedelta
-from django.contrib.auth import get_user_model
-from rest_framework.exceptions import AuthenticationFailed
+from accounts.auth_backends import OIDCBackend
 try:
     from .secret import PASSWORD, HOST
 except ImportError:
@@ -38,16 +37,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = os.environ.get('secret_key') or '#ar^t6d7k&nnvi7$&8g#9plu^6c)9qzg%-k+dtjrcxu7d(z6*_'
 
 
-def get_user_by_email(request, id_token):
-    User = get_user_model()
-    try:
-        user = User.objects.get(email=id_token.get('email'))
-    except User.DoesNotExist:
-        msg = 'Invalid Authorization header. User not found.'
-        raise AuthenticationFailed(msg)
-    return user
-
-
 # OIDC configuration (Relevant for SIAM)
 # OIDC_RP_CLIENT_ID = OIDC_RP_CLIENT_ID
 # OIDC_RP_CLIENT_SECRET = OIDC_RP_CLIENT_SECRET
@@ -69,17 +58,17 @@ OIDC_AUTH = {
     'OIDC_ENDPOINT': 'https://sap.selfnet.de/auth/realms/master',
 
     # Accepted audiences the ID Tokens can be issued to
-    'OIDC_AUDIENCES': ('myapp',),
+    'OIDC_AUDIENCES': ('sipam-dev',),
 
     # (Optional) Function that resolves id_token into user.
     # This function receives a request and an id_token dict and expects to
     # return a User object. The default implementation tries to find the user
     # based on username (natural key) taken from the 'sub'-claim of the
     # id_token.
-    'OIDC_RESOLVE_USER_FUNCTION': get_user_by_email,
+    'OIDC_RESOLVE_USER_FUNCTION': OIDCBackend.authenticate,
 
     # (Optional) Token prefix in JWT authorization header (default 'JWT')
-    'BEARER_AUTH_HEADER_PREFIX': 'OpenID',
+    'BEARER_AUTH_HEADER_PREFIX': 'OpenID_Bearer',
 }
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -109,7 +98,6 @@ REST_FRAMEWORK = {
 }
 
 AUTHENTICATION_BACKENDS = [
-    'accounts.auth_backends.SelfnetLDAPAuth',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
