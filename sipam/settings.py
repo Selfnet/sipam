@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 
 import os
 from datetime import timedelta
-from accounts.auth_backends import OIDCBackend
 try:
     from .secret import PASSWORD, HOST
 except ImportError:
@@ -24,7 +23,6 @@ import warnings
 from django.core.cache import CacheKeyWarning
 # ignore cache key warning from drf-oidc-provider
 warnings.simplefilter("ignore", CacheKeyWarning)
-
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -50,6 +48,8 @@ SECRET_KEY = os.environ.get('secret_key') or '#ar^t6d7k&nnvi7$&8g#9plu^6c)9qzg%-
 # LOGIN_REDIRECT_URL = "/api/v1"
 # LOGOUT_REDIRECT_URL = "/"
 
+OIDC_GROUPS_CLAIM = 'groups'
+
 # OIDC configuration drf-oidc-auth
 OIDC_AUTH = {
     # Specify OpenID Connect endpoint. Configuration will be
@@ -65,7 +65,7 @@ OIDC_AUTH = {
     # return a User object. The default implementation tries to find the user
     # based on username (natural key) taken from the 'sub'-claim of the
     # id_token.
-    'OIDC_RESOLVE_USER_FUNCTION': OIDCBackend.authenticate,
+    'OIDC_RESOLVE_USER_FUNCTION': 'accounts.auth_backends.oidc_backend',
 
     # (Optional) Token prefix in JWT authorization header (default 'JWT')
     'BEARER_AUTH_HEADER_PREFIX': 'OpenID_Bearer',
