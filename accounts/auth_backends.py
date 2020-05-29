@@ -4,21 +4,21 @@ import datetime
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from rest_framework.exceptions import AuthenticationFailed
+from typing import List, Union
 
 
-class OIDCBackend(object):
+def oidc_backend(request, token: dict):
+    def append_groups(user, groups: Union[List[str], None]):
+        if groups is not None:
+            user.groups.set(
+                Group.objects.get_or_create(name=group)
+                for group in groups
+            )
+        return user
 
-    @staticmethod
-    def append_groups(user, groups):
-        # TODO: Set is_staff flag from magic ldap attribute
-        # group search
-        # groupnames = attrdata.get('sipam', [])
-        # user.groups.set(Group.objects.get_or_create(name=groupname)[0] for groupname in groupnames)
-        pass
-
-    @staticmethod
-    def create(token):
+    def create(token: dict):
         try:
             User = get_user_model()
             user = User()
@@ -32,15 +32,21 @@ class OIDCBackend(object):
             raise AuthenticationFailed("You are not authorized to login.")
         return user
 
-    @staticmethod
-    def authenticate(request, token):
+    def authenticate(request, token: dict):
         User = get_user_model()
         try:
             user = User.objects.get(id=token.get('sub'))
         except User.DoesNotExist:
-            user = OIDCBackend.create(token)
+            user = create(token)
 
         user.last_login = datetime.datetime.now()
         user.save()
+        user = append_groups(
+            user, token.get(
+                settings.OIDC_GROUPS_CLAIM
+            )
+        )
 
         return user
+
+    return authenticate(request, token)
