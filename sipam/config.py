@@ -37,8 +37,8 @@ class SIPAMConfig:
     secret_key = environ.var(
         default='#ar^t6d7k&nnvi7$&8g#9plu^6c)9qzg%-k+dtjrcxu7d(z6*_',
         converter=str,
-        help="The Secret Key of the Django Application. (Default is development Key," +
-        " https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/"
+        help=("The Secret Key of the Django Application. (Default is development Key,"
+              " https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/")
     )
     debug = environ.bool_var(
         default=True,
