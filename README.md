@@ -133,9 +133,20 @@ Install `@vue/cli`
 ### Running
 
 For local development `npm run serve` and the development Django server are sufficient.
-To make life easier it is recommended to generate an API Token and create a file called `.env.development.local` in the [`frontend/sipam`](frontend/sipam) directory.
-This file should contain the following line:
+To make life easier it is recommended to generate a superuser account for login.
+This can be achieved.
 
+```shell
+# Activate the virtual-env shell
+pipenv shell
+# Create a local superuser
+python manage.py createsuperuser
+$ Username: sipam_dev
+$ Email address: sipam_dev@example.com
+$ Password: 
+$ Password (again): 
+$ Superuser created successfully.
 ```
-VUE_APP_AUTH_TOKEN="Token <YOUR TOKEN>"
-```
+
+This user can be used for local development.
+You can now login with this user from the Frontend or the Backend.

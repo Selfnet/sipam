@@ -1,9 +1,12 @@
 #!/bin/bash
 
-HOSTNAME=sap.selfnet.de
-REALM_NAME=master
-USERNAME=$1
-CLIENT_ID=sipam-dev
+
+# token.sh keycloak.example.com <realm> <client-id> <username>
+
+HOSTNAME=$1
+REALM_NAME=$2
+CLIENT_ID=$3
+USERNAME=$4
 
 
 KEYCLOAK_URL=https://$HOSTNAME/auth/realms/$REALM_NAME/protocol/openid-connect/token

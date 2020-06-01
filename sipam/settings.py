@@ -34,19 +34,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('secret_key') or '#ar^t6d7k&nnvi7$&8g#9plu^6c)9qzg%-k+dtjrcxu7d(z6*_'
 
-
-# OIDC configuration (Relevant for SIAM)
-# OIDC_RP_CLIENT_ID = OIDC_RP_CLIENT_ID
-# OIDC_RP_CLIENT_SECRET = OIDC_RP_CLIENT_SECRET
-# OIDC_RP_SIGN_ALGO = 'RS256'
-# OIDC_OP_JWKS_ENDPOINT = 'https://sap.selfnet.de/auth/realms/master/protocol/openid-connect/certs'
-# OIDC_DRF_AUTH_BACKEND = 'mozilla_django_oidc.auth.OIDCAuthenticationBackend'
-# OIDC_OP_AUTHORIZATION_ENDPOINT = "https://sap.selfnet.de/auth/realms/master/protocol/openid-connect/auth"
-# OIDC_OP_TOKEN_ENDPOINT = "https://sap.selfnet.de/auth/realms/master/protocol/openid-connect/token"
-# OIDC_OP_USER_ENDPOINT = "https://sap.selfnet.de/auth/realms/master/protocol/openid-connect/userinfo"
-# # OIDC_TOKEN_USE_BASIC_AUTH = True
-# LOGIN_REDIRECT_URL = "/api/v1"
-# LOGOUT_REDIRECT_URL = "/"
+# This sets the key of the claim which defines the array of groups the user is in.
 
 OIDC_GROUPS_CLAIM = 'groups'
 
@@ -96,10 +84,6 @@ REST_FRAMEWORK = {
         'accounts.permissions.AuthenticatedReadOnly'
     ]
 }
-
-AUTHENTICATION_BACKENDS = [
-    'django.contrib.auth.backends.ModelBackend',
-]
 
 
 AUTH_USER_MODEL = 'accounts.User'
