@@ -11,12 +11,24 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import warnings
 from datetime import timedelta
+
+import environ
+from django.core.cache import CacheKeyWarning
+
+from .config import SIPAMConfig
+
 try:
-    from .secret import PASSWORD, HOST
-except ImportError:
-    PASSWORD = 'sipam'
-    HOST = 'postgres'
+    config = environ.to_config(SIPAMConfig)
+except environ.exceptions.MissingEnvValueError as e:
+    print(f"Missing Key: {e}")
+    print(SIPAMConfig.generate_help(display_defaults=True))
+    exit(1)
+
+
+# ignore cache key warning from drf-oidc-provider
+warnings.simplefilter("ignore", CacheKeyWarning)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -26,18 +38,52 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '#ar^t6d7k&nnvi7$&8g#9plu^6c)9qzg%-k+dtjrcxu7d(z6*_'
+SECRET_KEY = config.secret_key
+
+# This sets the key of the claim which defines the array of groups the user is in.
+
+OIDC_GROUPS_CLAIM = config.oidc.groups_claim
+
+# OIDC configuration drf-oidc-auth
+OIDC_AUTH = {
+    # Specify OpenID Connect endpoint. Configuration will be
+    # automatically done based on the discovery document found
+    # at <endpoint>/.well-known/openid-configuration
+    'OIDC_ENDPOINT': config.oidc.endpoint,
+
+    # (Optional) Function that resolves id_token into user.
+    # This function receives a request and an id_token dict and expects to
+    # return a User object. The default implementation tries to find the user
+    # based on username (natural key) taken from the 'sub'-claim of the
+    # id_token.
+    'OIDC_RESOLVE_USER_FUNCTION': 'accounts.auth_backends.oidc_backend',
+
+    # (Optional) Token prefix in JWT authorization header (default 'JWT')
+    'BEARER_AUTH_HEADER_PREFIX': config.oidc.bearer_auth_header_prefix,
+}
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config.debug
 
-ALLOWED_HOSTS = []
+MEMCACHE_MAX_KEY_LENGTH = 1024
+CACHES = {
+    'default': {
+        'BACKEND': 'django_prometheus.cache.backends.locmem.LocMemCache',
+    }
+}
+
+ALLOWED_HOSTS = [
+    config.fqdn,
+    "localhost",
+    "127.0.0.1"
+]
 
 REST_FRAMEWORK = {
     #    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     #    'PAGE_SIZE': 100
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'accounts.auth_classes.FlaggedTokenAuthentication',
+        'oidc_auth.authentication.BearerTokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
@@ -46,15 +92,9 @@ REST_FRAMEWORK = {
     ]
 }
 
-AUTHENTICATION_BACKENDS = [
-    'accounts.auth_backends.SelfnetLDAPAuth',
-    'django.contrib.auth.backends.ModelBackend'
-]
 
 AUTH_USER_MODEL = 'accounts.User'
 
-LDAP_SERVER = "ldaps://aaa.selfnet.de"
-BASEDN_UID = "ou=people,dc=selfnet,dc=de"
 
 # Application definition
 
@@ -75,7 +115,9 @@ INSTALLED_APPS = [
     'accounts'
 ]
 
-CORS_ORIGIN_WHITELIST = []
+CORS_ORIGIN_WHITELIST = [
+    f"https://{config.fqdn}"
+]
 CORS_ORIGIN_REGEX_WHITELIST = [
     r"^http://localhost:\d+$",
     r"^http://127.0.0.1:\d+",
@@ -92,7 +134,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django_prometheus.middleware.PrometheusAfterMiddleware',
-
 ]
 
 ROOT_URLCONF = 'sipam.urls'
@@ -123,16 +164,13 @@ WSGI_APPLICATION = 'sipam.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    # }
     'default': {
         'ENGINE': 'django_prometheus.db.backends.postgresql',
-        'NAME': 'sipam',
-        'USER': 'sipam',
-        'PASSWORD': PASSWORD,
-        'HOST': HOST,
+        'NAME': config.database.name,
+        'USER': config.database.user.name,
+        'PASSWORD': config.database.user.password,
+        'HOST': config.database.host,
+        'PORT': config.database.port,
     }
 }
 
@@ -157,7 +195,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 
 # Internationalization
-# https://docs.djangoproject.com/en/2.2/topics/i18n/
+# https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
@@ -168,7 +206,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.2/howto/static-files/

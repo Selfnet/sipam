@@ -60,7 +60,6 @@ urlpatterns = [
     path('api/v1/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/v1/jwt/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
-
     # Only Documentation
     re_path(
         r'^swagger(?P<format>\.json|\.yaml)$',
