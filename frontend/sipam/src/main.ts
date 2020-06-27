@@ -9,9 +9,9 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlusCircle, faMinusCircle, faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import axios from 'axios';
+import router from './router.ts';
 import Language from './components/Language';
-import store from './store/store';
-import router from './router';
+import store from './store/store.ts';
 import App from './App.vue';
 
 // Icons
@@ -32,7 +32,8 @@ axios.defaults.timeout = 15000;
 axios.defaults.headers.accept = 'application/json';
 
 axios.interceptors.response.use(
-  response => response, (error) => {
+  response => response,
+  (error) => {
     const originalRequest = error.config;
     const status = error.response ? error.response.status : null;
 

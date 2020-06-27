@@ -1,12 +1,21 @@
 from ipaddress import IPv4Network, IPv6Network
-from typing import List
+from typing import Dict, List
 
-from rest_framework.serializers import (ModelSerializer, SerializerMethodField,
+from drf_yasg.utils import swagger_serializer_method
+from rest_framework.serializers import (CharField, DictField, ListField,
+                                        ModelSerializer, SerializerMethodField,
                                         ValidationError)
 
 from sipam.models import CIDR
 
 from ..utilities import subcidr
+
+
+class StringListField(ListField):
+    child = CharField()
+
+class DocumentField(DictField):
+    child = CharField()
 
 
 class CIDRSerializer(ModelSerializer):
@@ -29,10 +38,12 @@ class CIDRSerializer(ModelSerializer):
             'labels'
         )
 
+    @swagger_serializer_method(serializer_or_field=StringListField)
     def get_children(self, obj) -> List[str]:
         return obj.getChildIDs()
 
-    def get_labels(self, obj) -> dict:
+    @swagger_serializer_method(serializer_or_field=DocumentField)
+    def get_labels(self, obj) -> Dict[str, str]:
         return obj.labelDict
 
 

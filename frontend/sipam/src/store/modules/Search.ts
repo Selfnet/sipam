@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { SearchState } from '@/types/store';
 
 export default {
   namespaced: true,
@@ -6,14 +7,14 @@ export default {
   state: {
     query: '',
     search: {},
-  },
+  } as SearchState,
 
   getters: {
-    query: state => state.query,
+    query: (state: SearchState) => state.query,
   },
 
   mutations: {
-    SET_QUERY(state, payload) {
+    SET_QUERY(state: SearchState, payload: String) {
       Vue.set(state, 'query', payload);
     },
   },
