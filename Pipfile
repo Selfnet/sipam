@@ -12,15 +12,13 @@ fqdn = "*"
 coreapi = "*"
 pyyaml = "*"
 apistar = "*"
-drf-yasg = "*"
 django-cors-headers = "*"
 django-prometheus = "*"
 drf-nested-routers = "*"
-"ldap3" = "*"
 django-mptt = "*"
 djangorestframework-simplejwt = "*"
-drf-oidc-auth = "*"
 environ-config = "*"
+drf-oidc-auth = ">=1.0.0"
 
 [dev-packages]
 pylint = "*"
@@ -30,6 +28,7 @@ pylint-django = "*"
 rope = "*"
 pytest-django = "*"
 coverage = "*"
+
 
 [requires]
 python_version = "3.7"
