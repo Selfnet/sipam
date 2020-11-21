@@ -21,8 +21,9 @@ echo "username:       $USERNAME"
 echo -n Password: 
 read -s PASSWORD
 
+echo
 
-TOKEN=$(curl -L -X POST "$KEYCLOAK_URL" \
+TOKEN=$(curl -s -L -X POST "$KEYCLOAK_URL" \
 -H 'Content-Type: application/x-www-form-urlencoded' \
 --data-urlencode "client_id=$CLIENT_ID" \
 --data-urlencode 'grant_type=password' \
@@ -30,4 +31,6 @@ TOKEN=$(curl -L -X POST "$KEYCLOAK_URL" \
 --data-urlencode "username=$USERNAME" \
 --data-urlencode "password=$PASSWORD" | jq -r '.access_token')
 
-curl -H "Authorization: OpenID_Bearer $TOKEN" http://localhost:8000/api/v1/cidr/
+echo "$TOKEN"
+
+curl -H "Authorization: OPENID $TOKEN" http://localhost:8000/api/v1/cidr/

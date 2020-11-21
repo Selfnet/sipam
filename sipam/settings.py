@@ -51,6 +51,14 @@ OIDC_AUTH = {
     # at <endpoint>/.well-known/openid-configuration
     'OIDC_ENDPOINT': config.oidc.endpoint,
 
+    'OIDC_CLAIMS_OPTIONS': {
+        'azp': {
+            'values': [
+                "sipam-dev",
+            ],
+            'essential': True,
+        },
+    },
     # (Optional) Function that resolves id_token into user.
     # This function receives a request and an id_token dict and expects to
     # return a User object. The default implementation tries to find the user
@@ -59,7 +67,7 @@ OIDC_AUTH = {
     'OIDC_RESOLVE_USER_FUNCTION': 'accounts.auth_backends.oidc_backend',
 
     # (Optional) Token prefix in JWT authorization header (default 'JWT')
-    'BEARER_AUTH_HEADER_PREFIX': config.oidc.bearer_auth_header_prefix,
+    'JWT_AUTH_HEADER_PREFIX': config.oidc.bearer_auth_header_prefix,
 }
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -83,7 +91,7 @@ REST_FRAMEWORK = {
     #    'PAGE_SIZE': 100
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'accounts.auth_classes.FlaggedTokenAuthentication',
-        'oidc_auth.authentication.BearerTokenAuthentication',
+        'oidc_auth.authentication.JSONWebTokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],
@@ -107,7 +115,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_prometheus',
     'rest_framework',
-    'drf_yasg',
+    'rest_framework.authtoken',
     'corsheaders',
     'netfields',
     'mptt',
