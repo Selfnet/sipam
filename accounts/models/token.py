@@ -1,15 +1,12 @@
-import uuid
-
 from django.conf import settings
 from django.db import models
-from django.utils.translation import gettext_lazy as _
 from rest_framework.authtoken.models import Token
 
 
 class FlaggedToken(Token):
     """A custom Token adding a Read/Write Flag.
     """
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(on_delete=models.CASCADE, related_name='auth_token', to=settings.AUTH_USER_MODEL, verbose_name='User')
     write = models.BooleanField(null=False, default=False)
     description = models.TextField(blank=True, null=True, default='')
 

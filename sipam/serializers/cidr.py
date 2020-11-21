@@ -5,7 +5,6 @@ from drf_yasg.utils import swagger_serializer_method
 from rest_framework.serializers import (CharField, DictField, ListField,
                                         ModelSerializer, SerializerMethodField,
                                         ValidationError)
-
 from sipam.models import CIDR
 
 from ..utilities import subcidr
@@ -13,6 +12,7 @@ from ..utilities import subcidr
 
 class StringListField(ListField):
     child = CharField()
+
 
 class DocumentField(DictField):
     child = CharField()
