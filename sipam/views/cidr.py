@@ -1,5 +1,6 @@
 from ipaddress import ip_network
 
+from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
 from django.shortcuts import get_object_or_404
 from netfields.functions import Masklen
 from rest_framework import status
@@ -7,8 +8,6 @@ from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
-from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
 
 from ..models import CIDR
 from ..serializers import CIDRSerializer, RecursiveCIDRSerializer

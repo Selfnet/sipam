@@ -1,6 +1,5 @@
-from rest_framework.serializers import ModelSerializer, StringRelatedField
-
 from accounts.models import FlaggedToken
+from rest_framework.serializers import ModelSerializer, StringRelatedField
 
 
 class TokenSerializer(ModelSerializer):
@@ -8,5 +7,5 @@ class TokenSerializer(ModelSerializer):
 
     class Meta:
         model = FlaggedToken
-        fields = ['id', 'key', 'user', 'write', 'description']
+        fields = ['key', 'user', 'write', 'description']
         read_only_fields = ['key', 'user']

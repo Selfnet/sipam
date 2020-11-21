@@ -52,5 +52,4 @@ def oidc_backend(request, token: dict):
         )
 
         return user
-        print(token)
     return authenticate(request, token)

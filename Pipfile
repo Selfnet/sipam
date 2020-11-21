@@ -18,7 +18,8 @@ drf-nested-routers = "*"
 django-mptt = "*"
 djangorestframework-simplejwt = "*"
 environ-config = "*"
-drf-oidc-auth = ">=1.0.0"
+drf-oidc-auth = "0.10.0"
+# ">=1.0.0"
 
 [dev-packages]
 pylint = "*"
