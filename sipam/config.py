@@ -63,12 +63,12 @@ class SIPAMConfig:
             help="This defines the endpoint of the OIDC provider"
         )
         groups_claim = environ.var(
-            default='groups',
+            default='aks',
             converter=str,
             help="This defines the key for the claim to use for groups."
         )
         bearer_auth_header_prefix = environ.var(
-            default='OpenID_Bearer',
+            default='OPENID',
             converter=str,
             help="This defines the Authorization Header prefix to look for when using OIDC."
         )
