@@ -13,9 +13,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import warnings
 from datetime import timedelta
-
-import environ
 from django.core.cache import CacheKeyWarning
+import environ
+
 
 from .config import SIPAMConfig
 

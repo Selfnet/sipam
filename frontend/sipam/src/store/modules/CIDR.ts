@@ -1,37 +1,38 @@
 import Vue from 'vue';
 import cidrAPI from '@/services/api/CIDR';
+import { CIDRState } from '@/types/store';
+import { CIDR } from '@/types/api';
+
 
 export default {
   namespaced: true,
 
   state: {
     cidrs: {},
-    _root: new Set(),
+    root: new Set(),
     search: {},
-  },
+  } as CIDRState,
 
   getters: {
-    cidrs: (state) => {
-      const cidrs = [];
-      state.root.forEach(cidrID => cidrs.push(state.cidrs[cidrID]));
+    cidrs: (state: CIDRState) => {
+      const cidrs: Array<CIDR> = [];
+      state.root.forEach((cidrID: string) => cidrs.push(state.cidrs[cidrID]));
       return cidrs;
     },
-    getByID: state => nodeID => state.cidrs[nodeID],
-    getChildrenByParentID: (state, getters) => parentID => getters.getByID(parentID).children.map(
-      childID => state.cidrs[childID],
-    ),
+    getByID: (state: CIDRState) => (nodeID: string) => state.cidrs[nodeID],
+    getChildrenByParentID: (state: CIDRState, getters: any) => (parentID: string) => getters.getByID(parentID).children.map((childID: string) => state.cidrs[childID]),
   },
 
   mutations: {
-    SET_CIDRS(state, payload) {
-      payload.forEach((cidr) => {
+    SET_CIDRS(state: CIDRState, payload: Array<CIDR>) {
+      payload.forEach((cidr: CIDR) => {
         Vue.set(state.cidrs, cidr.id, cidr);
         if (!cidr.parent) {
           state.root.add(cidr.id);
         }
       });
     },
-    SET_CIDR(state, payload) {
+    SET_CIDR(state: CIDRState, payload: CIDR) {
       // Include the cild underneath the parent
       // Otherwise the tree won't be redrawn correctly
       if (payload.parent) {
@@ -39,16 +40,20 @@ export default {
       }
       Vue.set(state.cidrs, payload.id, payload);
     },
-    DELETE_CIDR(state, payload) {
+    DELETE_CIDR(state: CIDRState, payload: string) {
       // First delete reference in parent
       const parentID = state.cidrs[payload].parent;
-      state.cidrs[parentID].children.splice(state.cidrs[parentID].children.indexOf(payload), 1);
+
+      // Check for null and undefined (even though ts still complains for no reason)
+      if (parentID) {
+        state.cidrs[parentID].children.splice(state.cidrs[parentID].children.indexOf(payload), 1);
+      }
       // Now delete the actual item
       Vue.delete(state.cidrs, payload);
     },
-    OVERRIDE_CIDRS(state, payload) {
+    OVERRIDE_CIDRS(state: CIDRState, payload: CIDR[]) {
       state.root = new Set();
-      payload.forEach((cidr) => {
+      payload.forEach((cidr: CIDR) => {
         Vue.set(state.cidrs, cidr.id, cidr);
         state.root.add(cidr.id);
       });

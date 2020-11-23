@@ -1,10 +1,9 @@
 import pytest
+from accounts.models import FlaggedToken
+from accounts.views import TokenViewSet
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory, force_authenticate
-
-from accounts.models import FlaggedToken
-from accounts.views import TokenViewSet
 
 
 @pytest.mark.usefixtures('testToken', 'testAdmin', 'testUser')
@@ -59,7 +58,7 @@ class TokenTest(TestCase):
         assert response.status_code == 201
 
         user_token = FlaggedToken.objects.filter(user=self.user, write=True).first()
-        assert response.data['id'] == str(user_token.id)
+        assert response.data['key'] == str(user_token.key)
 
         # Check whether admin can see this token
 
@@ -85,26 +84,25 @@ class TokenTest(TestCase):
             'description': 'An updated description'
         }
 
-        token_id = str(self.rtoken.id)
-        request = factory.put(reverse('token-detail', kwargs={'pk': token_id}), newToken)
+        request = factory.put(reverse('token-detail', kwargs={'pk': self.rtoken.key}), newToken)
 
         force_authenticate(request, user=self.user)
-        response = view(request, pk=token_id)
+        response = view(request, pk=self.rtoken.key)
         assert response.status_code == 200
 
         # Get the updated object from the database
-        db_token = FlaggedToken.objects.get(id=self.rtoken.id)
+        db_token = FlaggedToken.objects.get(pk=self.rtoken.key)
         assert db_token.description == newToken['description']
 
         # Show admin can update this token as well
         newToken['write'] = True
-        request = factory.put(reverse('token-detail', kwargs={'pk': token_id}), newToken)
+        request = factory.put(reverse('token-detail', kwargs={'pk': self.rtoken.key}), newToken)
 
         force_authenticate(request, user=self.admin)
-        response = view(request, pk=token_id)
+        response = view(request, pk=self.rtoken.key)
         assert response.status_code == 200
 
-        db_token = FlaggedToken.objects.get(id=self.rtoken.id)
+        db_token = FlaggedToken.objects.get(pk=self.rtoken.key)
         assert db_token.write == newToken['write']
 
     def test_delete_token(self):
@@ -112,24 +110,22 @@ class TokenTest(TestCase):
         factory = APIRequestFactory()
         view = TokenViewSet.as_view({'delete': 'destroy'})
 
-        token_id = str(self.token.id)
-        request = factory.delete(reverse('token-detail', kwargs={'pk': token_id}))
+        request = factory.delete(reverse('token-detail', kwargs={'pk': self.token.key}))
 
         force_authenticate(request, user=self.user)
-        response = view(request, pk=token_id)
+        response = view(request, pk=self.token.key)
 
         # The API pretends not to know this token
         assert response.status_code == 404
-        assert FlaggedToken.objects.get(id=token_id)
+        assert FlaggedToken.objects.get(key=self.token.key)
 
         # Now we actually delete tokens
 
         for user, token in [(self.user, self.rtoken), (self.admin, self.token)]:
-            token_id = str(token.id)
-            request = factory.delete(reverse('token-detail', kwargs={'pk': token_id}))
+            request = factory.delete(reverse('token-detail', kwargs={'pk': self.token.key}))
 
             force_authenticate(request, user=user)
-            response = view(request, pk=token_id)
+            response = view(request, pk=token.key)
 
             assert response.status_code == 204
-            assert len(FlaggedToken.objects.filter(id=token_id)) == 0
+            assert len(FlaggedToken.objects.filter(key=token.key)) == 0

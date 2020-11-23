@@ -21,9 +21,10 @@ environ-config = "*"
 drf-oidc-auth = ">=1.0.0"
 
 [dev-packages]
+mypy = "*"
 pylint = "*"
-"flake8" = "*"
-"autopep8" = "*"
+autopep8 = "*"
+flake8 = "*"
 pylint-django = "*"
 rope = "*"
 pytest-django = "*"
