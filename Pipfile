@@ -16,6 +16,7 @@ django-cors-headers = "*"
 django-prometheus = "*"
 drf-nested-routers = "*"
 django-mptt = "*"
+drf-yasg = "*"
 djangorestframework-simplejwt = "*"
 environ-config = "*"
 drf-oidc-auth = ">=1.0.0"
@@ -32,7 +33,7 @@ coverage = "*"
 
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
 
 [scripts]
 dev = "python manage.py runserver"
