@@ -27,16 +27,17 @@ class CIDRSerializer(ModelSerializer):
         fields = (
             'id',
             'cidr',
-            'created',
-            'edited',
             'parent',
             'children',
+            'created',
+            'edited',
             'pool',
             'flag',
             'fqdn',
             'description',
             'labels'
         )
+        read_only_fields = ('parent', 'children', 'created', 'id')
 
     @swagger_serializer_method(serializer_or_field=StringListField)
     def get_children(self, obj) -> List[str]:
