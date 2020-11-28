@@ -4,7 +4,6 @@ import pytest
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory, force_authenticate
-
 from sipam.serializers import AssignmentSerializer, PoolSerializer
 from sipam.utilities.enums import IP
 from sipam.utilities.error import NoSuchPrefix
@@ -85,6 +84,8 @@ class PoolTest(TestCase):
 
         response = view(request, pk=self.pool.id)
         assert response.status_code == 201
+
+        assert len(response.data['assignments']) > 0
 
         # Emtpy pool
         request = factory.post(reverse('pool-assign', kwargs={'pk': self.emptyPool.id}), newAssignment)

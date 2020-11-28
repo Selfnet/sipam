@@ -1,10 +1,9 @@
+from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
 from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
-
-from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
 
 from ..models import Pool
 from ..serializers import AssignmentSerializer, PoolSerializer
@@ -41,10 +40,10 @@ class PoolViewSet(ModelViewSet):
         if not serializer.is_valid():
             return Response(status=status.HTTP_412_PRECONDITION_FAILED)
 
-        description = serializer.data['description']
-        hostname = serializer.data['hostname']
+        description = serializer.validated_data['description']
+        hostname = serializer.validated_data['hostname']
 
-        if serializer.data['useDefaultDomain']:
+        if serializer.validated_data['useDefaultDomain']:
             hostname = hostname + '.' + pool.defaultDomain
 
         # Try to assign an ip for v4 and v6, if NoSuchPrefix is raised we
@@ -65,8 +64,17 @@ class PoolViewSet(ModelViewSet):
             transaction.set_rollback(True)
             return Response(status=status.HTTP_507_INSUFFICIENT_STORAGE)
 
-        # Successfully assigned
-        return Response(status=status.HTTP_201_CREATED)
+        # Successfully assigned, pipe through serializer
+        return Response(
+            AssignmentSerializer(
+                instance={
+                    'assignments': list(result.values())
+                },
+                read_only=True,
+                context={'request': request}
+            ).data,
+            status=status.HTTP_201_CREATED
+        )
 
     @assign.mapping.delete
     def deleteAssignment(self, request, pk=None):

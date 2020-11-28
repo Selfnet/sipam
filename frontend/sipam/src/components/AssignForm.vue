@@ -79,9 +79,19 @@ export default {
       this.assign({
         poolID: this.pool.id,
         assignmentData: this.form,
+      }).then((assigned) => {
+        console.log(assigned);
+        // TODO: Show a modal with the newly assigned prefixes
+
+        // TODO: Refactor this
+        this.$emit('assign-form-close');
+      }).catch(() => {
+        // Assignment Failed
+        console.log('Could not assign');
+
+        // TDOD: Show failed modal
+        this.$emit('assign-form-close');
       });
-      // TODO: Refactor this
-      this.$emit('assign-form-close');
     },
   },
 };
