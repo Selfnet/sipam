@@ -17,7 +17,7 @@ eslint:
   before_script:
     - npm i --prefix ${npm_prefix} eslint
   script:
-    - npm run --prefix ${npm_prefix}
+    - npm run --prefix ${npm_prefix} eslint
 
 # npm-build:
 #   image: node:15.3.0-buster
