@@ -36,7 +36,7 @@ def oidc_backend(request, token: dict):
         return user
 
     def authenticate(request, token: dict):
-        logger.info(token, request)
+        logger.debug(f'{token} :: {request}')
         User = get_user_model()
         try:
             user = User.objects.get(id=token.get('sub', "").lower())
