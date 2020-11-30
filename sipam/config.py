@@ -4,8 +4,14 @@ import enum
 
 
 class Env(enum.Enum):
-    PROD = "production"
+    PROD = "prod"
     DEV = "dev"
+
+
+def list_converter(value: str) -> list:
+    if "" == value:
+        return []
+    return value.split(',')
 
 
 @environ.config
@@ -62,13 +68,23 @@ class SIPAMConfig:
             converter=str,
             help="This defines the endpoint of the OIDC provider"
         )
+        client_id = environ.var(
+            default='sipam',
+            converter=str,
+            help="This defines the allowed azp definition == client_id in keycloak."
+        )
+        allowed_groups = environ.var(
+            default='',
+            converter=list_converter,
+            help="This defines allowed values in the groups_claim"
+        )
         groups_claim = environ.var(
-            default='groups',
+            default='aks',
             converter=str,
             help="This defines the key for the claim to use for groups."
         )
         bearer_auth_header_prefix = environ.var(
-            default='OpenID_Bearer',
+            default='OPENID',
             converter=str,
             help="This defines the Authorization Header prefix to look for when using OIDC."
         )

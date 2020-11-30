@@ -12,27 +12,28 @@ fqdn = "*"
 coreapi = "*"
 pyyaml = "*"
 apistar = "*"
-drf-yasg = "*"
 django-cors-headers = "*"
 django-prometheus = "*"
 drf-nested-routers = "*"
-"ldap3" = "*"
 django-mptt = "*"
+drf-yasg = "*"
 djangorestframework-simplejwt = "*"
-drf-oidc-auth = "*"
 environ-config = "*"
+drf-oidc-auth = ">=1.0.0"
 
 [dev-packages]
+mypy = "*"
 pylint = "*"
-"flake8" = "*"
-"autopep8" = "*"
+autopep8 = "*"
+flake8 = "*"
 pylint-django = "*"
 rope = "*"
 pytest-django = "*"
 coverage = "*"
 
+
 [requires]
-python_version = "3.7"
+python_version = "3.8"
 
 [scripts]
 dev = "python manage.py runserver"

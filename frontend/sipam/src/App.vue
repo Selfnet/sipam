@@ -20,7 +20,7 @@
         id="nav-collapse"
         is-nav
       >
-        <b-navbar-nav v-if="getLoggedIn()">
+        <b-navbar-nav v-if="hasAccess">
           <b-nav-item to="/home">Home</b-nav-item>
           <b-nav-item to="/pools">Pools</b-nav-item>
           <b-nav-item to="/cidrs">CIDR</b-nav-item>
@@ -46,10 +46,10 @@
           <b-nav-item-dropdown right>
             <!-- Using 'button-content' slot -->
             <template v-slot:button-content>
-              <em>{{ user }}</em>
+              <em>{{ userDisplay }}</em>
             </template>
             <b-dropdown-item
-              v-if="getLoggedIn()"
+              v-if="hasAccess"
               @click=logout
             >{{$t("GENERAL.LOGOUT.LABEL")}}</b-dropdown-item>
             <b-dropdown-item
@@ -67,27 +67,25 @@
 </template>
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
+import config from '@/config';
+import GenericAuth from '@/store/modules/GenericAuth';
 import LanguagePicker from './components/LanguagePicker.vue';
 
 export default {
   components: {
     LanguagePicker,
   },
-  methods: {
-    ...mapGetters('Auth', {
-      getLoggedIn: 'loggedIn',
-    }),
-    ...mapActions({
-      logout: 'Auth/LOGOUT',
-    }),
-  },
   computed: {
-    ...mapState('Auth', {
-      user: 'username',
-    }),
-    ...mapGetters('Search', {
-      getQuery: 'query',
-    }),
+    ...mapGetters(
+      'AuthOIDC', {
+        user: 'oidcUser',
+      },
+    ),
+    ...mapGetters(
+      'Search', {
+        getQuery: 'query',
+      },
+    ),
     query: {
       get() {
         return this.getQuery;
@@ -98,6 +96,64 @@ export default {
         }
       },
     },
+    ...mapGetters('AuthOIDC', [
+      'oidcIsAuthenticated',
+    ]),
+    userDisplay() {
+      if (this.user && this.user.preferred_username) {
+        return this.user.preferred_username;
+      }
+      return GenericAuth.emptyState.username;
+    },
+    hasAccess() {
+      return this.oidcIsAuthenticated || this.getLoggedIn();
+    },
+  },
+  methods: {
+    ...mapGetters('Auth', {
+      getLoggedIn: 'loggedIn',
+    }),
+    ...mapActions({
+      authLogout: 'Auth/LOGOUT',
+      removeOidcUser: 'AuthOIDC/removeOidcUser',
+      authenticateOidcPopup: 'AuthOIDC/authenticateOidcPopup',
+    }),
+    userLoaded(user) {
+      console.log('I am listening to the user loaded event in vuex-oidc', e.detail);
+    },
+    oidcError(e) {
+      console.log('I am listening to the oidc oidcError event in vuex-oidc', e.detail);
+    },
+    automaticSilentRenewError(e) {
+      console.log('I am listening to the automaticSilentRenewError event in vuex-oidc', e.detail);
+    },
+    signOut() {
+      this.removeOidcUser().then(() => {
+        this.$router.push('/');
+      });
+    },
+    logout() {
+      if (config.oidc) {
+        this.oidcLogout();
+      } else {
+        this.authLogout();
+      }
+    },
+    oidcLogout() {
+      this.removeOidcUser().then(() => {
+        this.$router.push('/');
+      });
+    },
+  },
+  mounted() {
+    window.addEventListener('vuexoidc:userLoaded', this.userLoaded);
+    window.addEventListener('vuexoidc:oidcError', this.oidcError);
+    window.addEventListener('vuexoidc:automaticSilentRenewError', this.automaticSilentRenewError);
+  },
+  destroyed() {
+    window.removeEventListener('vuexoidc:userLoaded', this.userLoaded);
+    window.removeEventListener('vuexoidc:oidcError', this.oidcError);
+    window.removeEventListener('vuexoidc:automaticSilentRenewError', this.automaticSilentRenewError);
   },
 };
 </script>

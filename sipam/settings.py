@@ -13,9 +13,9 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 import os
 import warnings
 from datetime import timedelta
-
-import environ
 from django.core.cache import CacheKeyWarning
+import environ
+
 
 from .config import SIPAMConfig
 
@@ -44,6 +44,18 @@ SECRET_KEY = config.secret_key
 
 OIDC_GROUPS_CLAIM = config.oidc.groups_claim
 
+
+def allowed_groups() -> dict:
+    if config.oidc.groups_claim:
+        return {
+            f'{config.oidc.groups_claim}': {
+                'values': config.oidc.allowed_groups,
+                'essential': True
+            }
+        }
+    return {}
+
+
 # OIDC configuration drf-oidc-auth
 OIDC_AUTH = {
     # Specify OpenID Connect endpoint. Configuration will be
@@ -51,6 +63,15 @@ OIDC_AUTH = {
     # at <endpoint>/.well-known/openid-configuration
     'OIDC_ENDPOINT': config.oidc.endpoint,
 
+    'OIDC_CLAIMS_OPTIONS': {
+        'azp': {
+            'values': [
+                "{config.oidc.client_id}",
+            ],
+            'essential': True,
+        },
+        **allowed_groups(),
+    },
     # (Optional) Function that resolves id_token into user.
     # This function receives a request and an id_token dict and expects to
     # return a User object. The default implementation tries to find the user
@@ -59,7 +80,7 @@ OIDC_AUTH = {
     'OIDC_RESOLVE_USER_FUNCTION': 'accounts.auth_backends.oidc_backend',
 
     # (Optional) Token prefix in JWT authorization header (default 'JWT')
-    'BEARER_AUTH_HEADER_PREFIX': config.oidc.bearer_auth_header_prefix,
+    'JWT_AUTH_HEADER_PREFIX': config.oidc.bearer_auth_header_prefix,
 }
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -83,7 +104,7 @@ REST_FRAMEWORK = {
     #    'PAGE_SIZE': 100
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'accounts.auth_classes.FlaggedTokenAuthentication',
-        'oidc_auth.authentication.BearerTokenAuthentication',
+        'oidc_auth.authentication.JSONWebTokenAuthentication',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ],

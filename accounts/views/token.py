@@ -1,11 +1,8 @@
-from rest_framework import status
-from rest_framework.response import Response
-from rest_framework.filters import SearchFilter
-from rest_framework.viewsets import GenericViewSet
-from rest_framework import mixins
-
-
 from accounts.permissions import UserAccess
+from rest_framework import mixins, status
+from rest_framework.filters import SearchFilter
+from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
 from ..models import FlaggedToken
 from ..serializers import TokenSerializer
@@ -67,9 +64,9 @@ class TokenViewSet(mixins.ListModelMixin,
         """
         try:
             if request.user.is_staff:
-                FlaggedToken.objects.get(id=pk).delete()
+                FlaggedToken.objects.get(pk=pk).delete()
             else:
-                FlaggedToken.objects.get(id=pk, user=request.user).delete()
+                FlaggedToken.objects.get(pk=pk, user=request.user).delete()
         except FlaggedToken.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -81,9 +78,9 @@ class TokenViewSet(mixins.ListModelMixin,
 
         try:
             if request.user.is_staff:
-                token = FlaggedToken.objects.get(id=pk)
+                token = FlaggedToken.objects.get(pk=pk)
             else:
-                token = FlaggedToken.objects.get(id=pk, user=request.user)
+                token = FlaggedToken.objects.get(pk=pk, user=request.user)
 
             serializer = self.serializer_class(data=request.data, context={'request': request})
 
