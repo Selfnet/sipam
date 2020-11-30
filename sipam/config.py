@@ -8,6 +8,12 @@ class Env(enum.Enum):
     DEV = "dev"
 
 
+def list_converter(value: str) -> list:
+    if "" == value:
+        return []
+    return value.split(',')
+
+
 @environ.config
 class User:
     name = environ.var(
@@ -61,6 +67,16 @@ class SIPAMConfig:
             default="https://samples.auth0.com/",
             converter=str,
             help="This defines the endpoint of the OIDC provider"
+        )
+        client_id = environ.var(
+            default='sipam',
+            converter=str,
+            help="This defines the allowed azp definition == client_id in keycloak."
+        )
+        allowed_groups = environ.var(
+            default='',
+            converter=list_converter,
+            help="This defines allowed values in the groups_claim"
         )
         groups_claim = environ.var(
             default='aks',

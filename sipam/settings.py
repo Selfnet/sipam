@@ -44,6 +44,18 @@ SECRET_KEY = config.secret_key
 
 OIDC_GROUPS_CLAIM = config.oidc.groups_claim
 
+
+def allowed_groups() -> dict:
+    if config.oidc.groups_claim:
+        return {
+            f'{config.oidc.groups_claim}': {
+                'values': config.oidc.allowed_groups,
+                'essential': True
+            }
+        }
+    return {}
+
+
 # OIDC configuration drf-oidc-auth
 OIDC_AUTH = {
     # Specify OpenID Connect endpoint. Configuration will be
@@ -54,10 +66,11 @@ OIDC_AUTH = {
     'OIDC_CLAIMS_OPTIONS': {
         'azp': {
             'values': [
-                "sipam-dev",
+                "{config.oidc.client_id}",
             ],
             'essential': True,
         },
+        **allowed_groups(),
     },
     # (Optional) Function that resolves id_token into user.
     # This function receives a request and an id_token dict and expects to
@@ -76,7 +89,7 @@ DEBUG = config.debug
 MEMCACHE_MAX_KEY_LENGTH = 1024
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'BACKEND': 'django_prometheus.cache.backends.locmem.LocMemCache',
     }
 }
 
@@ -115,6 +128,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_prometheus',
     'rest_framework',
+    'drf_yasg',
     'corsheaders',
     'netfields',
     'mptt',
