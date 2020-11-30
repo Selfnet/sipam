@@ -69,6 +69,14 @@ python manage.py migrate sipam # this triggers all migrations for the database o
 python manage.py runserver # runs the server
 ```
 
+```.env
+SIPAM_DATABASE_HOST=localhost
+SIPAM_DATABASE_USER_NAME=sipam
+SIPAM_DATABASE_USER_PASSWORD=<secure_password>
+SIPAM_OIDC_CLIENT_ID=sipam-dev
+SIPAM_OIDC_ENDPOINT=${PATH_TO_TOKEN_ISSUER/auth/realms/realm-name}
+```
+
 ## Backend Development
 
 ### Base developer Dataset
