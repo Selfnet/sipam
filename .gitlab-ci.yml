@@ -5,9 +5,28 @@ variables:
   POSTGRES_PASSWORD: sipam
   POSTGRES_DB: sipam
   prometheus_multiproc_dir: /tmp
+  npm_prefix: frontend/sipam/
 
 stages:
   - test
+  - build
+
+eslint:
+  image: node:15.3.0-buster
+  stage: test
+  before_script:
+    - npm i --prefix ${npm_prefix} -g eslint
+  script:
+    - eslint ${npm_prefix}
+
+# npm-build:
+#   image: node:15.3.0-buster
+#   stage: build
+#   before_script:
+#     - npm ci --prefix ${npm_prefix}
+#   script:
+#     - npm run --prefix ${npm_prefix} build
+
 
 flake8:
   stage: test
