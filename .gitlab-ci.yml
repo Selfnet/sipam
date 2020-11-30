@@ -15,7 +15,7 @@ eslint:
   image: node:15.3.0-buster
   stage: test
   before_script:
-    - npm i --prefix ${npm_prefix} -g eslint
+    - npm i -g eslint
   script:
     - eslint ${npm_prefix}
 
