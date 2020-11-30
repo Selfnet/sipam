@@ -5,11 +5,11 @@ export interface RootState {
 }
 
 export interface CIDRDict {
-    [id: string]: CIDR
+    [id: string] : CIDR
 }
 
 export interface PoolDict {
-    [id: string]: Pool
+    [id: string] : Pool
 }
 
 export interface SearchState {

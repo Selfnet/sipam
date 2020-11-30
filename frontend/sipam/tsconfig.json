@@ -34,7 +34,6 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "src/oidcRenew.js",
   ],
   "exclude": [
     "node_modules"
