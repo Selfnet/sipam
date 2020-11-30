@@ -67,7 +67,7 @@ export default {
       console.log('Login Failed.');
     },
     loginSuccessfull() {
-      if (this.getLoggedIn) {
+      if (this.getLoggedIn()) {
         this.$router.push({ path: 'home' });
       } else {
         this.$router.push({ path: 'login' });
