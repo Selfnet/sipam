@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import poolAPI from '@/services/api/Pool';
+import { PoolState } from '@/types/store';
+import { Pool } from '@/types/api';
 
 export default {
   namespaced: true,
@@ -9,30 +11,30 @@ export default {
   },
 
   getters: {
-    poolList: state => Object.values(state.pools),
+    poolList: (state: PoolState) => Object.values(state.pools),
   },
 
   mutations: {
-    SET_POOLS(state, payload) {
-      payload.forEach((pool) => {
+    SET_POOLS(state: PoolState, pools: Pool[]) {
+      pools.forEach((pool) => {
         Vue.set(state.pools, pool.id, pool);
       });
     },
-    SET_POOL(state, payload) {
-      Vue.set(state.pools, payload.id, payload);
+    SET_POOL(state: PoolState, pool: Pool) {
+      Vue.set(state.pools, pool.id, pool);
     },
-    DELETE_POOL(state, payload) {
-      Vue.delete(state.pools, payload);
+    DELETE_POOL(state: PoolState, id: string) {
+      Vue.delete(state.pools, id);
     },
   },
 
   actions: {
-    async FETCH_POOLS({ commit }) {
+    async FETCH_POOLS(context: { commit: any }) {
       const response = await poolAPI.getPools();
       if (response.status === 200) {
-        commit('SET_POOLS', response.data);
+        context.commit('SET_POOLS', response.data);
         response.data.forEach((pool) => {
-          commit('CIDR/SET_CIDRS', pool.prefixes, { root: true });
+          context.commit('CIDR/SET_CIDRS', pool.prefixes, { root: true });
         });
       }
     },

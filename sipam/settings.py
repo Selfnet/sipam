@@ -133,7 +133,7 @@ INSTALLED_APPS = [
     'netfields',
     'mptt',
     'sipam',
-    'accounts'
+    'accounts',
 ]
 
 CORS_ORIGIN_WHITELIST = [
