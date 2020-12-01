@@ -66,7 +66,7 @@ class CIDRViewSet(ModelViewSet):
                 cidr,
                 context={'request': request}).data)
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         """Create a new cidr object by automatically detecting parents
         """
 
@@ -91,7 +91,7 @@ class CIDRViewSet(ModelViewSet):
             status=status.HTTP_201_CREATED)
 
     @action(detail=True)
-    def supercidr(self, request, pk=None):
+    def supercidr(self, request, *args, **kwargs):
         """
             API endpoint that allows direct super cidr (network) to be viewed.
         """
@@ -104,7 +104,7 @@ class CIDRViewSet(ModelViewSet):
         )
 
     @action(detail=True)
-    def subcidr(self, request, pk=None):
+    def subcidr(self, request, *args, **kwargs):
         """
         API endpoint that allows direct subordinary cidr (networks) to be viewed.
         """
@@ -117,7 +117,7 @@ class CIDRViewSet(ModelViewSet):
         )
 
     @action(detail=True)
-    def ips(self, request, pk=None):
+    def ips(self, request, *args, **kwargs):
         """
         API Endpoint that allows direct children ips to be viewed.
         """
