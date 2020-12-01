@@ -31,7 +31,7 @@ class TokenViewSet(mixins.ListModelMixin,
             return FlaggedToken.objects.all()
         return FlaggedToken.objects.filter(user=user)
 
-    def list(self, request):
+    def list(self, request, *args, **kwargs):
         """Get own tokens or all tokens if admin
         """
 
