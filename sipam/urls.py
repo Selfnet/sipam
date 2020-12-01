@@ -16,15 +16,12 @@ Including another URLconf
 from accounts.urls import router as auth_router
 # from django.contrib import admin
 from django.urls import include, path, re_path
-from rest_framework import permissions
-from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
 from rest_framework_nested import routers
-from rest_framework_simplejwt.views import (TokenObtainPairView,
-                                            TokenRefreshView, TokenVerifyView)
 
 from sipam import views
-
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -47,6 +44,7 @@ router.register(r'pool', views.PoolViewSet)
 cidr_router = routers.NestedSimpleRouter(router, r'cidr', lookup='cidr')
 cidr_router.register(r'labels', views.LabelViewSet, basename='cidr-labels')
 
+
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
@@ -55,9 +53,9 @@ urlpatterns = [
     path('api/v1/', include(cidr_router.urls)),
     path('api/v1/', include(auth_router.urls)),
     # Authentication
-    path('api/v1/jwt/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/v1/jwt/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/v1/jwt/verify/', TokenVerifyView.as_view(), name='token_verify'),
+    path('api/v1/jwt/', views.MyTokenView.as_view(), name='token_obtain_pair'),
+    path('api/v1/jwt/refresh/', views.MyRefreshView.as_view(), name='token_refresh'),
+    path('api/v1/jwt/verify/', views.MyTokenVerifyView.as_view(), name='token_verify'),
     path('auth/', include('rest_framework.urls', namespace='rest_framework')),
     # Only Documentation
     re_path(
@@ -76,6 +74,7 @@ urlpatterns = [
             'redoc',
             cache_timeout=0),
         name='schema-redoc'),
+    # Prometheus Metrics Endpoints.
     re_path('', include('django_prometheus.urls')),
 
 ]
