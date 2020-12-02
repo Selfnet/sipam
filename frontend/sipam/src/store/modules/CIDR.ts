@@ -1,8 +1,7 @@
 import Vue from 'vue';
-import cidrAPI from '@/services/api/CIDR';
-import { CIDRState } from '@/types/store';
+import { CIDRState, CIDRGet } from '@/types/store';
 import { CIDR } from '@/types/api';
-
+import SIPAM from '@/sipam';
 
 export default {
   namespaced: true,
@@ -30,20 +29,23 @@ export default {
   },
 
   mutations: {
-    SET_CIDRS(state: CIDRState, payload: Array<CIDR>) {
-      payload.forEach((cidr: CIDR) => {
+    SET_CIDRS(state: CIDRState, payload: Array<CIDRGet>) {
+      payload.forEach((cidr: CIDRGet) => {
         Vue.set(state.cidrs, cidr.id, cidr);
         if (!cidr.parent) {
           state.root.add(cidr.id);
         }
       });
     },
-    SET_CIDR(state: CIDRState, payload: CIDR) {
+    SET_CIDR(state: CIDRState, payload: CIDRGet) {
       // Include the cild underneath the parent
       // Otherwise the tree won't be redrawn correctly
-      if (payload.parent) {
+      if (payload && payload.parent && state.cidrs[payload.parent].children) {
         // eslint-disable-next-line no-undefined, no-null
-        state.cidrs[payload.parent].children.push(payload.id);
+        const child = state.cidrs[payload.parent].children;
+        if (child) {
+          child.push(payload.id);
+        }
       }
       Vue.set(state.cidrs, payload.id, payload);
     },
@@ -54,14 +56,17 @@ export default {
       // Check for null and undefined (even though ts still complains for no reason)
       if (parentID) {
         // eslint-disable-next-line no-undefined, no-null
-        state.cidrs[parentID].children.splice(state.cidrs[parentID].children.indexOf(payload), 1);
+        const child = state.cidrs[parentID].children;
+        if (child) {
+          child.splice(child.indexOf(payload), 1);
+        }
       }
       // Now delete the actual item
       Vue.delete(state.cidrs, payload);
     },
-    OVERRIDE_CIDRS(state: CIDRState, payload: CIDR[]) {
+    OVERRIDE_CIDRS(state: CIDRState, payload: CIDRGet[]) {
       state.root = new Set();
-      payload.forEach((cidr: CIDR) => {
+      payload.forEach((cidr: CIDRGet) => {
         Vue.set(state.cidrs, cidr.id, cidr);
         state.root.add(cidr.id);
       });
@@ -70,11 +75,11 @@ export default {
 
   actions: {
     async FETCH_CIDRS(context: { commit: any }) {
-      const cidrs = await cidrAPI.getCIDRs();
-      context.commit('OVERRIDE_CIDRS', cidrs);
+      const response = await SIPAM.api.cidr.cidrList();
+      context.commit('OVERRIDE_CIDRS', response.data);
     },
-    async UPDATE_CIDR(context: { commit: any }, payload: { cidrID: string, formData: any }) {
-      const response = await cidrAPI.updateCIDR(payload.cidrID, payload.formData);
+    async UPDATE_CIDR(context: { commit: any }, payload: { cidrID: string, formData: CIDR }) {
+      const response = await SIPAM.api.cidr.cidrUpdate(payload.cidrID, payload.formData);
       if (response.status === 200) {
         context.commit('SET_CIDR', response.data);
       } else {
@@ -82,11 +87,11 @@ export default {
       }
     },
     async FETCH_CHILDREN(context: { commit: any }, parentID: string) {
-      const children = await cidrAPI.getChildren(parentID);
-      context.commit('SET_CIDRS', children);
+      const children = await SIPAM.api.cidr.cidrSubcidr(parentID);
+      context.commit('SET_CIDRS', children.data);
     },
-    async CREATE_CIDR(context: { commit: any }, formData: any) {
-      const response = await cidrAPI.createCIDR(formData);
+    async CREATE_CIDR(context: { commit: any }, formData: CIDR) {
+      const response = await SIPAM.api.cidr.cidrCreate(formData);
       if (response.status === 201) {
         context.commit('SET_CIDR', response.data);
       } else {
@@ -94,7 +99,7 @@ export default {
       }
     },
     async DELETE_CIDR(context: { commit: any }, cidrID: string) {
-      const response = await cidrAPI.deleteCIDR(cidrID);
+      const response = await SIPAM.api.cidr.cidrDelete(cidrID);
       if (response.status === 204) {
         context.commit('DELETE_CIDR', cidrID);
       } else {
@@ -102,7 +107,7 @@ export default {
       }
     },
     async SEARCH_CIDR(context: { commit:any }, searchQuery: any) {
-      const response = await cidrAPI.searchCIDR(searchQuery);
+      const response = await SIPAM.api.cidr.cidrList(searchQuery);
       if (response.status === 200) {
         context.commit('OVERRIDE_CIDRS', response.data);
       } else {

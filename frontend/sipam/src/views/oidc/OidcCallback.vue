@@ -4,6 +4,7 @@
 </template>
 
 <script>
+import SIPAM from '@/sipam';
 import { mapActions } from 'vuex';
 
 export default {
@@ -16,6 +17,7 @@ export default {
   created() {
     this.oidcSignInCallback()
       .then((redirectPath) => {
+        SIPAM.api.setSecurityData(this.$store.getters['AuthOIDC/oidcIdToken']);
         this.$router.push(redirectPath);
       })
       .catch((err) => {

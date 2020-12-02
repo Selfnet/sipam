@@ -11,7 +11,7 @@ import router from './router';
 import Language from './components/Language';
 import store from './store/store';
 import App from './App.vue';
-import './axiosInterceptor';
+
 
 // Icons
 library.add(faPlusCircle, faMinusCircle, faCog);

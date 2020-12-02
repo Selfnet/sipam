@@ -46,6 +46,7 @@
 import {
   mapGetters, mapActions,
 } from 'vuex';
+import SIPAM from '@/sipam';
 
 export default {
   name: 'Login',
@@ -75,7 +76,10 @@ export default {
     },
     login() {
       this.postLogin({ username: this.username, password: this.password })
-        .then(() => this.loginSuccessfull())
+        .then(() => {
+          SIPAM.api.setSecurityData(this.$store.getters['AuthOIDC/oidcIdToken']);
+          this.loginSuccessfull();
+        })
         .catch(data => this.loginFailed(data));
     },
   },

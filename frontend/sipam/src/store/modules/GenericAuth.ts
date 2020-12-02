@@ -9,7 +9,6 @@ const emptyState = {
   token: emptyToken,
   username: 'Please Login Here',
   loggedIn: false,
-  authHeader: undefined,
 } as AuthState;
 
 export default {
