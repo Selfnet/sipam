@@ -16,7 +16,6 @@ const getRequestHeaders = (accessToken: string | null | undefined): RequestParam
   },
   redirect: 'follow',
   referrerPolicy: 'no-referrer',
-
 });
 
 export default {

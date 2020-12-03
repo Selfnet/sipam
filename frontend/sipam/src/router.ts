@@ -76,7 +76,7 @@ if (config.oidc) {
       next();
       return;
     }
-    if (!store.getters['Auth/loggedIn']) {
+    if (!store.getters['Auth/isAuthenticated']) {
       next('/login');
     } else {
       next();

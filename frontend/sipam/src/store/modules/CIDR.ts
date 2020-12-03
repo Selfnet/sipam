@@ -106,8 +106,8 @@ export default {
         console.log(response);
       }
     },
-    async SEARCH_CIDR(context: { commit:any }, searchQuery: any) {
-      const response = await SIPAM.api.cidr.cidrList(searchQuery);
+    async SEARCH_CIDR(context: { commit: any }, searchQuery: string) {
+      const response = await SIPAM.api.cidr.cidrList({ search: searchQuery });
       if (response.status === 200) {
         context.commit('OVERRIDE_CIDRS', response.data);
       } else {
