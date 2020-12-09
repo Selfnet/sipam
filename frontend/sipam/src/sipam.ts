@@ -1,9 +1,12 @@
 import config from '@/config';
-import { Api, RequestParams } from './types/api';
+import { RequestParams, Api } from './types/api';
 
 function getToken(accessToken?: string | null | undefined): string {
   if (config.oidc) {
-    return `OPENID  ${accessToken || ''}`;
+    // eslint-disable-next-line global-require
+    const store = require('@/store/store').useStore();
+    console.log(store.getters['AuthOIDC/oidcIdToken']);
+    return `OPENID  ${accessToken || store.getters['AuthOIDC/oidcIdToken'] || ''}`;
   }
   return `Bearer ${accessToken || ''}`;
 }
@@ -17,12 +20,13 @@ const getRequestHeaders = (accessToken: string | null | undefined): RequestParam
   redirect: 'follow',
   referrerPolicy: 'no-referrer',
 });
+const api = new Api(
+  {
+    baseUrl: process.env.VUE_APP_API_URL,
+    securityWorker: getRequestHeaders,
+  },
+);
 
 export default {
-  api: new Api(
-    {
-      baseUrl: process.env.VUE_APP_API_URL,
-      securityWorker: getRequestHeaders,
-    },
-  ),
+  api,
 };

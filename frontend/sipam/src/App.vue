@@ -25,6 +25,7 @@
           <b-nav-item to="/pools">Pools</b-nav-item>
           <b-nav-item to="/cidrs">CIDR</b-nav-item>
           <b-nav-item to="/about">About</b-nav-item>
+          <b-nav-item to="/profile">Profile</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
@@ -56,9 +57,11 @@
               <em>{{ userDisplay }}</em>
             </template>
             <b-dropdown-item
-              v-if="hasAccess"
               @click=logout
             >{{$t("GENERAL.LOGOUT.LABEL")}}</b-dropdown-item>
+            <b-dropdown-item
+              to="/profile"
+            >{{$t("GENERAL.PROFILE.LABEL")}}</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-button v-else to="/login">{{$t("GENERAL.LOGIN.LABEL")}}</b-button>
         </b-navbar-nav>
@@ -74,6 +77,7 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import config from '@/config';
 import GenericAuth from '@/store/modules/GenericAuth';
 import LanguagePicker from './components/LanguagePicker.vue';
+import sipam from './sipam';
 
 export default {
   components: {

@@ -11,7 +11,6 @@ export default {
   methods: {
   },
   created() {
-    SIPAM.api.setSecurityData(this.$store.getters['AuthOIDC/oidcIdToken']);
     this.$router.push('/home');
   },
 };

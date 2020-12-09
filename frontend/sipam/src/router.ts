@@ -59,6 +59,11 @@ const router = new Router({
       component: config.oidc ? OidcLogin : Login,
     },
     {
+      path: '/profile',
+      name: 'Profile',
+      component: () => import(/* webpackChunkName: "cidrs" */ './views/Profile.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting

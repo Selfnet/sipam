@@ -1,5 +1,4 @@
 import { VuexOidcClientSettings } from 'vuex-oidc';
-import { Api, RequestParams } from '@/types/api';
 
 
 export default {

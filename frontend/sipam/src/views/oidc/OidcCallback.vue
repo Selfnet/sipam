@@ -17,7 +17,6 @@ export default {
   created() {
     this.oidcSignInCallback()
       .then((redirectPath) => {
-        SIPAM.api.setSecurityData(this.$store.getters['AuthOIDC/oidcIdToken']);
         this.$router.push(redirectPath);
       })
       .catch((err) => {
