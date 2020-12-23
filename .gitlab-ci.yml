@@ -31,31 +31,22 @@ eslint:
 flake8:
   stage: test
   before_script:
-    - pip install pipenv
+    - pip install poetry
   script:
-    - pipenv install --dev
-    - pipenv --version
-    - pipenv run flake8 .
-
-security:
-  stage: test
-  variables:
-    PIPENV_PYUP_API_KEY: ""
-  before_script:
-    - pip install pipenv
-  script:
-    - pipenv check
+    - poetry install
+    - poetry --version
+    - poetry run flake8 .
 
 pytest:
   services:
     - postgres:latest
   stage: test
   before_script:
-    - pip install pipenv
+    - pip install poetry
   script:
-    - pipenv install --dev
-    - pipenv run coverage run -m pytest
-    - pipenv run coverage report
+    - poetry install
+    - poetry run coverage run -m pytest
+    - poetry run coverage report
 
 include:
   - template: Code-Quality.gitlab-ci.yml
