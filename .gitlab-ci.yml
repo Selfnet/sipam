@@ -7,11 +7,11 @@ variables:
   prometheus_multiproc_dir: /tmp
   npm_prefix: frontend/sipam/
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  venv_path: "$CI_PROJECT_DIR/.cache/venv"
 
 cache:
   paths:
-    - .cache/pip
-    - .venv
+    - .cache
     - node_modules
     - frontend/sipam/node_modules
   key: "${CI_COMMIT_REF_SLUG}"
@@ -43,7 +43,7 @@ init_python:
   script:
     - python -V
     - pip install poetry
-    - poetry config settings.virtualenvs.in-project true
+    - poetry config virtualenvs.path $venv_path
     - poetry install
     - echo Print commit Info
     - echo CI_COMMIT_BRANCH, $CI_COMMIT_BRANCH
@@ -58,23 +58,29 @@ eslint:
   stage: test
   script:
     - yarn --cwd ${npm_prefix} lint
+  needs:
+    - init_node
 
 # npm-build:
 #   image: node:lts-buster
 #   stage: build
 #   script:
 #     - yarn --cwd ${npm_prefix} build
+#   needs:
+#     - init_node
 
 
 flake8:
   stage: test
   before_script:
     - pip install poetry
-    - poetry config settings.virtualenvs.in-project true
+    - poetry config virtualenvs.path $venv_path
     - poetry install
   script:
     - poetry --version
     - poetry run flake8 .
+  needs:
+    - init_python
 
 pytest:
   services:
@@ -82,11 +88,13 @@ pytest:
   stage: test
   before_script:
     - pip install poetry
-    - poetry config settings.virtualenvs.in-project true
+    - poetry config virtualenvs.path $venv_path
     - poetry install
   script:
     - poetry run coverage run -m pytest
     - poetry run coverage report
+  needs:
+    - init_python
 
 include:
   - template: Code-Quality.gitlab-ci.yml
