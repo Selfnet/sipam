@@ -1,4 +1,4 @@
 [flake8]
 ignore = E501
-exclude = .git,__pycache__,migrations,__init__.py
+exclude = .git,__pycache__,migrations,__init__.py,.cache
 max-complexity = 10

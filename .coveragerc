@@ -11,6 +11,7 @@ omit =
     */settings.py
     manage.py
     settings.py
+    .cache/*
 
 show_missing = True
 skip_covered = True
