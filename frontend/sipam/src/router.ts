@@ -59,6 +59,11 @@ const router = new Router({
       component: config.oidc ? OidcLogin : Login,
     },
     {
+      path: '/profile',
+      name: 'Profile',
+      component: () => import(/* webpackChunkName: "cidrs" */ './views/Profile.vue'),
+    },
+    {
       path: '/about',
       name: 'about',
       // route level code-splitting
@@ -76,7 +81,7 @@ if (config.oidc) {
       next();
       return;
     }
-    if (!store.getters['Auth/loggedIn']) {
+    if (!store.getters['Auth/isAuthenticated']) {
       next('/login');
     } else {
       next();

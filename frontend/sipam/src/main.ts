@@ -1,17 +1,16 @@
 import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
 import I18n from 'vue-i18n';
-import './assets/styles/custom.scss';
+import '@/assets/styles/custom.scss';
 
-import './registerServiceWorker';
+import '@/registerServiceWorker';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlusCircle, faMinusCircle, faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import router from './router';
-import Language from './components/Language';
-import store from './store/store';
-import App from './App.vue';
-import './axiosInterceptor';
+import router from '@/router';
+import Language from '@/components/Language';
+import store from '@/store/store';
+import App from '@/App.vue';
 
 // Icons
 library.add(faPlusCircle, faMinusCircle, faCog);

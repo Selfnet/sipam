@@ -1,5 +1,6 @@
 import { VuexOidcClientSettings } from 'vuex-oidc';
 
+
 export default {
   // Axios Connection Config
   // TODO: Move to webpack envs
@@ -11,8 +12,10 @@ export default {
     popupRedirectUri: `${process.env.VUE_APP_URL}/oidc-callback-popup`,
     responseType: 'id_token',
     scope: 'openid',
+    includeIdTokenInSilentRenew: true,
     automaticSilentRenew: true,
     automaticSilentSignin: false,
+    dispatchEventsOnWindow: true,
     silentRedirectUri: `${process.env.VUE_APP_URL}/oidc-renew.html`,
   } as VuexOidcClientSettings,
   baseURL: process.env.VUE_APP_API_URL,

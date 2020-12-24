@@ -22,7 +22,7 @@ const vuexLocalStorage = new VuexPersist({
   }),
 });
 
-const store: StoreOptions<RootState> = {
+const storeOptions: StoreOptions<RootState> = {
   state: {
     version: '1.0.0', // a simple property
   },
@@ -36,5 +36,8 @@ const store: StoreOptions<RootState> = {
   plugins: [vuexLocalStorage.plugin],
   strict: debug,
 };
-
-export default new Vuex.Store<RootState>(store);
+const store = new Vuex.Store<RootState>(storeOptions);
+export default store;
+export function useStore() {
+  return store;
+}

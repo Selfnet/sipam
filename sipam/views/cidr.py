@@ -66,7 +66,7 @@ class CIDRViewSet(ModelViewSet):
                 cidr,
                 context={'request': request}).data)
 
-    def create(self, request):
+    def create(self, request, *args, **kwargs):
         """Create a new cidr object by automatically detecting parents
         """
 

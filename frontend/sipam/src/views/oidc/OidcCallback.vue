@@ -4,6 +4,7 @@
 </template>
 
 <script>
+import SIPAM from '@/sipam';
 import { mapActions } from 'vuex';
 
 export default {

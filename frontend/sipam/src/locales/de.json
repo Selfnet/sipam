@@ -8,6 +8,9 @@
       "PLACEHOLDER": "LDAP Nutzername",
       "DESCRIPTION": "Bitte LDAP Nutzernamen eingeben."
     },
+    "PROFILE": {
+      "LABEL": "Profil"
+    },
     "LOGIN": {
       "LABEL": "Einloggen",
       "DESCRIPTION": "Bitte einloggen."

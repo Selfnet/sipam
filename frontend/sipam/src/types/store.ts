@@ -26,11 +26,21 @@ export interface AuthState {
     token: BasicToken;
     username: String;
     loggedIn: boolean;
-    authHeader: String | undefined;
 }
 
+export interface CIDRGet extends CIDR {
+    id : string | ''
+}
 export interface CIDRState {
     cidrs: CIDRDict;
     root: Set<string>
     search: CIDRDict;
+}
+
+export interface PoolsDict {
+    [id: string]: Pool
+}
+
+export interface PoolState {
+    pools: PoolDict
 }

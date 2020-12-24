@@ -25,11 +25,18 @@
           <b-nav-item to="/pools">Pools</b-nav-item>
           <b-nav-item to="/cidrs">CIDR</b-nav-item>
           <b-nav-item to="/about">About</b-nav-item>
+          <b-nav-item to="/profile">Profile</b-nav-item>
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-nav-form>
+          <!--
+            This onsubmit return false; prevents from accepting submit and enter functions.
+            This currently bricks the frontend
+          -->
+          <b-nav-form
+            onsubmit="return false;"
+          >
             <b-form-input
               size="sm"
               class="mr-sm-2"
@@ -38,25 +45,25 @@
             ></b-form-input>
             <b-button
               size="sm"
+              v-show="false"
               class="my-2 my-sm-0"
               type="submit"
             >{{$t("GENERAL.BUTTON.SEARCH")}}</b-button>
           </b-nav-form>
           <language-picker />
-          <b-nav-item-dropdown right>
+          <b-nav-item-dropdown v-if="hasAccess" right>
             <!-- Using 'button-content' slot -->
             <template v-slot:button-content>
               <em>{{ userDisplay }}</em>
             </template>
             <b-dropdown-item
-              v-if="hasAccess"
               @click=logout
             >{{$t("GENERAL.LOGOUT.LABEL")}}</b-dropdown-item>
             <b-dropdown-item
-              to="/login"
-              v-else
-            >{{$t("GENERAL.LOGIN.LABEL")}}</b-dropdown-item>
+              to="/profile"
+            >{{$t("GENERAL.PROFILE.LABEL")}}</b-dropdown-item>
           </b-nav-item-dropdown>
+          <b-button v-else to="/login">{{$t("GENERAL.LOGIN.LABEL")}}</b-button>
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
@@ -70,6 +77,7 @@ import { mapGetters, mapActions, mapState } from 'vuex';
 import config from '@/config';
 import GenericAuth from '@/store/modules/GenericAuth';
 import LanguagePicker from './components/LanguagePicker.vue';
+import sipam from './sipam';
 
 export default {
   components: {
@@ -111,7 +119,7 @@ export default {
   },
   methods: {
     ...mapGetters('Auth', {
-      getLoggedIn: 'loggedIn',
+      getLoggedIn: 'isAuthenticated',
     }),
     ...mapActions({
       authLogout: 'Auth/LOGOUT',
