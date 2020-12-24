@@ -1,7 +1,7 @@
-from rest_framework import status
+from django.utils.decorators import method_decorator
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
-from django.utils.decorators import method_decorator
+from rest_framework import status
 from rest_framework_simplejwt.views import (TokenObtainPairView,
                                             TokenRefreshView, TokenVerifyView)
 
@@ -22,7 +22,7 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,
         },
     )
 )
-class MyTokenView(TokenObtainPairView):
+class SIPAMTokenView(TokenObtainPairView):
     pass
 
 
@@ -41,7 +41,7 @@ class MyTokenView(TokenObtainPairView):
         }
     )
 )
-class MyRefreshView(TokenRefreshView):
+class SIPAMRefreshView(TokenRefreshView):
     pass
 
 
@@ -57,5 +57,5 @@ class MyRefreshView(TokenRefreshView):
         },
     )
 )
-class MyTokenVerifyView(TokenVerifyView):
+class SIPAMTokenVerifyView(TokenVerifyView):
     pass
