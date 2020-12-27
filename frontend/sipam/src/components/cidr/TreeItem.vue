@@ -29,7 +29,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import CIDR from '@/components/CIDR.vue';
+import CIDR from '@/components/cidr/CIDR.vue';
 
 export default {
   name: 'tree-item',

@@ -10,7 +10,7 @@
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import Tree from '@/components/Tree.vue';
+import Tree from '@/components/cidr/Tree.vue';
 
 export default {
   components: {

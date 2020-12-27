@@ -82,7 +82,7 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import CIDRForm from '@/components/CIDRForm.vue';
+import CIDRForm from './forms/CIDRForm.vue';
 
 export default {
   name: 'cidr',

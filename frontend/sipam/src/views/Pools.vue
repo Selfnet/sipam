@@ -31,8 +31,8 @@
 </template>
 <script>
 import { mapActions, mapState } from 'vuex';
-import Pool from '@/components/Pool.vue';
-import PoolForm from '@/components/PoolForm.vue';
+import Pool from '@/components/pool/Pool.vue';
+import PoolForm from '@/components/pool/modals/PoolForm.vue';
 
 
 export default {

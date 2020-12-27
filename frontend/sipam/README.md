@@ -49,5 +49,5 @@ $ npx swagger-typescript-api -p http://localhost:8000/swagger.json -o ./src/type
 
 ```.env
 VUE_APP_OIDC_ISSUER_URL=${PATH_TO_TOKEN_ISSUER/auth/realms/realm-name}
-VUE_APP_OIDC="true" # enables OIDC support
+VUE_APP_OIDC="true"
 ```

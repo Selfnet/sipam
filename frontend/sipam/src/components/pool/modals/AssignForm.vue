@@ -47,13 +47,35 @@
         variant="primary"
       >Create</b-button>
     </b-form>
+    <b-modal
+      v-model="showAssignCompleteModal"
+      title="Assignment Complete"
+      @ok="onModalClose"
+      @hidden="hideModal"
+    >
+      <template #modal-footer="{ ok, hide }">
+        <!-- Emulate built in modal footer ok and cancel button actions -->
+        <b-button size="sm" variant="success" @click="ok()">
+          OK
+        </b-button>
+        <b-button size="sm" variant="light" @click="hide()">
+          OK and assign other
+        </b-button>
+      </template>
+      <assign-completed-modal
+        :assignment="assignment"
+      >
+      </assign-completed-modal>
+    </b-modal>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex';
+import AssignCompletedModal from './AssignCompletedModal.vue';
 
 export default {
+  components: { AssignCompletedModal },
   name: 'assign-form',
   props: {
     pool: Object,
@@ -68,6 +90,8 @@ export default {
       // Prepend a dot for visual effect
       defaultDomain: `.${this.pool.defaultDomain}`,
       show: true,
+      assignment: Object,
+      showAssignCompleteModal: false,
     };
   },
   methods: {
@@ -81,17 +105,22 @@ export default {
         assignmentData: this.form,
       }).then((assigned) => {
         console.log(assigned);
-        // TODO: Show a modal with the newly assigned prefixes
-
-        // TODO: Refactor this
-        this.$emit('assign-form-close');
+        // Show a modal with the newly assigned prefixes
+        this.assignment = assigned;
+        this.showAssignCompleteModal = true;
       }).catch(() => {
         // Assignment Failed
         console.log('Could not assign');
 
         // TDOD: Show failed modal
-        this.$emit('assign-form-close');
       });
+    },
+    onModalClose(bvModalEvt) {
+      this.showAssignCompleteModal = false;
+      this.$emit('assign-form-close');
+    },
+    hideModal() {
+      this.showAssignCompleteModal = false;
     },
   },
 };

@@ -117,7 +117,6 @@ class HttpClient<SecurityDataType> {
   }
 
   public setSecurityData = (data: SecurityDataType) => {
-    console.log(data)
     this.securityData = data;
   };
 

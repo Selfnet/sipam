@@ -79,9 +79,9 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import PoolForm from '@/components/PoolForm.vue';
-import AssignForm from '@/components/AssignForm.vue';
-import CIDR from '@/components/CIDR.vue';
+import CIDR from '@/components/cidr/CIDR.vue';
+import AssignForm from './modals/AssignForm.vue';
+import PoolForm from './modals/PoolForm.vue';
 
 export default {
   name: 'pool',

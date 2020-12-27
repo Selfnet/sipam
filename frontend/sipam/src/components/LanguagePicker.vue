@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import Language from './Language';
+import Language from '@/utils/Language';
 
 export default {
   name: 'LanguagePicker',

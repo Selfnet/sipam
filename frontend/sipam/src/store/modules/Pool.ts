@@ -69,9 +69,9 @@ export default {
         payload.poolID, payload.assignmentData,
       );
       return new Promise((resolve, reject) => {
-        if (response.status === 201) {
+        if (response.status === 201 && response.data) {
           context.commit('CIDR/SET_CIDRS', response.data.assignments, { root: true });
-          resolve(response.data.assignments);
+          resolve(response.data);
         } else {
           console.log(response);
           reject();

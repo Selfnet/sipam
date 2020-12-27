@@ -58,7 +58,7 @@ export default {
   },
   methods: {
     ...mapGetters('Auth', {
-      getLoggedIn: 'loggedIn',
+      getLoggedIn: 'isAuthenticated',
     }),
     ...mapActions({
       postLogin: 'Auth/POST_LOGIN',

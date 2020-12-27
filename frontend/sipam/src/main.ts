@@ -8,7 +8,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlusCircle, faMinusCircle, faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import router from '@/router';
-import Language from '@/components/Language';
+import Language from '@/utils/Language';
 import store from '@/store/store';
 import App from '@/App.vue';
 
