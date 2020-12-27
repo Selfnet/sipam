@@ -1,0 +1,15 @@
+FROM python:3.8-buster
+WORKDIR /usr/src/app
+
+COPY manage.py accounts sipam pyproject.toml poetry.lock .
+ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+
+RUN pip install poetry gunicorn
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev
+
+EXPOSE 8080
+
+ENV prometheus_multiproc_dir /usr/src/app/.prometheus_multiproc
+
+CMD ['python', 'manage.py', 'migrate', '&&', 'gunicorn', '--workers=4', 'sipam/wsgi.application', '-b', '0.0.0.0:8080']

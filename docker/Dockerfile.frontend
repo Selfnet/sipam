@@ -1,0 +1,7 @@
+FROM node:lts-buster AS build_frontend
+WORKDIR /usr/src/app/
+COPY frontend/sipam/ .
+RUN yarn install && yarn build
+
+FROM nginx
+COPY --from=build_frontend /usr/src/app/dist /usr/share/nginx/html
