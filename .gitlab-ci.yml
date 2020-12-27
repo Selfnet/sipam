@@ -19,14 +19,16 @@ eslint:
   script:
     - yarn --cwd ${npm_prefix} lint
 
-# npm-build:
-#   image: node:lts-buster
-#   stage: build
-#   script:
-#     - yarn --cwd ${npm_prefix} build
-#   needs:
-#     - eslint
-
+yarn-build:
+  image: node:lts-buster
+  stage: build
+  before_script:
+    - yarn --cwd ${npm_prefix} install
+  script:
+    - yarn --cwd ${npm_prefix} build
+  artifacts:
+    paths:
+      - frontend/sipam/dist
 
 flake8:
   stage: test

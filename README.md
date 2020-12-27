@@ -2,6 +2,10 @@
 
 [![pipeline status](https://git.selfnet.de/marcelf/sipam/badges/master/pipeline.svg)](https://git.selfnet.de/marcelf/sipam/commits/master)
 [![coverage report](https://git.selfnet.de/marcelf/sipam/badges/master/coverage.svg)](https://git.selfnet.de/marcelf/sipam/commits/master)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=Selfnet_sipam&metric=ncloc)](https://sonarcloud.io/dashboard?id=Selfnet_sipam)
+[![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Selfnet_sipam&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=Selfnet_sipam)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Selfnet_sipam&metric=alert_status)](https://sonarcloud.io/dashboard?id=Selfnet_sipam)
+
 
 ## Developer Initialization
 
@@ -53,17 +57,17 @@ exit
 1. Please note if you want the database and the management listen on localhost addresses you must
 edit the `docker-compose.yml` file.
 
-* This project uses [pipenv](https://github.com/pypa/pipenv) for dependency management.
-  * Setup is as easy as running `pipenv install`
-  * New packages can be added with `pipenv install <package>`
-  * If the package is only required for development purposes use `pipenv install --dev <package>`
+* This project uses [poetry](https://python-poetry.org/) for dependency management.
+  * Setup is as easy as running `poetry install`
+  * New packages can be added with `poetry add <package>`
+  * If the package is only required for development purposes use `poetry add --dev <package>`
 * create a file `sipam/secret.py` add the variable `PASSWORD="<password>` and `HOST="<hostname>"`
 * If you have a local redis instance set the `REDIS_HOSTNAME` accordingly in `sipam/secret.py`. If you set it to `None` a dummy cache (aka. none) will be used.
 
 ### Initialize the project
 
 ```bash
-pipenv shell
+poetry shell
 python manage.py migrate  # this triggers all migrations for django
 python manage.py migrate sipam # this triggers all migrations for the database of sipam.
 python manage.py runserver # runs the server
@@ -151,8 +155,8 @@ pipenv shell
 python manage.py createsuperuser
 $ Username: sipam_dev
 $ Email address: sipam_dev@example.com
-$ Password: 
-$ Password (again): 
+$ Password:
+$ Password (again):
 $ Superuser created successfully.
 ```
 
