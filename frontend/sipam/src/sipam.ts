@@ -5,8 +5,9 @@ function getToken(accessToken?: string | null | undefined): string {
   if (config.oidc) {
     // eslint-disable-next-line global-require
     const store = require('@/store/store').useStore();
-    console.log(store.getters['AuthOIDC/oidcIdToken']);
-    return `OPENID  ${accessToken || store.getters['AuthOIDC/oidcIdToken'] || ''}`;
+    // console.log(accessToken);
+    // console.log(store.getters['AuthOIDC/oidcAccessToken']);
+    return `OPENID  ${accessToken || store.getters['AuthOIDC/oidcAccessToken'] || ''}`;
   }
   return `Bearer ${accessToken || ''}`;
 }

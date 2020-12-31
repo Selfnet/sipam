@@ -154,12 +154,10 @@ export default {
     },
   },
   mounted() {
-    window.addEventListener('vuexoidc:userLoaded', this.userLoaded);
     window.addEventListener('vuexoidc:oidcError', this.oidcError);
     window.addEventListener('vuexoidc:automaticSilentRenewError', this.automaticSilentRenewError);
   },
   destroyed() {
-    window.removeEventListener('vuexoidc:userLoaded', this.userLoaded);
     window.removeEventListener('vuexoidc:oidcError', this.oidcError);
     window.removeEventListener('vuexoidc:automaticSilentRenewError', this.automaticSilentRenewError);
   },

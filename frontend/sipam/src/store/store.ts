@@ -6,13 +6,21 @@ import Auth from '@/store/modules/Auth';
 import CIDR from '@/store/modules/CIDR';
 import Search from '@/store/modules/Search';
 import { RootState } from '@/types/store';
-import { vuexOidcCreateStoreModule } from 'vuex-oidc';
+import { vuexOidcCreateStoreModule, VuexOidcStoreListeners } from 'vuex-oidc';
 import config from '@/config';
+import SIPAM from '@/sipam';
+import { User } from 'oidc-client';
 
 Vue.use(Vuex);
 
 const debug = process.env.NODE_ENV !== 'production';
-const AuthOIDC = vuexOidcCreateStoreModule(config.oidcSettings, { namespaced: true });
+const listeners: VuexOidcStoreListeners = {
+  userLoaded: (user: User) => SIPAM.api.setSecurityData(user.access_token),
+  userUnloaded: () => SIPAM.api.setSecurityData(null),
+};
+
+const AuthOIDC = vuexOidcCreateStoreModule(config.oidcSettings, { namespaced: true }, listeners);
+
 const vuexLocalStorage = new VuexPersist({
   key: 'vuex', // The key to store the state on in the storage provider.
   storage: window.localStorage, // or window.sessionStorage or localStorage
