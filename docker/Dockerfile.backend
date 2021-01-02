@@ -1,0 +1,31 @@
+FROM python:3.8-buster
+
+RUN useradd -r sipam
+
+WORKDIR /usr/src/app
+
+# First copy basic dependencies
+ADD manage.py pyproject.toml poetry.lock .
+ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+
+# Install dependencies
+RUN pip install poetry gunicorn
+RUN poetry config virtualenvs.create false
+RUN poetry install --no-dev
+
+# Copy application code (here, so the above can be cached and reused on code changes)
+ADD accounts accounts/
+ADD sipam sipam/
+
+RUN chown -R sipam:sipam /usr/src/app
+
+USER sipam
+
+# Assemble staticfiles for drf ui
+RUN python manage.py collectstatic --noinput
+
+ENV SIPAM_DEBUG=false
+
+EXPOSE 8080
+
+CMD python manage.py migrate && gunicorn --workers=4 sipam.wsgi -b 0.0.0.0:8080

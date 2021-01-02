@@ -12,21 +12,36 @@ services:
        - ./data/postgres:/data/postgres
     ports:
       - "5432:5432"
-    networks:
-      - postgres
-    restart: unless-stopped
-  
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    ports:
-      - "${PGADMIN_PORT}:80"
-    networks:
-      - postgres
     restart: unless-stopped
 
-networks:
-  postgres:
-    driver: bridge
+#  pgadmin:
+#    image: dpage/pgadmin4
+#    environment:
+#      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+#      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+#    ports:
+#      - "${PGADMIN_PORT}:80"
+#    restart: unless-stopped
+
+  backend:
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.backend
+    restart: unless-stopped
+    environment:
+      SIPAM_POSTGRES_USER: ${POSTGRES_USER}
+      SIPAM_POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - 8000:8080
+    depends_on:
+      - postgres
+
+  frontend:
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.frontend
+    restart: unless-stopped
+    ports:
+      - 8081:80
+    depends_on:
+      - backend

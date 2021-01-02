@@ -214,6 +214,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+if os.environ.get("RUN_MAIN") == "true":
+    PROMETHEUS_METRICS_EXPORT_PORT_RANGE = None
+else:
+    PROMETHEUS_METRICS_EXPORT_PORT_RANGE = range(8011, 8020)
+PROMETHEUS_EXPORT_MIGRATIONS = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -232,3 +237,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")
