@@ -39,7 +39,10 @@ export default {
     },
   },
   actions: {
-    async POST_LOGIN(context: { commit: any, rootState: RootState }, payload: { username: string, password: string }) {
+    async POST_LOGIN(
+      context: { commit: any; rootState: RootState },
+      payload: { username: string; password: string },
+    ) {
       const tokenObtainPair = {
         username: payload.username,
         password: payload.password,
@@ -58,23 +61,31 @@ export default {
         console.log('Cannot Verify Token.');
       }
     },
-    async LOGOUT(context: { commit: any, rootState: RootState }) {
+    async LOGOUT(context: { commit: any; rootState: RootState }) {
       context.commit('DELETE_TOKEN');
     },
-    async VERIFY_ACCESS(context: { commit: any, rootState: RootState }, payload: { token: BasicToken }) {
-      const verify = await context.rootState.api.jwt.jwtVerifyCreate(
-        { token: payload.token.access } as TokenVerify,
-      );
+    async VERIFY_ACCESS(
+      context: { commit: any; rootState: RootState },
+      payload: { token: BasicToken },
+    ) {
+      const verify = await context.rootState.api.jwt.jwtVerifyCreate({
+        token: payload.token.access,
+      } as TokenVerify);
       if (verify.data) {
         context.commit('UPDATE_LOGGED_IN', true);
-      } else { context.commit('UPDATE_LOGGED_IN', false); }
+      } else {
+        context.commit('UPDATE_LOGGED_IN', false);
+      }
       console.log(verify);
     },
   },
-  async REFRESH(context: { commit: any, rootState: RootState }, payload: { token: BasicToken, callback: any }) {
-    const response = await context.rootState.api.jwt.jwtRefreshCreate(
-      { refresh: payload.token.refresh } as TokenRefresh,
-    );
+  async REFRESH(
+    context: { commit: any; rootState: RootState },
+    payload: { token: BasicToken; callback: any },
+  ) {
+    const response = await context.rootState.api.jwt.jwtRefreshCreate({
+      refresh: payload.token.refresh,
+    } as TokenRefresh);
     if (response && response.data) {
       context.rootState.api.setSecurityData(response.data.access);
       context.commit('SAVE_TOKEN', response.data);

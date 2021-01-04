@@ -58,5 +58,4 @@ $ npx swagger-typescript-api -p http://localhost:8000/swagger.json -o ./src/type
     "issuer_url": "https://example.com/auth/realms/master/"
   }
 }
-
 ```

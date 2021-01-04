@@ -29,7 +29,7 @@ export default {
   },
 
   actions: {
-    async FETCH_POOLS(context: { commit: any, rootState: RootState }) {
+    async FETCH_POOLS(context: { commit: any; rootState: RootState }) {
       const response = await context.rootState.api.pool.poolList();
       if (response.data && response.status === 200) {
         context.commit('SET_POOLS', response.data);
@@ -38,15 +38,21 @@ export default {
         });
       }
     },
-    async UPDATE_POOL(context: { commit: any, rootState: RootState }, payload: { poolID: string, formData: Pool }) {
-      const response = await context.rootState.api.pool.poolUpdate(payload.poolID, payload.formData);
+    async UPDATE_POOL(
+      context: { commit: any; rootState: RootState },
+      payload: { poolID: string; formData: Pool },
+    ) {
+      const response = await context.rootState.api.pool.poolUpdate(
+        payload.poolID,
+        payload.formData,
+      );
       if (response.status === 200) {
         context.commit('SET_POOL', response.data);
       } else {
         console.log(response);
       }
     },
-    async CREATE_POOL(context: { commit: any, rootState: RootState }, formData: Pool) {
+    async CREATE_POOL(context: { commit: any; rootState: RootState }, formData: Pool) {
       const response = await context.rootState.api.pool.poolCreate(formData);
       if (response.status === 201) {
         context.commit('SET_POOL', response.data);
@@ -54,7 +60,7 @@ export default {
         console.log(response);
       }
     },
-    async DELETE_POOL(context: { commit: any, rootState: RootState }, poolID: string) {
+    async DELETE_POOL(context: { commit: any; rootState: RootState }, poolID: string) {
       const response = await context.rootState.api.pool.poolDelete(poolID);
       if (response.status === 204) {
         context.commit('DELETE_POOL', poolID);
@@ -63,10 +69,12 @@ export default {
       }
     },
     async ASSIGN(
-      context: { commit: any, rootState: RootState }, payload: { poolID: string, assignmentData: Assignment },
+      context: { commit: any; rootState: RootState },
+      payload: { poolID: string; assignmentData: Assignment },
     ) {
       const response = await context.rootState.api.pool.poolAssignCreate(
-        payload.poolID, payload.assignmentData,
+        payload.poolID,
+        payload.assignmentData,
       );
       return new Promise((resolve, reject) => {
         if (response.status === 201 && response.data) {
