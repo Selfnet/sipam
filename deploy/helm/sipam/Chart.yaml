@@ -1,0 +1,21 @@
+apiVersion: v2
+appVersion: 0.0.1
+dependencies:
+  - name: common
+    repository: https://charts.bitnami.com/bitnami
+    tags:
+      - bitnami-common
+    version: 1.x.x
+description: A simple IPAM solution
+engine: gotpl
+home: https://github.com/selfnet/sipam
+icon: 
+keywords:
+  - ipam
+maintainers:
+  - email: support@selfnet.de
+    name: Selfnet Support
+name: sipam
+sources:
+  - https://github.com/selfnet/sipam
+version: 0.1.0
