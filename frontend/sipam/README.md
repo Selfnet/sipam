@@ -45,9 +45,18 @@ $ npx swagger-typescript-api -p http://localhost:8000/swagger.json -o ./src/type
 > ✔️  your typescript api file created in "./sipam/frontend/sipam/src/types"
 ```
 
-### Create .env.development.local file
+### Create `public/config.json` file
 
-```.env
-VUE_APP_OIDC_ISSUER_URL=${PATH_TO_TOKEN_ISSUER/auth/realms/realm-name}
-VUE_APP_OIDC="true"
+```json
+{
+  "API_URL": "http://localhost:8000/api/v1",
+  "APP_URL": "http://localhost:8181",
+  "DEBUG": true,
+  "OIDC": {
+    "enabled": true,
+    "client_id": "sipam-dev",
+    "issuer_url": "https://example.com/auth/realms/master/"
+  }
+}
+
 ```

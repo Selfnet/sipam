@@ -1,7 +1,10 @@
-import { CIDR, Pool } from '@/types/api';
+import { Api, CIDR, Pool } from '@/types/api';
+import { SIPAMConfiguration } from '@/types/config';
 
 export interface RootState {
     version: string;
+    config: SIPAMConfiguration;
+    api: Api;
 }
 
 export interface CIDRDict {

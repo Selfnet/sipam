@@ -144,13 +144,13 @@ Install `@vue/cli`
 
 ### Running
 
-For local development `npm run serve` and the development Django server are sufficient.
+For local development `yarn serve` and the development Django server are sufficient.
 To make life easier it is recommended to generate a superuser account for login.
 This can be achieved.
 
 ```shell
 # Activate the virtual-env shell
-pipenv shell
+poetry shell
 # Create a local superuser
 python manage.py createsuperuser
 $ Username: sipam_dev

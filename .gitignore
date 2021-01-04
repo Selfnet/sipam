@@ -9,3 +9,4 @@ secret.py
 .vscode/
 .coverage
 sipam.egg-info
+frontend/sipam/public/config.json

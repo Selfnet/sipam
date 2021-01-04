@@ -74,7 +74,6 @@
 </template>
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
-import config from '@/config';
 import GenericAuth from '@/store/modules/GenericAuth';
 import LanguagePicker from './components/LanguagePicker.vue';
 import sipam from './sipam';
@@ -141,7 +140,7 @@ export default {
       });
     },
     logout() {
-      if (config.oidc) {
+      if (this.config.oidc) {
         this.oidcLogout();
       } else {
         this.authLogout();
