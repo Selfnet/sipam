@@ -49,6 +49,3 @@ pytest:
   script:
     - poetry run coverage run -m pytest
     - poetry run coverage report
-
-include:
-  - template: Code-Quality.gitlab-ci.yml
