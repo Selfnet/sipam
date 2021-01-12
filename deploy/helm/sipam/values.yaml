@@ -220,6 +220,66 @@ backend:
   ##     value: "bar"
   ##
   extraEnvVars: []
+    - name: SIPAM_PORT 
+      ## the port the APP listens on.
+      ##
+      value: "{{ .Values.backend.service.port }}"
+    - name: SIPAM_FQDN 
+      ## Adding the Allowed host from outside.
+      ##
+      value: "{{ .Values.backend.ingress.host }}"
+    # - name: SIPAM_ENV 
+    #   ## The environment the APP runs in.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_DEBUG 
+    #   ## This enables the development mode.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_LOG_LEVEL 
+    #   ## Log Level of the application.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_OIDC_ENDPOINT 
+    #   ## This defines the endpoint of the OIDC provider
+    #   ##
+    #   value: ""
+    # - name: SIPAM_OIDC_CLIENT_ID 
+    #   ## This defines the allowed azp definition == client_id in keycloak.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_OIDC_ALLOWED_GROUPS 
+    #   ## This defines allowed values in the groups_claim
+    #   ##
+    #   value: ""
+    # - name: SIPAM_OIDC_GROUPS_CLAIM 
+    #   ## This defines the key for the claim to use for groups.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_OIDC_BEARER_AUTH_HEADER_PREFIX 
+    #   ## This defines the Authorization Header prefix to look for when using OIDC.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_DATABASE_HOST 
+    #   ## The RDBMS Hostname to use to connect to.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_DATABASE_PORT 
+    #   ## The RDBMS Port to use to connect to.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_DATABASE_NAME 
+    #   ## The Name of the RDBMS Database to use to connect to.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_DATABASE_USER_NAME 
+    #   ## The Username to use.
+    #   ##
+    #   value: ""
+    # - name: SIPAM_DATABASE_USER_PASSWORD 
+    #   ## The Password for the user to use.
+    #   ##
+    #   value: ""
 
   ## ConfigMap with extra environment variables
   ##

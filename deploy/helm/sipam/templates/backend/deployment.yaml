@@ -72,8 +72,8 @@ spec:
           args: {{- include "common.tplvalues.render" (dict "value" .Values.backend.args "context" $) | nindent 12 }}
           {{- end }}
           env:
-            - name: foo
-              value: bar
+            - name: SIPAM_DEBUG
+              value: "false"
             {{- if .Values.backend.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.backend.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
