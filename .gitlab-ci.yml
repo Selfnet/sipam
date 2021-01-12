@@ -10,6 +10,7 @@ variables:
 stages:
   - test
   - build
+  - build_containers
 
 eslint:
   image: node:lts-buster
@@ -19,7 +20,7 @@ eslint:
   script:
     - yarn --cwd ${npm_prefix} lint
 
-yarn-build:
+yarn_build:
   image: node:lts-buster
   stage: build
   before_script:
@@ -29,6 +30,7 @@ yarn-build:
   artifacts:
     paths:
       - frontend/sipam/dist
+  needs: []
 
 flake8:
   stage: test
@@ -49,3 +51,73 @@ pytest:
   script:
     - poetry run coverage run -m pytest
     - poetry run coverage report
+
+backend_container:
+  image: quay.io/containers/buildah:v1.17.0
+  stage: build_containers
+  before_script:
+    - export STORAGE_DRIVER=vfs
+    - export BUILDAH_FORMAT=docker
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  script:
+    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -f docker/Dockerfile.backend .
+    - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
+    - if [ "$CI_COMMIT_REF_NAME" == "master" ]; then buildah tag $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/backend:latest; fi
+    - if [ "$CI_COMMIT_REF_NAME" == "master" ]; then buildah push $CI_REGISTRY_IMAGE/backend:latest; fi
+  needs:
+    - flake8
+    - pytest
+  only:
+    - branches
+
+frontend_container:
+  image: quay.io/containers/buildah:v1.17.0
+  stage: build_containers
+  before_script:
+    - export STORAGE_DRIVER=vfs
+    - export BUILDAH_FORMAT=docker
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  script:
+    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -f docker/Dockerfile.frontend .
+    - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
+    - if [ "$CI_COMMIT_REF_NAME" == "master" ]; then buildah tag $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/frontend:latest; fi
+    - if [ "$CI_COMMIT_REF_NAME" == "master" ]; then buildah push $CI_REGISTRY_IMAGE/frontend:latest; fi
+  needs:
+    - yarn_build
+    - eslint
+  only:
+    - branches
+
+backend_container_release:
+  image: quay.io/containers/buildah:v1.17.0
+  stage: build_containers
+  before_script:
+    - export STORAGE_DRIVER=vfs
+    - export BUILDAH_FORMAT=docker
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  script:
+    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_NAME -f docker/Dockerfile.backend .
+    - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
+    - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_NAME
+  needs:
+    - flake8
+    - pytest
+  only:
+    - tags
+
+frontend_container_release:
+  image: quay.io/containers/buildah:v1.17.0
+  stage: build_containers
+  before_script:
+    - export STORAGE_DRIVER=vfs
+    - export BUILDAH_FORMAT=docker
+    - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+  script:
+    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_NAME -f docker/Dockerfile.frontend .
+    - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
+    - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_NAME
+  needs:
+    - yarn_build
+    - eslint
+  only:
+    - tags
