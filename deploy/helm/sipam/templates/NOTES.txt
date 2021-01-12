@@ -1,5 +1,5 @@
 %%Instructions to access the application depending on the serviceType and other considerations%%
 
 {{- include "common.warnings.rollingTag" .Values.backend.image }}
-{{- include "common.warnings.rollingTag" .Values.%%OTHER_OBJECT_BLOCK%%.image }}
+{{- include "common.warnings.rollingTag" .Values.frontend.image }}
 {{- include "sipam.validateValues" . }}

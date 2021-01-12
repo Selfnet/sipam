@@ -11,19 +11,19 @@ metadata:
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 spec:
-  type: {{ .Values.service.type }}
-  {{- if (or (eq .Values.service.type "LoadBalancer") (eq .Values.service.type "NodePort")) }}
-  externalTrafficPolicy: {{ .Values.service.externalTrafficPolicy | quote }}
+  type: {{ .Values.backend.service.type }}
+  {{- if (or (eq .Values.backend.service.type "LoadBalancer") (eq .Values.backend.service.type "NodePort")) }}
+  externalTrafficPolicy: {{ .Values.backend.service.externalTrafficPolicy | quote }}
   {{- end }}
-  {{ if eq .Values.service.type "LoadBalancer" }}
-  loadBalancerSourceRanges: {{ .Values.service.loadBalancerSourceRanges }}
+  {{ if eq .Values.backend.service.type "LoadBalancer" }}
+  loadBalancerSourceRanges: {{ .Values.backend.service.loadBalancerSourceRanges }}
   {{ end }}
-  {{- if (and (eq .Values.service.type "LoadBalancer") (not (empty .Values.service.loadBalancerIP))) }}
-  loadBalancerIP: {{ .Values.service.loadBalancerIP }}
+  {{- if (and (eq .Values.backend.service.type "LoadBalancer") (not (empty .Values.backend.service.loadBalancerIP))) }}
+  loadBalancerIP: {{ .Values.backend.service.loadBalancerIP }}
   {{- end }}
   ports:
-    - name: %%PORT_NAME%%
-      port: foo
-      protocol: bar
+    - name: http
+      port: {{ .Values.backend.service.port }}
+      protocol: http
   selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
     app.kubernetes.io/component: backend

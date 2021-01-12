@@ -1,22 +1,22 @@
 {{/*
 Return the proper backend image name
 */}}
-{{- define "sipam.image" -}}
+{{- define "sipam.backend.image" -}}
 {{ include "common.images.image" (dict "imageRoot" .Values.backend.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
-Return the proper image name (for the init container volume-permissions image)
+Return the proper frontend image name
 */}}
-{{- define "sipam.volumePermissions.image" -}}
-{{- include "common.images.image" ( dict "imageRoot" .Values.volumePermissions.image "global" .Values.global ) -}}
+{{- define "sipam.frontend.image" -}}
+{{ include "common.images.image" (dict "imageRoot" .Values.frontend.image "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper Docker Image Registry Secret Names
 */}}
 {{- define "sipam.imagePullSecrets" -}}
-{{- include "common.images.pullSecrets" (dict "images" (list .Values.backend.image .Values.frontend.image .Values.volumePermissions.image) "global" .Values.global) -}}
+{{- include "common.images.pullSecrets" (dict "images" (list .Values.backend.image .Values.frontend.image) "global" .Values.global) -}}
 {{- end -}}
 
 {{/*

@@ -28,32 +28,12 @@ extraDeploy: []
 ##
 replicaCount: 1
 
-service:
-  type: ClusterIP
-  # HTTP Port
-  port: 80
-  # HTTPS Port
-  httpsPort: 443
-  ## loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
-  ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
-  ##
-  ## loadBalancerIP:
-  ##
-  ## nodePorts:
-  ##   http: <to set explicitly, choose port between 30000-32767>
-  ##   https: <to set explicitly, choose port between 30000-32767>
-  nodePorts:
-    http: ""
-    https: ""
-  ## Enable client source IP preservation
-  ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
-  ##
-  externalTrafficPolicy: Cluster
 
 ## %%MAIN_CONTAINER/POD_DESCRIPTION%%
 ##
 backend:
   enabled: true
+  replicaCount: 1
   image:
     registry: packages.selfnet.de
     repository: sipam/backend
@@ -69,6 +49,26 @@ backend:
     ##
     # pullSecrets:
     #   - myRegistryKeySecretName
+
+  service:
+    type: ClusterIP
+    # HTTP Port
+    port: 80
+    ## loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
+    ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+    ##
+    ## loadBalancerIP:
+    ##
+    ## nodePorts:
+    ##   http: <to set explicitly, choose port between 30000-32767>
+    ##   https: <to set explicitly, choose port between 30000-32767>
+    nodePorts:
+      http: ""
+      https: ""
+    ## Enable client source IP preservation
+    ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    ##
+    externalTrafficPolicy: Cluster
 
   ## Configure extra options for liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
@@ -281,6 +281,26 @@ frontend:
     # pullSecrets:
     #   - myRegistryKeySecretName
 
+  service:
+    type: ClusterIP
+    # HTTP Port
+    port: 80
+    ## loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
+    ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
+    ##
+    ## loadBalancerIP:
+    ##
+    ## nodePorts:
+    ##   http: <to set explicitly, choose port between 30000-32767>
+    ##   https: <to set explicitly, choose port between 30000-32767>
+    nodePorts:
+      http: ""
+      https: ""
+    ## Enable client source IP preservation
+    ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
+    ##
+    externalTrafficPolicy: Cluster
+
   ## Configure extra options for liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   livenessProbe:
@@ -471,11 +491,6 @@ frontend:
   ##         containerPort: 1234
   ##
   sidecars: {}
-
-## Specifies whether RBAC resources should be created
-##
-rbac:
-  create: true
 
 ## Specifies whether a ServiceAccount should be created
 ##

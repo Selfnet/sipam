@@ -11,9 +11,9 @@ metadata:
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 spec:
-  replicas: {{ .Values.backend.replicaCount }}
+  replicas: {{ .Values.replicaCount }}
   {{- if .Values.backend.updateStrategy }}
-  strategy: {{- toYaml .Values.backend.updateStrategy | nindent 4 }}
+  strategy: {{- toYaml .Values.cobackendector.updateStrategy | nindent 4 }}
   {{- end }}
   selector:
     matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
@@ -51,13 +51,28 @@ spec:
       {{- if .Values.backend.podSecurityContext.enabled }}
       securityContext: {{- omit .Values.backend.podSecurityContext "enabled" | toYaml | nindent 8 }}
       {{- end }}
-      {{- if .Values.backend.initContainers }}
       initContainers:
+        {{- if and .Values.volumePermissions.enabled .Values.persistence.enabled }}
+        - name: volume-permissions
+          image: {{ include "sipam.volumePermissions.image" . }}
+          imagePullPolicy: {{ .Values.volumePermissions.image.pullPolicy | quote }}
+          command:
+            - %%commands%%
+          securityContext:
+            runAsUser: 0
+          {{- if .Values.volumePermissions.resources }}
+          resources: {{- toYaml .Values.volumePermissions.resources | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: foo
+              mountPath: bar
+        {{- end }}
+        {{- if .Values.backend.initContainers }}
           {{- include "common.tplvalues.render" (dict "value" .Values.backend.initContainers "context" $) | nindent 8 }}
-      {{- end }}
+        {{- end }}
       containers:
-        - name: backend
-          image: {{ template "sipam.backend.image" . }}
+        - name: %%CONTAINER_NAME%%
+          image: {{ template "sipam.image" . }}
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           {{- if .Values.backend.lifecycleHooks }}
           lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.backend.lifecycleHooks "context" $) | nindent 12 }}
@@ -105,3 +120,13 @@ spec:
           {{- if .Values.backend.extraVolumeMounts }}
           {{- include "common.tplvalues.render" (dict "value" .Values.backend.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}
+        {{- if .Values.backend.sidecars }}
+        {{- include "common.tplvalues.render" ( dict "value" .Values.backend.sidecars "context" $) | nindent 8 }}
+        {{- end }}
+      volumes:
+        - name: foo
+          hostPath:
+            path: bar
+        {{- if .Values.backend.extraVolumes }}
+        {{- include "common.tplvalues.render" (dict "value" .Values.backend.extraVolumes "context" $) | nindent 8 }}
+        {{- end }}
