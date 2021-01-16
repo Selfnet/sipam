@@ -9,3 +9,5 @@ secret.py
 .vscode/
 .coverage
 sipam.egg-info
+*.tgz
+charts/

@@ -6,7 +6,7 @@ metadata:
     {{- if .Values.commonLabels }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
     {{- end }}
-  name: {{ template "common.names.fullname" . }}-frontend
+  name: {{ include "common.names.fullname" . }}-frontend
   {{- if .Values.commonAnnotations }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
@@ -15,15 +15,15 @@ spec:
   {{- if (or (eq .Values.frontend.service.type "LoadBalancer") (eq .Values.frontend.service.type "NodePort")) }}
   externalTrafficPolicy: {{ .Values.frontend.service.externalTrafficPolicy | quote }}
   {{- end }}
-  {{ if eq .Values.frontend.service.type "LoadBalancer" }}
+  {{- if eq .Values.frontend.service.type "LoadBalancer" }}
   loadBalancerSourceRanges: {{ .Values.frontend.service.loadBalancerSourceRanges }}
-  {{ end }}
+  {{- end }}
   {{- if (and (eq .Values.frontend.service.type "LoadBalancer") (not (empty .Values.frontend.service.loadBalancerIP))) }}
   loadBalancerIP: {{ .Values.frontend.service.loadBalancerIP }}
   {{- end }}
   ports:
     - name: http
       port: {{ .Values.frontend.service.port }}
-      protocol: http
+      protocol: TCP
   selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
     app.kubernetes.io/component: frontend

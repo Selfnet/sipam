@@ -2,4 +2,3 @@
 
 {{- include "common.warnings.rollingTag" .Values.backend.image }}
 {{- include "common.warnings.rollingTag" .Values.frontend.image }}
-{{- include "sipam.validateValues" . }}

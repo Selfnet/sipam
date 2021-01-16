@@ -6,7 +6,7 @@ metadata:
     {{- if .Values.commonLabels }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
     {{- end }}
-  name: {{ template "common.names.fullname" . }}
+  name: {{ include "common.names.fullname" . }}-backend
   {{- if .Values.commonAnnotations }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
@@ -29,15 +29,23 @@ spec:
         {{- include "common.tplvalues.render" (dict "value" .Values.backend.podLabels "context" $) | nindent 8 }}
         {{- end }}
     spec:
-      serviceAccountName: {{ template "sipam.serviceAccountName" . }}
+      serviceAccountName: {{ include "sipam.serviceAccountName" . }}
       {{- include "sipam.imagePullSecrets" . | nindent 6 }}
       {{- if .Values.backend.affinity }}
       affinity: {{- include "common.tplvalues.render" ( dict "value" .Values.backend.affinity "context" $) | nindent 8 }}
       {{- else }}
+      {{- if or .Values.backend.podAffinity .Values.backend.podAntiAffinity .Values.backend.nodeAffinity }}
       affinity:
-        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.backend.podAffinityPreset "component" backend "context" $) | nindent 10 }}
-        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.backend.podAntiAffinityPreset "component" backend "context" $) | nindent 10 }}
+        {{- if .Values.backend.podAffinity }}
+        podAffinity: {{- include "common.affinities.pods" (dict "type" .Values.backend.podAffinityPreset "component" "backend" "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.backend.podAntiAffinity }}
+        podAntiAffinity: {{- include "common.affinities.pods" (dict "type" .Values.backend.podAntiAffinityPreset "component" "backend" "context" $) | nindent 10 }}
+        {{- end }}
+        {{- if .Values.backend.nodeAffinity -}}
         nodeAffinity: {{- include "common.affinities.nodes" (dict "type" .Values.backend.nodeAffinityPreset.type "key" .Values.backend.nodeAffinityPreset.key "values" .Values.backend.nodeAffinityPreset.values) | nindent 10 }}
+        {{- end }}
+      {{- end }}
       {{- end }}
       {{- if .Values.backend.nodeSelector }}
       nodeSelector: {{- include "common.tplvalues.render" ( dict "value" .Values.backend.nodeSelector "context" $) | nindent 8 }}
@@ -57,7 +65,7 @@ spec:
       {{- end }}
       containers:
         - name: backend
-          image: {{ template "sipam.backend.image" . }}
+          image: {{ include "sipam.backend.image" . }}
           imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
           {{- if .Values.backend.lifecycleHooks }}
           lifecycle: {{- include "common.tplvalues.render" (dict "value" .Values.backend.lifecycleHooks "context" $) | nindent 12 }}
@@ -72,11 +80,77 @@ spec:
           args: {{- include "common.tplvalues.render" (dict "value" .Values.backend.args "context" $) | nindent 12 }}
           {{- end }}
           env:
-            - name: SIPAM_DEBUG
-              value: "false"
+            - name: SIPAM_DEBUG 
+              ## the port the APP listens on.
+              ##
+              value: "{{ .Values.backend.config.django.debug | default "false" }}"
+            - name: SIPAM_PORT 
+              ## the port the APP listens on.
+              ##
+              value: "{{ .Values.backend.service.port }}"
+            {{- if .Values.backend.config.django.logLevel }}
+            - name: SIPAM_LOG_LEVEL
+              ## the port the APP listens on.
+              ##
+              value: "{{ .Values.backend.config.django.logLevel | default "error" }}"
+            {{- end }}
+            {{- if .Values.ingress.enabled }}
+            - name: SIPAM_FQDN 
+              ## Adding the Allowed host from outside.
+              ##
+              value: "{{ .Values.ingress.host }}"
+            {{- else }}
+            - name: SIPAM_FQDN
+              value: {{ include "common.names.fullname" . }}-backend.{{ .Release.Namespace }}
+            {{- end }}
+            {{- if .Values.backend.config.oidc.enabled }}
+            - name: SIPAM_OIDC_ENDPOINT
+              ## This defines the endpoint of the OIDC provider
+              ##
+              value: "{{ .Values.backend.config.oidc.endpoint }}"
+            - name: SIPAM_OIDC_CLIENT_ID 
+              ## This defines the allowed azp definition == client_id in keycloak.
+              ##
+              value: "{{ .Values.backend.config.oidc.clientId }}"
+            - name: SIPAM_OIDC_ALLOWED_GROUPS 
+              ## This defines allowed values in the groups_claim
+              ##
+              value: "{{ join "," .Values.backend.config.oidc.allowedGroups }}"
+            - name: SIPAM_OIDC_GROUPS_CLAIM 
+              ## This defines the key for the claim to use for groups.
+              ##
+              value: "{{ .Values.backend.config.oidc.groupClaim }}"
+            {{- end }}
+            - name: SIPAM_DATABASE_HOST 
+              ## The RDBMS Hostname to use to connect to.
+              ##
+              value: "{{ .Values.backend.config.db.host | default "postgres" }}"
+            - name: SIPAM_DATABASE_PORT 
+              ## The RDBMS Port to use to connect to.
+              ##
+              value: "{{ .Values.backend.config.db.port | default "5432" }}"
+            - name: SIPAM_DATABASE_NAME 
+              ## The Name of the RDBMS Database to use to connect to.
+              ##
+              value: "{{ .Values.backend.config.db.name | default "sipam" }}"
+            - name: SIPAM_DATABASE_USER_NAME 
+              ## The Username to use.
+              ##
+              value: "{{ .Values.backend.config.db.username | default "sipam" }}"
+            - name: SIPAM_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sipam.secrets.django.secret.name" . }}
+                  key: {{ include "sipam.secrets.django.secret.key" . }}
+            - name: SIPAM_DATABASE_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "sipam.secrets.db.secret.name" . }}
+                  key: {{ include "sipam.secrets.db.secret.key" . }}
             {{- if .Values.backend.extraEnvVars }}
             {{- include "common.tplvalues.render" (dict "value" .Values.backend.extraEnvVars "context" $) | nindent 12 }}
             {{- end }}
+          {{- if or .Values.backend.extraEnvVarsCM .Values.backend.extraEnvVarsSecret }}
           envFrom:
             {{- if .Values.backend.extraEnvVarsCM }}
             - configMapRef:
@@ -86,6 +160,7 @@ spec:
             - secretRef:
                 name: {{ include "common.tplvalues.render" (dict "value" .Values.backend.extraEnvVarsSecret "context" $) }}
             {{- end }}
+          {{- end }}
           {{- if .Values.backend.resources }}
           resources: {{- toYaml .Values.backend.resources | nindent 12 }}
           {{- end }}
@@ -99,9 +174,7 @@ spec:
           {{- else if .Values.backend.customReadinessProbe }}
           readinessProbe: {{- include "common.tplvalues.render" (dict "value" .Values.backend.customReadinessProbe "context" $) | nindent 12 }}
           {{- end }}
-          volumeMounts:
-            - name: foo
-              mountPath: bar
           {{- if .Values.backend.extraVolumeMounts }}
+          volumeMounts:
           {{- include "common.tplvalues.render" (dict "value" .Values.backend.extraVolumeMounts "context" $) | nindent 12 }}
           {{- end }}

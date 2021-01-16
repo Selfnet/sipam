@@ -16,20 +16,20 @@ commonLabels: {}
 ##
 commonAnnotations: {}
 
-## Kubernetes Cluster Domain
-##
-clusterDomain: cluster.local
-
 ## Extra objects to deploy (value evaluated as a template)
 ##
 extraDeploy: []
 
-## Number of nodes
-##
-replicaCount: 1
+ingress:
+  enabled: true
+  host: sipam.local
+  tls:
+    enabled: false
+
+  annotations: {}
 
 
-## %%MAIN_CONTAINER/POD_DESCRIPTION%%
+## SIPAM backend pod
 ##
 backend:
   enabled: true
@@ -37,7 +37,7 @@ backend:
   image:
     registry: packages.selfnet.de
     repository: sipam/backend
-    tag: {{ .Release.Version }}
+    tag: "{{ .Release.Version }}"
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -53,7 +53,7 @@ backend:
   service:
     type: ClusterIP
     # HTTP Port
-    port: 80
+    port: 8000
     ## loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
     ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
     ##
@@ -73,27 +73,25 @@ backend:
   ## Configure extra options for liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   livenessProbe:
-    enabled: true
-    %%httpGet || command || etc%%
+    enabled: false
+    httpGet:
+      path: /healthz
+      port: "{{ .Values.backend.service.port }}"
     initialDelaySeconds: foo
     periodSeconds: bar
     timeoutSeconds: foo
     failureThreshold: bar
     successThreshold: foo
   readinessProbe:
-    enabled: true
-    %%httpGet || command || etc%%
+    enabled: false
+    httpGet:
+      path: /readyz
+      port: "{{ .Values.backend.service.port }}"
     initialDelaySeconds: foo
     periodSeconds: bar
     timeoutSeconds: foo
     failureThreshold: bar
-    successThreshold: foo
-
-  %%OTHER_PARAMETERS_RELATED_TO_THIS_CONTAINER/POD%%
-
-  ## ConfigMap with %%MAIN_CONTAINER_NAME%% Configuration
-  ##
-  # existingConfigmap:
+    successThreshold: foo 
 
   ## Command and args for running the container (set to default if not set). Use array form
   ##
@@ -213,6 +211,46 @@ backend:
   updateStrategy:
     type: RollingUpdate
 
+  ##
+  ## Specify the django secret
+  ## ref: https://docs.djangoproject.com/en/3.1/ref/settings/#secret-key
+  djangoSecret:
+    create: true
+    name: ""
+    value: ""
+    keyMapping: {}
+  ##
+  ## Specify the database password secret
+  ## ref: https://docs.djangoproject.com/en/3.1/ref/settings/#databases
+  dbSecret:
+    create: false
+    name: ""
+    value: ""
+    keyMapping: {}
+  
+  config:
+    django:
+      secret: ""
+      logLevel: error
+      debug: false
+    db:
+      ##
+      ## If you specify the password here in plaintext
+      ## you need to enable the variable .Values.backend.dbSecret.create
+      password: ""
+      # username: sipam
+      # name: sipam
+      # host: postgres
+      # port: 5432
+    oidc:
+      enabled: false
+      endpoint: "https://example.com/auth/realms/master/"
+      clientId: sipam
+      groupClaim: "groups"
+      allowedGroups:
+      - group1
+      - group2
+
   ## Additional environment variables to set
   ## Example:
   ## extraEnvVars:
@@ -220,66 +258,6 @@ backend:
   ##     value: "bar"
   ##
   extraEnvVars: []
-    - name: SIPAM_PORT 
-      ## the port the APP listens on.
-      ##
-      value: "{{ .Values.backend.service.port }}"
-    - name: SIPAM_FQDN 
-      ## Adding the Allowed host from outside.
-      ##
-      value: "{{ .Values.backend.ingress.host }}"
-    # - name: SIPAM_ENV 
-    #   ## The environment the APP runs in.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_DEBUG 
-    #   ## This enables the development mode.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_LOG_LEVEL 
-    #   ## Log Level of the application.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_OIDC_ENDPOINT 
-    #   ## This defines the endpoint of the OIDC provider
-    #   ##
-    #   value: ""
-    # - name: SIPAM_OIDC_CLIENT_ID 
-    #   ## This defines the allowed azp definition == client_id in keycloak.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_OIDC_ALLOWED_GROUPS 
-    #   ## This defines allowed values in the groups_claim
-    #   ##
-    #   value: ""
-    # - name: SIPAM_OIDC_GROUPS_CLAIM 
-    #   ## This defines the key for the claim to use for groups.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_OIDC_BEARER_AUTH_HEADER_PREFIX 
-    #   ## This defines the Authorization Header prefix to look for when using OIDC.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_DATABASE_HOST 
-    #   ## The RDBMS Hostname to use to connect to.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_DATABASE_PORT 
-    #   ## The RDBMS Port to use to connect to.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_DATABASE_NAME 
-    #   ## The Name of the RDBMS Database to use to connect to.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_DATABASE_USER_NAME 
-    #   ## The Username to use.
-    #   ##
-    #   value: ""
-    # - name: SIPAM_DATABASE_USER_PASSWORD 
-    #   ## The Password for the user to use.
-    #   ##
-    #   value: ""
 
   ## ConfigMap with extra environment variables
   ##
@@ -321,14 +299,15 @@ backend:
   ##
   sidecars: {}
 
-## %%SECONDARY_CONTAINER/POD_DESCRIPTION%%
+## SIPAM frontend pod with the SPA
 ##
 frontend:
   enabled: true
+  replicaCount: 1
   image:
     registry: packages.selfnet.de
     repository: sipam/frontend
-    tag: {{ .Release.Version }}
+    tag: "{{ .Release.Version }}"
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -356,6 +335,7 @@ frontend:
     nodePorts:
       http: ""
       https: ""
+
     ## Enable client source IP preservation
     ## ref http://kubernetes.io/docs/tasks/access-application-cluster/create-external-load-balancer/#preserving-the-client-source-ip
     ##
@@ -364,25 +344,27 @@ frontend:
   ## Configure extra options for liveness and readiness probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   livenessProbe:
-    enabled: true
-    %%httpGet || command || etc%%
+    enabled: false
+    httpGet:
+      path: /healthz
+      port: "{{ .Values.frontend.service.port }}"
     initialDelaySeconds: foo
     periodSeconds: bar
     timeoutSeconds: foo
     failureThreshold: bar
     successThreshold: foo
   readinessProbe:
-    enabled: true
-    %%httpGet || command || etc%%
+    enabled: false
+    httpGet:
+      path: /readyz
+      port: "{{ .Values.frontend.service.port }}"
     initialDelaySeconds: foo
     periodSeconds: bar
     timeoutSeconds: foo
     failureThreshold: bar
-    successThreshold: foo
+    successThreshold: foo 
 
-  %%OTHER_PARAMETERS_RELATED_TO_THIS_CONTAINER/POD%%
-
-  ## ConfigMap with %%MAIN_CONTAINER_NAME%% Configuration
+  ## ConfigMap with frontend Configuration
   ##
   # existingConfigmap:
 
@@ -391,7 +373,7 @@ frontend:
   command: []
   args: []
 
-  ## %%MAIN_CONTAINER_NAME%% resource requests and limits
+  ## frontend resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources:
@@ -406,7 +388,7 @@ frontend:
     #   cpu: 200m
     #   memory: 10Mi
 
-  ## %%MAIN_CONTAINER_NAME%% containers' Security Context
+  ## frontend containers' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ##
   containerSecurityContext:
@@ -414,7 +396,7 @@ frontend:
     runAsUser: 1001
     runAsNonRoot: true
 
-  ## %%MAIN_CONTAINER_NAME%% pods' Security Context
+  ## frontend pods' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ##
   podSecurityContext:
@@ -479,12 +461,12 @@ frontend:
   ##
   podAnnotations: {}
 
-  ## %%MAIN_CONTAINER_NAME%% pods' priority.
+  ## frontend pods' priority.
   ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   ##
   # priorityClassName: ""
 
-  ## lifecycleHooks for the %%MAIN_CONTAINER_NAME%% container to automate configuration before or after startup.
+  ## lifecycleHooks for the frontend container to automate configuration before or after startup.
   ##
   lifecycleHooks: {}
 
@@ -503,7 +485,14 @@ frontend:
   ##
   updateStrategy:
     type: RollingUpdate
-
+  config:
+    API_URL: '{{ if .Values.ingress.tls.enabled }}https{{ else }}http{{ end }}://{{ .Values.ingress.host }}/api/v1'
+    APP_URL: '{{ if .Values.ingress.tls.enabled }}https{{ else }}http{{ end }}://{{ .Values.ingress.host }}/'
+    DEBUG: "{{ .Values.backend.config.debug }}"
+    OIDC:
+      enabled: "{{ .Values.backend.config.oidc.enabled }}"
+      client_id: "{{ .Values.backend.config.oidc.clientId }}"
+      issuer_url: "{{ .Values.backend.config.oidc.endpoint }}"
   ## Additional environment variables to set
   ## Example:
   ## extraEnvVars:
@@ -528,7 +517,7 @@ frontend:
   ##
   extraVolumeMounts: []
 
-  ## Add init containers to the %%MAIN_CONTAINER_NAME%% pods.
+  ## Add init containers to the frontend pods.
   ## Example:
   ## initContainers:
   ##   - name: your-image-name
@@ -540,7 +529,7 @@ frontend:
   ##
   initContainers: {}
 
-  ## Add sidecars to the %%MAIN_CONTAINER_NAME%% pods.
+  ## Add sidecars to the frontend pods.
   ## Example:
   ## sidecars:
   ##   - name: your-image-name

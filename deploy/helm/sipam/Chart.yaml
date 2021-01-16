@@ -6,7 +6,7 @@ dependencies:
     tags:
       - bitnami-common
     version: 1.x.x
-description: A simple IPAM solution
+description: A simple Selfnet IPAM solution
 engine: gotpl
 home: https://github.com/selfnet/sipam
 icon: 

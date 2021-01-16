@@ -24,11 +24,55 @@ Create the name of the service account to use
 */}}
 {{- define "sipam.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create -}}
-    {{ default (printf "%s-foo" (include "common.names.fullname" .)) .Values.serviceAccount.name }}
+    {{ default (printf "%s" (include "common.names.fullname" .)) .Values.serviceAccount.name }}
 {{- else -}}
     {{ default "default" .Values.serviceAccount.name }}
 {{- end -}}
 {{- end -}}
+
+{{/*
+Create the name of the secret to use for the django secret.
+*/}}
+{{- define "sipam.secrets.django.secret.name" -}}
+{{ include "common.secrets.name" (dict "existingSecret" .Values.backend.djangoSecret "defaultNameSuffix" "secret-key" "context" . )}}
+{{- end -}}
+
+{{/*
+Create the key of the secret to use for the django secret.
+*/}}
+{{- define "sipam.secrets.django.secret.key" -}}
+{{ include "common.secrets.key" (dict "existingSecret" .Values.backend.djangoSecret "key" "secretKey" "context" .) }}
+{{- end -}}
+
+
+Create the name of the secret to use for the django secret.
+*/}}
+{{- define "sipam.secrets.db.secret.name" -}}
+{{ include "common.secrets.name" (dict "existingSecret" .Values.backend.dbSecret "defaultNameSuffix" "db-password" "context" . )}}
+{{- end -}}
+
+{{/*
+Create the key of the secret to use for the django secret.
+*/}}
+{{- define "sipam.secrets.db.secret.key" -}}
+{{ include "common.secrets.key" (dict "existingSecret" .Values.backend.dbSecret "key" "password" "context" .) }}
+{{- end -}}
+
+{{/* vim: set filetype=mustache: */}}
+{{/*
+Renders a value that contains template.
+Usage:
+{{ include "common.tplvalues.render" ( dict "value" .Values.path.to.the.Value "context" $) }}
+*/}}
+{{- define "sipam.tplvalues.render.json" -}}
+    {{- if typeIs "string" .value }}
+        {{- tpl .value .context }}
+    {{- else }}
+        {{- tpl (.value | toPrettyJson) .context }}
+    {{- end }}
+{{- end -}}
+
+
 
 {{/*
 Compile all warnings into a single message.

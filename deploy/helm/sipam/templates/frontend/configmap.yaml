@@ -2,14 +2,14 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   labels: {{- include "common.labels.standard" . | nindent 4 }}
-    app.kubernetes.io/component: backend
+    app.kubernetes.io/component: frontend
     {{- if .Values.commonLabels }}
     {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
     {{- end }}
-  name: {{ template "common.names.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   {{- if .Values.commonAnnotations }}
   annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
   {{- end }}
 data:
-  %%CONFIG_FILE_NAME%%: |
-  # Config file
+  config.json: |
+    {{- include "sipam.tplvalues.render.json" ( dict "value" .Values.frontend.config "context" . ) | nindent 4 }}
