@@ -58,7 +58,7 @@ helm_lint:
     - helm dependency build deploy/helm/sipam
     - helm lint deploy/helm/sipam
     - helm template sipam deploy/helm/sipam > sipam.yaml
-    - kubeconform -summary sipam.yaml
+    - /bin/kubeconform -summary sipam.yaml
 
 flake8:
   stage: test
