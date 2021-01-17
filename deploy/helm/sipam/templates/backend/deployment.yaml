@@ -80,11 +80,11 @@ spec:
           args: {{- include "common.tplvalues.render" (dict "value" .Values.backend.args "context" $) | nindent 12 }}
           {{- end }}
           env:
-            - name: SIPAM_DEBUG 
+            - name: SIPAM_DEBUG
               ## the port the APP listens on.
               ##
               value: "{{ .Values.backend.config.django.debug | default "false" }}"
-            - name: SIPAM_PORT 
+            - name: SIPAM_PORT
               ## the port the APP listens on.
               ##
               value: "{{ .Values.backend.service.port }}"
@@ -95,7 +95,7 @@ spec:
               value: "{{ .Values.backend.config.django.logLevel | default "error" }}"
             {{- end }}
             {{- if .Values.ingress.enabled }}
-            - name: SIPAM_FQDN 
+            - name: SIPAM_FQDN
               ## Adding the Allowed host from outside.
               ##
               value: "{{ .Values.ingress.host }}"
@@ -108,32 +108,32 @@ spec:
               ## This defines the endpoint of the OIDC provider
               ##
               value: "{{ .Values.backend.config.oidc.endpoint }}"
-            - name: SIPAM_OIDC_CLIENT_ID 
+            - name: SIPAM_OIDC_CLIENT_ID
               ## This defines the allowed azp definition == client_id in keycloak.
               ##
               value: "{{ .Values.backend.config.oidc.clientId }}"
-            - name: SIPAM_OIDC_ALLOWED_GROUPS 
+            - name: SIPAM_OIDC_ALLOWED_GROUPS
               ## This defines allowed values in the groups_claim
               ##
               value: "{{ join "," .Values.backend.config.oidc.allowedGroups }}"
-            - name: SIPAM_OIDC_GROUPS_CLAIM 
+            - name: SIPAM_OIDC_GROUPS_CLAIM
               ## This defines the key for the claim to use for groups.
               ##
               value: "{{ .Values.backend.config.oidc.groupClaim }}"
             {{- end }}
-            - name: SIPAM_DATABASE_HOST 
+            - name: SIPAM_DATABASE_HOST
               ## The RDBMS Hostname to use to connect to.
               ##
               value: "{{ .Values.backend.config.db.host | default "postgres" }}"
-            - name: SIPAM_DATABASE_PORT 
+            - name: SIPAM_DATABASE_PORT
               ## The RDBMS Port to use to connect to.
               ##
               value: "{{ .Values.backend.config.db.port | default "5432" }}"
-            - name: SIPAM_DATABASE_NAME 
+            - name: SIPAM_DATABASE_NAME
               ## The Name of the RDBMS Database to use to connect to.
               ##
               value: "{{ .Values.backend.config.db.name | default "sipam" }}"
-            - name: SIPAM_DATABASE_USER_NAME 
+            - name: SIPAM_DATABASE_USER_NAME
               ## The Username to use.
               ##
               value: "{{ .Values.backend.config.db.username | default "sipam" }}"
