@@ -9,7 +9,7 @@ dependencies:
 description: A simple Selfnet IPAM solution
 engine: gotpl
 home: https://github.com/selfnet/sipam
-icon: ""
+icon: 
 keywords:
   - ipam
 maintainers:
