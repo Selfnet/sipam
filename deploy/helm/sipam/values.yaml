@@ -20,6 +20,13 @@ commonAnnotations: {}
 ##
 extraDeploy: []
 
+## Enable networkpolicies to allow traffic from
+## defined namespace
+##
+networkpolicies:
+  enabled: false
+  namespace: ingress-system
+
 ingress:
   enabled: true
   host: sipam.local
