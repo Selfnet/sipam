@@ -24,8 +24,8 @@ ingress:
   enabled: true
   host: sipam.local
   tls:
-    enabled: false
-
+    enabled: true
+    secretName: sipam-tls
   annotations: {}
 
 
