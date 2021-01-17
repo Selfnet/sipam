@@ -91,7 +91,7 @@ backend:
     periodSeconds: bar
     timeoutSeconds: foo
     failureThreshold: bar
-    successThreshold: foo 
+    successThreshold: foo
 
   ## Command and args for running the container (set to default if not set). Use array form
   ##
@@ -227,7 +227,7 @@ backend:
     name: ""
     value: ""
     keyMapping: {}
-  
+
   config:
     django:
       secret: ""
@@ -362,7 +362,7 @@ frontend:
     periodSeconds: bar
     timeoutSeconds: foo
     failureThreshold: bar
-    successThreshold: foo 
+    successThreshold: foo
 
   ## ConfigMap with frontend Configuration
   ##

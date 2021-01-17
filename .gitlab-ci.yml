@@ -57,7 +57,8 @@ helm_lint:
     - mv kubeconform /kubeconform
     - chmod +x /kubeconform
   script:
-    - "! grep -r -I -n '[[:blank:]]$' deploy/"
+    - |
+      ! grep -r -I -n '[[:blank:]]$' deploy/
     - helm dependency build deploy/helm/sipam
     - helm lint deploy/helm/sipam
     - helm template sipam deploy/helm/sipam > sipam.yaml

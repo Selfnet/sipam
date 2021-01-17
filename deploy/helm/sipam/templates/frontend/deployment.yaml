@@ -79,7 +79,7 @@ spec:
           args: {{- include "common.tplvalues.render" (dict "value" .Values.frontend.args "context" $) | nindent 12 }}
           {{- end }}
           {{- if .Values.frontend.extraEnvVars }}
-          env: 
+          env:
           {{- include "common.tplvalues.render" (dict "value" .Values.frontend.extraEnvVars "context" $) | nindent 12 }}
           {{- end }}
           envFrom:
