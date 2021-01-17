@@ -52,7 +52,7 @@ helm_lint:
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
     - curl "https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" -o kubeconform.tar.gz
-    - tar -zxf kubeconform.tar.gz && mv kubeconform /bin/kubeconform && chmod +x /bin/kubeconform
+    - tar -xvzf kubeconform.tar.gz && mv kubeconform /bin/kubeconform && chmod +x /bin/kubeconform
   script:
     - "! grep -r -I -n '[[:blank:]]$' deploy/"
     - helm dependency build deploy/helm/sipam
