@@ -1,7 +1,10 @@
 FROM python:3.8-slim-buster
 
-RUN useradd -r sipam
-
+ARG UNAME=sipam
+ARG UID=1000
+ARG GID=1000
+RUN groupadd -g $GID -o $UNAME
+RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
 WORKDIR /usr/src/app
 
 # First copy basic dependencies
@@ -19,7 +22,7 @@ ADD sipam sipam/
 
 RUN chown -R sipam:sipam /usr/src/app
 
-USER sipam
+USER $UNAME
 
 # Assemble staticfiles for drf ui
 RUN python manage.py collectstatic --noinput
