@@ -30,6 +30,33 @@ yarn-build:
     paths:
       - frontend/sipam/dist
 
+helm_build:
+  image: docker.io/dtzar/helm-kubectl:3.5.0
+  stage: build
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - helm repo add selfnet "${NEXUS_URL}/repository/selfnet-helm/" --username "${NEXUS_USERNAME}" --password "${NEXUS_PASSWORD}"
+  script:
+    - helm dependency build deploy/helm/sipam
+    - helm package deploy/helm/sipam
+    - curl -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "${NEXUSURL}/repository/selfnet-helm/ --upload-file *.tgz -v
+  needs:
+    - helm_lint
+  only:
+    - tags
+
+
+helm_lint:
+  image: docker.io/dtzar/helm-kubectl:3.5.0
+  stage: test
+  before_script:
+    - helm repo add bitnami https://charts.bitnami.com/bitnami
+  script:
+    - "! grep -r -I -n '[[:blank:]]$' deploy/"
+    - helm dependency build deploy/helm/sipam
+    - helm lint deploy/helm/sipam
+    - helm template sipam deploy/helm/sipam
+
 flake8:
   stage: test
   before_script:
