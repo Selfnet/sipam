@@ -43,7 +43,6 @@ helm_build:
     - curl -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "${NEXUSURL}/repository/selfnet-helm/ --upload-file *.tgz -v
   needs:
     - helm_lint
-    - yaml_lint
   only:
     - tags
 
