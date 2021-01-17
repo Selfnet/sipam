@@ -53,7 +53,7 @@ pytest:
     - poetry run coverage report
 
 backend_container:
-  image: quay.io/containers/buildah:master
+  image: quay.io/containers/buildah:latest
   stage: build_containers
   before_script:
     - export STORAGE_DRIVER=vfs
@@ -71,7 +71,7 @@ backend_container:
     - branches
 
 frontend_container:
-  image: quay.io/containers/buildah:master
+  image: quay.io/containers/buildah:latest
   stage: build_containers
   before_script:
     - export STORAGE_DRIVER=vfs
@@ -89,7 +89,7 @@ frontend_container:
     - branches
 
 backend_container_release:
-  image: quay.io/containers/buildah:v1.17.0
+  image: quay.io/containers/buildah:latest
   stage: build_containers
   before_script:
     - export STORAGE_DRIVER=vfs
@@ -106,7 +106,7 @@ backend_container_release:
     - tags
 
 frontend_container_release:
-  image: quay.io/containers/buildah:v1.17.0
+  image: quay.io/containers/buildah:latest
   stage: build_containers
   before_script:
     - export STORAGE_DRIVER=vfs
