@@ -6,6 +6,7 @@ variables:
   POSTGRES_DB: sipam
   prometheus_multiproc_dir: /tmp
   npm_prefix: frontend/sipam/
+  KUBECONFORM_VERSION: "0.4.2"
 
 stages:
   - test
@@ -42,20 +43,23 @@ helm_build:
     - curl -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "${NEXUSURL}/repository/selfnet-helm/ --upload-file *.tgz -v
   needs:
     - helm_lint
+    - yaml_lint
   only:
     - tags
-
 
 helm_lint:
   image: docker.io/dtzar/helm-kubectl:3.5.0
   stage: test
   before_script:
     - helm repo add bitnami https://charts.bitnami.com/bitnami
+    - curl "https://github.com/yannh/kubeconform/releases/download/v${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" | tar -zxf
+    - mv kubeconform /bin/kubeconform && chmod +x /bin/kubeconform
   script:
     - "! grep -r -I -n '[[:blank:]]$' deploy/"
     - helm dependency build deploy/helm/sipam
     - helm lint deploy/helm/sipam
-    - helm template sipam deploy/helm/sipam
+    - helm template sipam deploy/helm/sipam > sipam.yaml
+    - kubeconform -summary sipam.yaml
 
 flake8:
   stage: test
