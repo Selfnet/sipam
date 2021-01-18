@@ -125,7 +125,7 @@ backend:
   ##
   containerSecurityContext:
     enabled: true
-    runAsUser: 1001
+    runAsUser: 1000
     runAsNonRoot: true
 
   ## %%MAIN_CONTAINER_NAME%% pods' Security Context
@@ -133,7 +133,7 @@ backend:
   ##
   podSecurityContext:
     enabled: true
-    fsGroup: 1001
+    fsGroup: 1000
 
   ## Pod affinity preset
   ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
@@ -400,7 +400,7 @@ frontend:
   ##
   containerSecurityContext:
     enabled: true
-    runAsUser: 1001
+    runAsUser: 101
     runAsNonRoot: true
 
   ## frontend pods' Security Context
@@ -408,7 +408,7 @@ frontend:
   ##
   podSecurityContext:
     enabled: true
-    fsGroup: 1001
+    fsGroup: 101
 
   ## Pod affinity preset
   ## ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/#inter-pod-affinity-and-anti-affinity
