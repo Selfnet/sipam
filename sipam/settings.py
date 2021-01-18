@@ -84,7 +84,7 @@ OIDC_AUTH = {
 }
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config.debug
+DEBUG = config.debug or (os.environ.get("RUN_MAIN") == "true")
 
 MEMCACHE_MAX_KEY_LENGTH = 1024
 CACHES = {
@@ -214,6 +214,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# This detects the django development runserver
 if os.environ.get("RUN_MAIN") == "true":
     PROMETHEUS_METRICS_EXPORT_PORT_RANGE = None
 else:
