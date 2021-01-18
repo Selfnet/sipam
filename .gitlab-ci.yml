@@ -60,7 +60,7 @@ helm_lint:
       bash -c "! grep -r -I -n '[[:blank:]]$' deploy/"
     - helm dependency build deploy/helm/sipam
     - helm lint deploy/helm/sipam
-    - helm template sipam deploy/helm/sipam | /kubeconform -summary
+    - helm template sipam deploy/helm/sipam | /kubeconform -ignore-missing-schemas -summary
 
 flake8:
   stage: test
