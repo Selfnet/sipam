@@ -112,10 +112,12 @@ spec:
               ## This defines the allowed azp definition == client_id in keycloak.
               ##
               value: "{{ .Values.backend.config.oidc.clientId }}"
+            {{- if .Values.backend.config.oidc.allowedGroups }}
             - name: SIPAM_OIDC_ALLOWED_GROUPS
               ## This defines allowed values in the groups_claim
               ##
               value: "{{ join "," .Values.backend.config.oidc.allowedGroups }}"
+            {{- end }}
             - name: SIPAM_OIDC_GROUPS_CLAIM
               ## This defines the key for the claim to use for groups.
               ##

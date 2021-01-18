@@ -42,9 +42,9 @@ backend:
   enabled: true
   replicaCount: 1
   image:
-    registry: packages.selfnet.de
-    repository: sipam/backend
-    tag: 0.0.1
+    registry: rotterdam.selfnet.de
+    repository: kniffel/sipam/backend
+    tag: 79c4e0ba
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -105,7 +105,7 @@ backend:
   command: []
   args: []
 
-  ## %%MAIN_CONTAINER_NAME%% resource requests and limits
+  ## backend resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   ##
   resources:
@@ -120,7 +120,7 @@ backend:
     #   cpu: 200m
     #   memory: 10Mi
 
-  ## %%MAIN_CONTAINER_NAME%% containers' Security Context
+  ## backend containers' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-container
   ##
   containerSecurityContext:
@@ -128,7 +128,7 @@ backend:
     runAsUser: 1000
     runAsNonRoot: true
 
-  ## %%MAIN_CONTAINER_NAME%% pods' Security Context
+  ## backend pods' Security Context
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
   ##
   podSecurityContext:
@@ -193,20 +193,20 @@ backend:
   ##
   podAnnotations: {}
 
-  ## %%MAIN_CONTAINER_NAME%% pods' priority.
+  ## backend pods' priority.
   ## ref: https://kubernetes.io/docs/concepts/configuration/pod-priority-preemption/
   ##
   # priorityClassName: ""
 
-  ## lifecycleHooks for the %%MAIN_CONTAINER_NAME%% container to automate configuration before or after startup.
+  ## lifecycleHooks for the backend container to automate configuration before or after startup.
   ##
   lifecycleHooks: {}
 
-  ## Custom Liveness probes for %%MAIN_CONTAINER_NAME%%
+  ## Custom Liveness probes for backend
   ##
   customLivenessProbe: {}
 
-  ## Custom Rediness probes %%MAIN_CONTAINER_NAME%%
+  ## Custom Rediness probes backend
   ##
   customReadinessProbe: {}
 
@@ -282,7 +282,7 @@ backend:
   ##
   extraVolumeMounts: []
 
-  ## Add init containers to the %%MAIN_CONTAINER_NAME%% pods.
+  ## Add init containers to the backend pods.
   ## Example:
   ## initContainers:
   ##   - name: your-image-name
@@ -294,7 +294,7 @@ backend:
   ##
   initContainers: {}
 
-  ## Add sidecars to the %%MAIN_CONTAINER_NAME%% pods.
+  ## Add sidecars to the backend pods.
   ## Example:
   ## sidecars:
   ##   - name: your-image-name
@@ -312,9 +312,9 @@ frontend:
   enabled: true
   replicaCount: 1
   image:
-    registry: packages.selfnet.de
-    repository: sipam/frontend
-    tag: 0.0.1
+    registry: rotterdam.selfnet.de
+    repository: kniffel/sipam/frontend
+    tag: 79c4e0ba
     ## Specify a imagePullPolicy
     ## Defaults to 'Always' if image tag is 'latest', else set to 'IfNotPresent'
     ## ref: http://kubernetes.io/docs/user-guide/images/#pre-pulling-images
@@ -330,7 +330,7 @@ frontend:
   service:
     type: ClusterIP
     # HTTP Port
-    port: 80
+    port: 8080
     ## loadBalancerIP for the SuiteCRM Service (optional, cloud specific)
     ## ref: http://kubernetes.io/docs/user-guide/services/#type-loadbalancer
     ##
@@ -477,11 +477,11 @@ frontend:
   ##
   lifecycleHooks: {}
 
-  ## Custom Liveness probes for %%MAIN_CONTAINER_NAME%%
+  ## Custom Liveness probes for frontend pod
   ##
   customLivenessProbe: {}
 
-  ## Custom Rediness probes %%MAIN_CONTAINER_NAME%%
+  ## Custom Rediness probes frontend pod
   ##
   customReadinessProbe: {}
 
