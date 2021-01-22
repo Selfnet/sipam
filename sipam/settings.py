@@ -84,7 +84,7 @@ OIDC_AUTH = {
 }
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config.debug
+DEBUG = config.debug or (os.environ.get("RUN_MAIN") == "true")
 
 MEMCACHE_MAX_KEY_LENGTH = 1024
 CACHES = {
@@ -215,6 +215,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# This detects the django development runserver
+if os.environ.get("RUN_MAIN") == "true":
+    PROMETHEUS_METRICS_EXPORT_PORT_RANGE = None
+else:
+    PROMETHEUS_METRICS_EXPORT_PORT_RANGE = range(8011, 8020)
+PROMETHEUS_EXPORT_MIGRATIONS = False
 
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
@@ -233,3 +239,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, "static")

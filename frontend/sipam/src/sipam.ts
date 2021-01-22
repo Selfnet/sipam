@@ -1,33 +1,29 @@
-import config from '@/config';
 import { RequestParams, Api } from './types/api';
+import { SIPAMConfiguration } from './types/config';
 
-function getToken(accessToken?: string | null | undefined): string {
-  if (config.oidc) {
-    // eslint-disable-next-line global-require
-    const store = require('@/store/store').useStore();
-    // console.log(accessToken);
-    // console.log(store.getters['AuthOIDC/oidcAccessToken']);
-    return `OPENID  ${accessToken || store.getters['AuthOIDC/oidcAccessToken'] || ''}`;
+export default function apiFactory(config: SIPAMConfiguration) {
+  function getToken(accessToken?: string | null | undefined): string {
+    if (config.oidc) {
+      // console.log(accessToken);
+      // console.log(store.getters['AuthOIDC/oidcAccessToken']);
+      return `OPENID  ${accessToken || ''}`;
+    }
+    return `Bearer ${accessToken || ''}`;
   }
-  return `Bearer ${accessToken || ''}`;
+
+  const getRequestHeaders = (accessToken: string | null | undefined): RequestParams => ({
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `${getToken(accessToken)}`,
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
+  });
+  return new Api(
+    {
+      baseUrl: config.baseURL,
+      securityWorker: getRequestHeaders,
+    },
+  );
 }
-
-const getRequestHeaders = (accessToken: string | null | undefined): RequestParams => ({
-  credentials: 'same-origin',
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `${getToken(accessToken)}`,
-  },
-  redirect: 'follow',
-  referrerPolicy: 'no-referrer',
-});
-const api = new Api(
-  {
-    baseUrl: process.env.VUE_APP_API_URL,
-    securityWorker: getRequestHeaders,
-  },
-);
-
-export default {
-  api,
-};

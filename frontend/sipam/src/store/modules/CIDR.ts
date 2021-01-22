@@ -1,7 +1,6 @@
 import Vue from 'vue';
-import { CIDRState, CIDRGet } from '@/types/store';
+import { CIDRState, CIDRGet, RootState } from '@/types/store';
 import { CIDR } from '@/types/api';
-import SIPAM from '@/sipam';
 
 export default {
   namespaced: true,
@@ -19,13 +18,8 @@ export default {
       return cidrs;
     },
     getByID: (state: CIDRState) => (nodeID: string) => state.cidrs[nodeID],
-    getChildrenByParentID: (
-      state: CIDRState, getters: any,
-    ) => (parentID: string) => getters.getByID(
-      parentID,
-    ).children.map(
-      (childID: string) => state.cidrs[childID],
-    ),
+    // eslint-disable-next-line max-len
+    getChildrenByParentID: (state: CIDRState, getters: any) => (parentID: string) => getters.getByID(parentID).children.map((childID: string) => state.cidrs[childID]),
   },
 
   mutations: {
@@ -74,40 +68,46 @@ export default {
   },
 
   actions: {
-    async FETCH_CIDRS(context: { commit: any }) {
-      const response = await SIPAM.api.cidr.cidrList();
+    async FETCH_CIDRS(context: { commit: any; rootState: RootState }) {
+      const response = await context.rootState.api.cidr.cidrList();
       context.commit('OVERRIDE_CIDRS', response.data);
     },
-    async UPDATE_CIDR(context: { commit: any }, payload: { cidrID: string, formData: CIDR }) {
-      const response = await SIPAM.api.cidr.cidrUpdate(payload.cidrID, payload.formData);
+    async UPDATE_CIDR(
+      context: { commit: any; rootState: RootState },
+      payload: { cidrID: string; formData: CIDR },
+    ) {
+      const response = await context.rootState.api.cidr.cidrUpdate(
+        payload.cidrID,
+        payload.formData,
+      );
       if (response.status === 200) {
         context.commit('SET_CIDR', response.data);
       } else {
         console.log(response);
       }
     },
-    async FETCH_CHILDREN(context: { commit: any }, parentID: string) {
-      const children = await SIPAM.api.cidr.cidrSubcidr(parentID);
+    async FETCH_CHILDREN(context: { commit: any; rootState: RootState }, parentID: string) {
+      const children = await context.rootState.api.cidr.cidrSubcidr(parentID);
       context.commit('SET_CIDRS', children.data);
     },
-    async CREATE_CIDR(context: { commit: any }, formData: CIDR) {
-      const response = await SIPAM.api.cidr.cidrCreate(formData);
+    async CREATE_CIDR(context: { commit: any; rootState: RootState }, formData: CIDR) {
+      const response = await context.rootState.api.cidr.cidrCreate(formData);
       if (response.status === 201) {
         context.commit('SET_CIDR', response.data);
       } else {
         console.log(response);
       }
     },
-    async DELETE_CIDR(context: { commit: any }, cidrID: string) {
-      const response = await SIPAM.api.cidr.cidrDelete(cidrID);
+    async DELETE_CIDR(context: { commit: any; rootState: RootState }, cidrID: string) {
+      const response = await context.rootState.api.cidr.cidrDelete(cidrID);
       if (response.status === 204) {
         context.commit('DELETE_CIDR', cidrID);
       } else {
         console.log(response);
       }
     },
-    async SEARCH_CIDR(context: { commit: any }, searchQuery: string) {
-      const response = await SIPAM.api.cidr.cidrList({ search: searchQuery });
+    async SEARCH_CIDR(context: { commit: any; rootState: RootState }, searchQuery: string) {
+      const response = await context.rootState.api.cidr.cidrList({ search: searchQuery });
       if (response.status === 200) {
         context.commit('OVERRIDE_CIDRS', response.data);
       } else {

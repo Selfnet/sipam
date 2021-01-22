@@ -48,7 +48,7 @@ class SIPAMConfig:
               " https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/")
     )
     debug = environ.bool_var(
-        default=True,
+        default=False,
         help="This enables the development mode."
     )
     fqdn = environ.var(

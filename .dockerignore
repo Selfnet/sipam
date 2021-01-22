@@ -2,3 +2,5 @@
 **/__pycache__
 **/fixtures
 **/tests
+**/dist
+frontend/sipam/public/config.json
