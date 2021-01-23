@@ -42,7 +42,7 @@ helm_build:
   script:
     - helm dependency build deploy/helm/sipam
     - helm package deploy/helm/sipam
-    - curl -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "${NEXUSURL}/repository/selfnet-helm/ --upload-file *.tgz -v
+    - curl -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "${NEXUSURL}/repository/selfnet-helm/" --upload-file *.tgz -v
   needs:
     - helm_lint
   only:
