@@ -44,15 +44,15 @@ Create the key of the secret to use for the django secret.
 {{ include "common.secrets.key" (dict "existingSecret" .Values.backend.djangoSecret "key" "secretKey" "context" .) }}
 {{- end -}}
 
-
-Create the name of the secret to use for the django secret.
+{{/*
+Create the name of the secret to use for the db secret.
 */}}
 {{- define "sipam.secrets.db.secret.name" -}}
 {{ include "common.secrets.name" (dict "existingSecret" .Values.backend.dbSecret "defaultNameSuffix" "db-password" "context" . )}}
 {{- end -}}
 
 {{/*
-Create the key of the secret to use for the django secret.
+Create the key of the secret to use for the db secret.
 */}}
 {{- define "sipam.secrets.db.secret.key" -}}
 {{ include "common.secrets.key" (dict "existingSecret" .Values.backend.dbSecret "key" "password" "context" .) }}
