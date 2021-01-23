@@ -8,7 +8,7 @@ RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
 WORKDIR /usr/src/app
 
 # First copy basic dependencies
-ADD manage.py pyproject.toml poetry.lock .
+ADD manage.py pyproject.toml poetry.lock ./
 ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 
 # Install dependencies
