@@ -25,5 +25,10 @@ spec:
     - name: http
       port: {{ .Values.backend.service.port }}
       protocol: TCP
+    {{- range $i, $e := until (int .Values.backend.workerCount) }}
+    - name: metrics-{{ $i }}
+      port: 801{{ $i }}
+      protocol: TCP
+    {{- end }}
   selector: {{- include "common.labels.matchLabels" . | nindent 4 }}
     app.kubernetes.io/component: backend

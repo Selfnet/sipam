@@ -1,0 +1,35 @@
+{{- if .Values.backend.prometheus.serviceMonitor.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "common.names.fullname" . }}-backend
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+    {{- if .Values.commonLabels }}
+    {{- include "common.tplvalues.render" ( dict "value" .Values.commonLabels "context" $ ) | nindent 4 }}
+    {{- end }}
+  {{- if .Values.commonAnnotations }}
+  annotations: {{- include "common.tplvalues.render" ( dict "value" .Values.commonAnnotations "context" $ ) | nindent 4 }}
+  {{- end }}
+spec:
+  jobLabel: {{ .Values.backend.prometheus.serviceMonitor.jobLabel | quote }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: backend
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}
+  endpoints:
+  {{- range $i, $e := until (int .Values.backend.workerCount) }}
+  - port: metrics-{{ $i }}
+    {{- if $.Values.backend.prometheus.serviceMonitor.interval }}
+    interval: {{ $.Values.backend.prometheus.serviceMonitor.interval }}
+    {{- end }}
+    {{- if $.Values.backend.prometheus.serviceMonitor.metricRelabelings }}
+    metricRelabelings: {{ toYaml $.Values.backend.prometheus.serviceMonitor.metricRelabelings | nindent 4 }}
+    {{- end }}
+    {{- if $.Values.backend.prometheus.serviceMonitor.relabelings }}
+    relabelings: {{ toYaml $.Values.backend.prometheus.serviceMonitor.relabelings | nindent 4 }}
+    {{- end }}
+  {{- end }}
+{{- end }}

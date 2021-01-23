@@ -79,6 +79,15 @@ spec:
           {{- if .Values.backend.args }}
           args: {{- include "common.tplvalues.render" (dict "value" .Values.backend.args "context" $) | nindent 12 }}
           {{- end }}
+          ports:
+          - containerPort: {{ .Values.backend.service.port }}
+            protocol: TCP
+            name: http
+          {{- range $i, $e := until (int .Values.backend.workerCount) }}
+          - containerPort: 801{{ $i }}
+            protocol: TCP
+            name: metrics-{{ $i }}
+          {{- end }}
           env:
             - name: SIPAM_DEBUG
               ## the port the APP listens on.
@@ -88,6 +97,9 @@ spec:
               ## the port the APP listens on.
               ##
               value: "{{ .Values.backend.service.port }}"
+            - name: SIPAM_GUNICORN_WORKERS
+              ## the amount of gunicorn workers create for the APP
+              value: "{{ int .Values.backend.workerCount }}"
             {{- if .Values.backend.config.django.logLevel }}
             - name: SIPAM_LOG_LEVEL
               ## the port the APP listens on.
