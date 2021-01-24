@@ -3,7 +3,7 @@ import BootstrapVue from 'bootstrap-vue';
 import I18n from 'vue-i18n';
 import '@/assets/styles/custom.scss';
 
-import '@/registerServiceWorker';
+import workerFactory from '@/registerServiceWorker';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlusCircle, faMinusCircle, faCog } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -15,6 +15,7 @@ import storeFactory from '@/store/store';
 import apiFactory from './sipam';
 
 fetchConfig().then((config) => {
+  workerFactory(config);
   // Icons
   library.add(faPlusCircle, faMinusCircle, faCog);
   Vue.component('fai', FontAwesomeIcon);

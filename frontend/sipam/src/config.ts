@@ -24,6 +24,7 @@ export default async () => {
       silentRedirectUri: `${config.APP_URL}/oidc-renew.html`,
     } as VuexOidcClientSettings,
     baseURL: config.API_URL,
+    appURL: config.APP_URL,
     oidc: config.OIDC.enabled,
   } as SIPAMConfiguration;
 };
