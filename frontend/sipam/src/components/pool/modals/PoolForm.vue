@@ -1,4 +1,4 @@
-2<template>
+<template>
   <b-modal
     :id="id"
     @ok="onSubmit"

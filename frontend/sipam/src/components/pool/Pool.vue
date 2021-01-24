@@ -1,37 +1,43 @@
 <template>
   <div>
     <div class="pool">
-    <div class="label">
-      <fai
-        @click="showPrefixes = !showPrefixes"
-        :icon="showPrefixes ? 'minus-circle': 'plus-circle'"
-        class="pointer"
-      />
-      <span @click="showPrefixes = !showPrefixes" class="bold pointer">{{ pool.label }}</span>
-      <b-dropdown
-        id="editPool"
-        variant="outline"
-      >
-        <template v-slot:button-content>
-          <fai :icon="['fas', 'cog']" />
-        </template>
-        <b-dropdown-item v-b-modal="modalPoolId">Edit</b-dropdown-item>
-        <pool-form
-          :pool="pool"
-          :edit="true"
+      <div class="label">
+        <fai
+          @click="showPrefixes = !showPrefixes"
+          :icon="showPrefixes ? 'minus-circle': 'plus-circle'"
+          class="pointer"
+        />
+        <span
+          @click="showPrefixes = !showPrefixes"
+          class="bold pointer"
+        >{{ pool.label }}</span>
+        <b-dropdown
+          id="editPool"
+          variant="outline"
         >
-        </pool-form>
-        <b-dropdown-item
-          variant="danger"
-          @click="confirmDelete"
-        >Delete</b-dropdown-item>
-      </b-dropdown>
-    </div>
-    <div>
-      <span class="description">{{ pool.description }}</span>
-    </div>
-    <div>
-      <b-button variant="primary" @click="showAssignForm = !showAssignForm">Assign</b-button>
+          <template v-slot:button-content>
+            <fai :icon="['fas', 'cog']" />
+          </template>
+          <b-dropdown-item v-b-modal="modalPoolId">Edit</b-dropdown-item>
+          <pool-form
+            :pool="pool"
+            :edit="true"
+          >
+          </pool-form>
+          <b-dropdown-item
+            variant="danger"
+            @click="confirmDelete"
+          >Delete</b-dropdown-item>
+        </b-dropdown>
+      </div>
+      <div>
+        <span class="description">{{ pool.description }}</span>
+      </div>
+      <div>
+        <b-button
+          variant="primary"
+          @click="showAssignForm = !showAssignForm"
+        >Assign</b-button>
         <b-modal
           v-model="showAssignForm"
           title="New Assignment"
@@ -49,16 +55,21 @@
           >
           </assign-form>
         </b-modal>
-    </div>
+      </div>
     </div>
     <div>
-      <b-collapse id="show-prefixes" v-model="showPrefixes">
-      <b-card>
-        <div v-for="prefix in pool.prefixes"
-         :key="prefix.id">
-          <cidr :cidrID="prefix.id"></cidr>
-        </div>
-      </b-card>
+      <b-collapse
+        id="show-prefixes"
+        v-model="showPrefixes"
+      >
+        <b-card>
+          <div
+            v-for="prefix in pool.prefixes"
+            :key="prefix.id"
+          >
+            <cidr :cidrID="prefix.id"></cidr>
+          </div>
+        </b-card>
       </b-collapse>
     </div>
   </div>
@@ -105,9 +116,7 @@ export default {
     confirmDelete() {
       this.$bvModal
         .msgBoxConfirm(
-          `Please confirm that you want to delete ${this.pool.label} ("${
-            this.pool.description
-          }")`,
+          `Please confirm that you want to delete ${this.pool.label} ("${this.pool.description}")`,
           {
             title: 'Please Confirm',
             size: 'sm',

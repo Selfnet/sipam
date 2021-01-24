@@ -62,10 +62,7 @@ export default {
         && !this.childIDs.includes(mutation.payload.id)
       ) {
         this.getSetChildren();
-      } else if (
-        mutation.type === 'CIDR/DELETE_CIDR'
-        && this.childIDs.includes(mutation.payload)
-      ) {
+      } else if (mutation.type === 'CIDR/DELETE_CIDR' && this.childIDs.includes(mutation.payload)) {
         this.getSetChildren();
       }
     });

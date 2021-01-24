@@ -76,8 +76,7 @@ export default {
       const { cidr } = this.cidr;
       // Check if is ipv6 and prefix is /128 or is not ipv6 and prefix is /32
       return (
-        (cidr.includes(':') && cidr.endsWith('128'))
-        || (!cidr.includes(':') && cidr.endsWith('32'))
+        (cidr.includes(':') && cidr.endsWith('128')) || (!cidr.includes(':') && cidr.endsWith('32'))
       );
     },
     modalCIDREditID() {
@@ -97,9 +96,7 @@ export default {
     confirmDelete() {
       this.$bvModal
         .msgBoxConfirm(
-          `Please confirm that you want to delete ${this.cidr.cidr} ("${
-            this.cidr.description
-          }")`,
+          `Please confirm that you want to delete ${this.cidr.cidr} ("${this.cidr.description}")`,
           {
             title: 'Please Confirm',
             size: 'sm',

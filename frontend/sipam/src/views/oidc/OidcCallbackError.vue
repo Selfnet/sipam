@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="center" >Error in authentication</h1>
+    <h1 class="center">Error in authentication</h1>
   </div>
 </template>
 

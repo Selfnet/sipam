@@ -1,6 +1,10 @@
 <template>
   <div class="home">
-    <img alt="Selfnet logo" src="../assets/imgs/logo.svg" height="128">
+    <img
+      alt="Selfnet logo"
+      src="../assets/imgs/logo.svg"
+      height="128"
+    >
   </div>
 </template>
 
@@ -9,7 +13,6 @@
 
 export default {
   name: 'home',
-  components: {
-  },
+  components: {},
 };
 </script>

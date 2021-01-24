@@ -1,7 +1,5 @@
 <template>
-  <div
-    v-if="oidcIsAuthenticated"
-  >
+  <div v-if="oidcIsAuthenticated">
     <p>
       You are signed in as:
     </p>
@@ -59,8 +57,7 @@ export default {
   methods: {
     ...mapActions('AuthOIDC', ['authenticateOidcSilent', 'removeOidcUser']),
     reauthenticate() {
-      this.authenticateOidcSilent()
-        .catch(() => this.removeOidcUser());
+      this.authenticateOidcSilent().catch(() => this.removeOidcUser());
     },
   },
 };

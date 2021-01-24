@@ -8,8 +8,7 @@ import SIPAM from '@/sipam';
 
 export default {
   name: 'OidcLogin',
-  methods: {
-  },
+  methods: {},
   created() {
     this.$router.push('/home');
   },

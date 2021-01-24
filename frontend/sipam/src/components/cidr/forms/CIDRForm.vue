@@ -38,7 +38,11 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-3" label="Flag:" label-for="input-flag">
+      <b-form-group
+        id="input-group-3"
+        label="Flag:"
+        label-for="input-flag"
+      >
         <b-form-select
           id="input-flag"
           v-model="form.flag"
@@ -47,7 +51,11 @@
         ></b-form-select>
       </b-form-group>
 
-      <b-form-group id="input-group-4" label="Pool:" label-for="input-pool">
+      <b-form-group
+        id="input-group-4"
+        label="Pool:"
+        label-for="input-pool"
+      >
         <b-form-select
           id="input-pool"
           v-model="form.pool"
@@ -55,17 +63,21 @@
         ></b-form-select>
       </b-form-group>
 
-      <b-form-group id="input-group-5" label="Description:" label-for="input-desc">
+      <b-form-group
+        id="input-group-5"
+        label="Description:"
+        label-for="input-desc"
+      >
         <b-form-textarea
           id="input-desc"
           v-model="form.description"
           placeholder="Description..."
           rows="2"
           max-rows="3"
-      ></b-form-textarea>
+        ></b-form-textarea>
       </b-form-group>
     </form>
-    <template v-slot:modal-footer="{ cancel, ok }">
+    <template #modal-footer="{ cancel, ok }">
       <b-button
         type="reset"
         v-if="!edit"
@@ -166,8 +178,9 @@ export default {
       } else {
         this.createCIDR(this.form);
       }
-      // TODO: Refactor this
-      this.$bvModal.hide(this.id());
+      this.$nextTick(() => {
+        this.$bvModal.hide(this.id());
+      });
     },
     setDefault() {
       // Reset our form values

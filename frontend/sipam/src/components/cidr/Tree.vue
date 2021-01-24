@@ -6,8 +6,8 @@
           class="item"
           :item="cidr"
           @make-folder="makeFolder"
-          @add-item="addItem">
-        </tree-item>
+          @add-item="addItem"
+        />
       </b-list-group-item>
     </b-list-group>
   </b-container>
