@@ -5,7 +5,7 @@ import { SIPAMConfiguration } from './types/config';
 
 export default function workerFactory(config: SIPAMConfiguration) {
   if (process.env.NODE_ENV === 'production') {
-    register(`${config.appURL}service-worker.js`, {
+    register(`${config.baseURL}service-worker.js`, {
       ready() {
         console.log(
           'App is being served from cache by a service worker.\n'

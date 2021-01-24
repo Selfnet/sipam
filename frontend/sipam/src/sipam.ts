@@ -22,7 +22,7 @@ export default function apiFactory(config: SIPAMConfiguration) {
   });
   return new Api(
     {
-      baseUrl: config.baseURL,
+      baseUrl: config.apiURL,
       securityWorker: getRequestHeaders,
     },
   );

@@ -23,8 +23,8 @@ export default async () => {
       dispatchEventsOnWindow: true,
       silentRedirectUri: `${config.APP_URL}/oidc-renew.html`,
     } as VuexOidcClientSettings,
-    baseURL: config.API_URL,
-    appURL: config.APP_URL,
+    apiURL: config.API_URL,
+    baseURL: config.BASE_URL || process.env.BASE_URL,
     oidc: config.OIDC.enabled,
   } as SIPAMConfiguration;
 };

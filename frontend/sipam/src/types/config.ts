@@ -2,7 +2,7 @@ import { VuexOidcClientSettings } from 'vuex-oidc';
 
 export interface SIPAMConfiguration {
   oidcSettings: VuexOidcClientSettings;
+  apiURL: string;
   baseURL: string;
-  appURL: string;
   oidc: boolean;
 }

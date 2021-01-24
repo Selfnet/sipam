@@ -15,7 +15,7 @@ import { RootState } from './types/store';
 export default function routerFactory(config: SIPAMConfiguration, store: Store<RootState>) {
   Vue.use(Router);
   const router = new Router({
-    base: `${config.appURL}`,
+    base: `${config.baseURL}`,
     mode: 'history',
     routes: [
       {
