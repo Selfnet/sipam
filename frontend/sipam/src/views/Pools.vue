@@ -1,30 +1,33 @@
 <template>
-  <div>
-    <pool
-      v-for="pool in pools"
-      :key="pool"
-      :poolID="pool"
-    ></pool>
-  <div>
-    <b-button pill variant="primary"
-      v-b-modal.create-pool-modal
-      class="bottom-tight">
-      <div>
-        <fai icon="plus-circle"/>
-        POOL
-      </div>
-    </b-button>
-    <pool-form
-      :edit="false"
-    />
-  </div>
-  </div>
+  <b-row>
+    <b-col cols="10">
+      <pool
+        v-for="pool in pools"
+        :key="pool"
+        :poolID="pool"
+      />
+    </b-col>
+    <b-col>
+      <b-button
+        pill
+        size="lg"
+        variant="primary"
+        v-b-modal.create-pool-modal
+        class="bottom-tight"
+      >
+        <strong>
+          <fai icon="plus-circle" />
+          POOL
+        </strong>
+      </b-button>
+    </b-col>
+    <pool-form :edit="false" />
+  </b-row>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex';
 import Pool from '@/components/pool/Pool.vue';
 import PoolForm from '@/components/pool/modals/PoolForm.vue';
-
 
 export default {
   components: {

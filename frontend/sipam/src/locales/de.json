@@ -35,10 +35,15 @@
     "SEARCH": {
       "PLACEHOLDER": "Suche"
     },
+    "SUBNET": {
+      "ADD": "Delegiere Subnetz"
+    },
     "BUTTON": {
       "BACK": "Zurück",
       "CANCEL": "Abbrechen",
       "SUBMIT": "Senden",
+      "EDIT": "Bearbeiten",
+      "DELETE": "Löschen",
       "OK": "Ok",
       "SAVE": "Speichern",
       "SEARCH": "Suchen",

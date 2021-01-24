@@ -65,7 +65,7 @@
       ></b-form-textarea>
       </b-form-group>
     </form>
-    <template #modal-footer="{ cancel, ok }">
+    <template v-slot:modal-footer="{ cancel, ok }">
       <b-button
         type="reset"
         v-if="!edit"
@@ -152,9 +152,9 @@ export default {
     }),
     id() {
       if (this.parentCIDR !== undefined) {
-        return 'add-cidr-modal';
+        return `add-cidr-modal-${this.cidr.id}`;
       }
-      return this.edit ? 'edit-cidr-modal' : 'create-cidr-modal';
+      return this.edit ? `edit-cidr-modal-${this.cidr.id}` : 'create-cidr-modal';
     },
     onSubmit(evt) {
       evt.preventDefault();
@@ -176,8 +176,7 @@ export default {
       this.form.flag = 'reservation';
       this.form.description = '';
     },
-    onReset(evt) {
-      evt.preventDefault();
+    onReset() {
       this.setDefault();
       // Trick to reset/clear native browser form validation state
       this.$bvModal.hide(this.id());

@@ -35,9 +35,14 @@
     "SEARCH": {
       "PLACEHOLDER": "Search"
     },
+    "SUBNET": {
+      "ADD": "Add Subnet"
+    },
     "BUTTON": {
       "BACK": "Back",
       "CANCEL": "Cancel",
+      "EDIT": "Edit",
+      "DELETE": "Delete",
       "SUBMIT": "Submit",
       "OK": "Ok",
       "SAVE": "Save",

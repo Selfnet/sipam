@@ -9,28 +9,25 @@
         id="editCIDR"
         variant="outline"
       >
-        <b-dropdown-item
-          @click="showEditForm = !showEditForm"
-        >Edit</b-dropdown-item>
+        <b-dropdown-item v-b-modal="modalCIDREditID">{{$t('GENERAL.BUTTON.EDIT')}}</b-dropdown-item>
         <cidr-form
-          v-model="showEditForm"
           :cidr="cidr"
-          :edit=true
+          :edit="true"
         ></cidr-form>
 
         <b-dropdown-item
-          @click="showCreateForm = !showCreateForm"
+          v-b-modal="modalCIDRAddSubID"
           v-if="!isIP"
-        >Add Subnet</b-dropdown-item>
+        >{{$t('GENERAL.SUBNET.ADD')}}</b-dropdown-item>
         <cidr-form
-          v-model="showCreateForm"
-          :parentCIDR=cidr.cidr
-          :edit=false
+          :cidr="cidr"
+          :parentCIDR="cidr.cidr"
+          :edit="false"
         ></cidr-form>
         <b-dropdown-item
           variant="danger"
           @click="confirmDelete"
-        >Delete</b-dropdown-item>
+        >{{$t('GENERAL.BUTTON.DELETE')}}</b-dropdown-item>
       </b-dropdown>
     </div>
     <div>
@@ -82,6 +79,12 @@ export default {
         (cidr.includes(':') && cidr.endsWith('128'))
         || (!cidr.includes(':') && cidr.endsWith('32'))
       );
+    },
+    modalCIDREditID() {
+      return `edit-cidr-modal-${this.cidr.id}`;
+    },
+    modalCIDRAddSubID() {
+      return `add-cidr-modal-${this.cidr.id}`;
     },
   },
   created() {
