@@ -24,11 +24,6 @@ spec:
       - {{ .Values.ingress.host }}
     secretName: {{ .Values.ingress.tls.secretName }}
   {{- end }}
-  defaultBackend:
-    service:
-      name: {{ include "common.names.fullname" . }}-frontend
-      port:
-        number: {{ .Values.frontend.service.port }}
   rules:
   - host: {{ .Values.ingress.host }}
     http:
@@ -40,4 +35,11 @@ spec:
             name: {{ include "common.names.fullname" . }}-backend
             port:
               number: {{ .Values.backend.service.port }}
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "common.names.fullname" . }}-frontend
+            port:
+              number: {{ .Values.frontend.service.port }}
 {{- end }}

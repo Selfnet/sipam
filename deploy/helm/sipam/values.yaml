@@ -253,10 +253,10 @@ backend:
     keyMapping: {}
 
   config:
+    debug: false
     django:
       secret: ""
       logLevel: error
-      debug: false
     db:
       ##
       ## If you specify the password here in plaintext
