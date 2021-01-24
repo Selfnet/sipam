@@ -9,53 +9,24 @@
         id="editCIDR"
         variant="outline"
       >
-        <template v-slot:button-content>
-          <fai :icon="['fas', 'cog']" />
-        </template>
-        <b-dropdown-item @click="showEditForm = !showEditForm">Edit</b-dropdown-item>
-        <b-modal
+        <b-dropdown-item
+          @click="showEditForm = !showEditForm"
+        >Edit</b-dropdown-item>
+        <cidr-form
           v-model="showEditForm"
-          title="CIDR"
-        >
-          <template v-slot:modal-footer="{ cancel }">
-            <b-button
-              size="sm"
-              variant="outline-danger"
-              @click="cancel()"
-            >
-              Cancel
-            </b-button>
-          </template>
-          <cidr-form
-            :cidr="cidr"
-            :edit=true
-            v-on:cidr-form-close="showEditForm = !showEditForm"
-          ></cidr-form>
-        </b-modal>
+          :cidr="cidr"
+          :edit=true
+        ></cidr-form>
 
         <b-dropdown-item
           @click="showCreateForm = !showCreateForm"
           v-if="!isIP"
         >Add Subnet</b-dropdown-item>
-        <b-modal
+        <cidr-form
           v-model="showCreateForm"
-          title="CIDR"
-        >
-          <template v-slot:modal-footer="{ cancel }">
-            <b-button
-              size="sm"
-              variant="outline-danger"
-              @click="cancel()"
-            >
-              Cancel
-            </b-button>
-          </template>
-          <cidr-form
-            :parentCIDR=cidr.cidr
-            :edit=false
-            v-on:cidr-form-close="showCreateForm = !showCreateForm"
-          ></cidr-form>
-        </b-modal>
+          :parentCIDR=cidr.cidr
+          :edit=false
+        ></cidr-form>
         <b-dropdown-item
           variant="danger"
           @click="confirmDelete"

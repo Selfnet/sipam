@@ -6,26 +6,17 @@
       :poolID="pool"
     ></pool>
   <div>
-      <b-button pill variant="primary"
-        @click="showCreateForm = !showCreateForm"
-        class="bottom-tight">Add New</b-button>
-       <b-modal
-          v-model="showCreateForm"
-          title="Create Pool"
-        >
-          <template v-slot:modal-footer="{ cancel }">
-            <b-button
-              size="sm"
-              variant="outline-danger"
-              @click="cancel()"
-            >Cancel</b-button>
-          </template>
-          <pool-form
-            :edit="false"
-            v-on:pool-form-close="showCreateForm = !showCreateForm"
-          >
-          </pool-form>
-        </b-modal>
+    <b-button pill variant="primary"
+      v-b-modal.create-pool-modal
+      class="bottom-tight">
+      <div>
+        <fai icon="plus-circle"/>
+        POOL
+      </div>
+    </b-button>
+    <pool-form
+      :edit="false"
+    />
   </div>
   </div>
 </template>

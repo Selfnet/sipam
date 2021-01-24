@@ -165,35 +165,11 @@ export default {
 
 
 <style lang="scss">
-@import "~bootstrap";
-@import "~bootstrap-vue";
-.btn-primary {
-  color: #000000;
-  background-color: #ffffff;
-  border-color: #ff5a17 !important;
-  float: right;
-}
-.btn-primary:hover {
-  color: #000000;
-  background-color: #fefefe;
-  box-shadow: 0 0 5px #ff5a17 !important;
-}
+@import "@/assets/styles/custom.scss";
 
-.form-control {
-  border-color: #aaaaaa;
-}
-
-.form-control:focus,
-.form-control:active {
-  border-color: #ff5a17;
-  outline: 0;
-  box-shadow: 0 0 5px #ff5a17 !important;
-}
 #site-container {
   margin-top: 10px;
-
   margin-bottom: 50px;
-
   padding-top: 10px;
   padding-bottom: 20px;
   font-size: medium;
@@ -212,7 +188,7 @@ export default {
 }
 
 hr {
-  border-color: black;
+  border-color: $black;
 }
 
 .heading {
@@ -226,23 +202,13 @@ hr {
 
 .row a,
 .row a:hover {
-  color: black;
+  color: $black;
 }
 
-.bigbutton img {
+.img {
   height: 100px;
   margin-top: 40px;
   margin-bottom: 30px;
-}
-
-.bigbutton {
-  font-size: x-large;
-  min-height: 240px;
-}
-
-.bigbutton:hover {
-  box-shadow: 0 0 5px #ff5a17 !important;
-  border-color: #ff5a17 !important;
 }
 
 .introduction {
@@ -252,12 +218,12 @@ hr {
 footer {
   text-align: center;
   height: 70px;
-  color: white;
+  color: $white;
   margin-top: 20px;
   padding-top: 20px;
   padding-bottom: 30px;
   font-size: 16px;
-  text-shadow: 0 0 8px black;
+  text-shadow: 0 0 8px $black;
   width: 100%;
 }
 
@@ -265,33 +231,9 @@ footer a,
 footer a:visited,
 footer a:active,
 footer a:focus {
-  color: white;
+  color: $white;
 }
 
-footer a:hover {
-  color: #ff5a17 !important;
-  text-shadow: none;
-}
-
-a,
-a:visited {
-  color: #ff5a17;
-  text-decoration: none !important;
-}
-
-a:hover,
-a:active {
-  color: orange !important;
-}
-
-a:hover .bigbutton,
-a:active .bigbutton,
-a:visited .bigbutton,
-a:focus .bigbutton {
-  color: black !important;
-}
-
-/* navbar */
 
 @font-face {
   font-family: "Source Sans Pro";
@@ -313,11 +255,6 @@ li.dropdown {
   list-style: none;
 }
 
-.navbar-static-top {
-  margin-bottom: -20px;
-  color: #ff0000;
-}
-
 #nav_head {
   font-family: "Pompiere", cursive;
   font-variant: small-caps;
@@ -328,7 +265,6 @@ li.dropdown {
   background-color: #efefef;
   box-shadow: 0px 0px 20px #4d4d4d;
   font-family: "Source Sans Pro", sans-serif;
-
   z-index: 9000;
 }
 
@@ -349,11 +285,7 @@ textarea {
   width: 100%;
   resize: none;
 }
-textarea:focus {
-  border-color: #ff5a17;
-  outline: 0;
-  box-shadow: 0 0 5px #ff5a17 !important;
-}
+
 .bold {
   font-weight: bold;
 }

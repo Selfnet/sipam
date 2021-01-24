@@ -1,9 +1,15 @@
-<template>
-  <div>
-    <b-form
-      @submit="onSubmit"
-      @reset="onReset"
-      v-if="show"
+2<template>
+  <b-modal
+    :id="id"
+    @ok="onSubmit"
+    ref="modal"
+    button-size="lg"
+    :title="edit ? $t('GENERAL.POOL.EDIT'): $t('GENERAL.POOL.CREATE')"
+    no-stacking
+  >
+    <form
+      ref="form"
+      @submit.stop.prevent="onSubmit"
     >
       <b-form-group
         id="input-group-1"
@@ -32,7 +38,11 @@
         ></b-form-input>
       </b-form-group>
 
-      <b-form-group id="input-group-3" label="Default Assignment Type" label-for="input-pool-type">
+      <b-form-group
+        id="input-group-3"
+        label="Default Assignment Type"
+        label-for="input-pool-type"
+      >
         <b-form-select
           id="input-pool-type"
           v-model="form.poolType"
@@ -66,18 +76,32 @@
           max-rows="3"
         ></b-form-textarea>
       </b-form-group>
-
-      <b-button
-        type="submit"
-        variant="primary"
-      >Save</b-button>
+    </form>
+    <template #modal-footer="{ cancel, ok }">
       <b-button
         type="reset"
-        variant="danger"
         v-if="!edit"
-      >Reset</b-button>
-    </b-form>
-  </div>
+        variant="danger"
+        @click="onReset()"
+      >
+        {{$t("GENERAL.BUTTON.RESET")}}
+      </b-button>
+      <b-button
+        variant="secondary"
+        class="ml-auto"
+        @click="cancel()"
+      >
+        {{$t("GENERAL.BUTTON.CANCEL")}}
+      </b-button>
+      <!-- Emulate built in modal footer ok and cancel button actions -->
+      <b-button
+        variant="primary"
+        @click="ok()"
+      >
+        {{$t("GENERAL.BUTTON.OK")}}
+      </b-button>
+    </template>
+  </b-modal>
 </template>
 
 <script>
@@ -98,7 +122,6 @@ export default {
         poolType: 'Arbitrary',
         defaultDomain: '',
       },
-      show: true,
       poolTypes: ['Host Linknet', 'VM Linknet', 'Arbitrary'],
     };
   },
@@ -110,6 +133,11 @@ export default {
       this.form.poolType = this.pool.poolType;
       this.form.defaultDomain = this.pool.defaultDomain;
     }
+  },
+  computed: {
+    id() {
+      return this.edit ? `edit-pool-modal-${this.pool.id}` : 'create-pool-modal';
+    },
   },
   methods: {
     ...mapActions({
@@ -127,19 +155,30 @@ export default {
         this.createPool(this.form);
       }
       // TODO: Refactor this
-      this.$emit('pool-form-close');
+      this.$nextTick(() => {
+        this.$bvModal.hide(this.id);
+      });
     },
-    onReset(evt) {
-      evt.preventDefault();
-      // Reset our form values
+    setDefault() {
       this.form.id = '';
       this.form.label = '';
       this.form.description = '';
       this.form.defaultDomain = '';
+    },
+    onHide(evt) {
+      evt.preventDefault();
+      // Reset our form values
+      this.setDefault();
       // Trick to reset/clear native browser form validation state
-      this.show = false;
+      this.$bvModal.hide(this.id);
+    },
+    onReset() {
+      // Reset our form values
+      this.setDefault();
+      // Trick to reset/clear native browser form validation state
+      this.$bvModal.hide(this.id);
       this.$nextTick(() => {
-        this.show = true;
+        this.$bvModal.show(this.id);
       });
     },
   },

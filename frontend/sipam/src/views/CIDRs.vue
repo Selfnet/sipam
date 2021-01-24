@@ -1,20 +1,39 @@
 <template>
-      <div>
-        <tree
-          v-for="cidr in cidrs"
-          v-bind:item="cidr"
-          :key="cidr.id"
-          :cidr="cidr">
-        </tree>
-      </div>
+  <div>
+    <tree
+      v-for="cidr in cidrs"
+      v-bind:item="cidr"
+      :key="cidr.id"
+      :cidr="cidr">
+    </tree>
+    <div>
+      <b-button
+        pill
+        variant="primary"
+        v-b-modal.create-cidr-modal
+        class="bottom-tight"
+      >
+        <div>
+          <fai icon="plus-circle"/>
+          CIDR
+        </div>
+      </b-button>
+        <cidr-form
+        :edit="false"
+      >
+      </cidr-form>
+    </div>
+  </div>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import Tree from '@/components/cidr/Tree.vue';
+import CIDRForm from '@/components/cidr/forms/CIDRForm.vue';
 
 export default {
   components: {
     Tree,
+    'cidr-form': CIDRForm,
   },
   data() {
     return {

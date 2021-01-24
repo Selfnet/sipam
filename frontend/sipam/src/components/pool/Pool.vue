@@ -15,25 +15,12 @@
         <template v-slot:button-content>
           <fai :icon="['fas', 'cog']" />
         </template>
-        <b-dropdown-item @click="showEditForm = !showEditForm">Edit</b-dropdown-item>
-        <b-modal
-          v-model="showEditForm"
-          title="Pool"
+        <b-dropdown-item v-b-modal="modalPoolId">Edit</b-dropdown-item>
+        <pool-form
+          :pool="pool"
+          :edit="true"
         >
-          <template v-slot:modal-footer="{ cancel }">
-            <b-button
-              size="sm"
-              variant="outline-danger"
-              @click="cancel()"
-            >Cancel</b-button>
-          </template>
-          <pool-form
-            :pool="pool"
-            :edit="true"
-            v-on:pool-form-close="showEditForm = !showEditForm"
-          >
-          </pool-form>
-        </b-modal>
+        </pool-form>
         <b-dropdown-item
           variant="danger"
           @click="confirmDelete"
@@ -107,6 +94,9 @@ export default {
         return state.pools[this.poolID];
       },
     }),
+    modalPoolId() {
+      return `edit-pool-modal-${this.poolID}`;
+    },
   },
   methods: {
     ...mapActions({

@@ -8,6 +8,14 @@
       "PLACEHOLDER": "LDAP Nutzername",
       "DESCRIPTION": "Bitte LDAP Nutzernamen eingeben."
     },
+    "POOL": {
+      "CREATE": "Pool erstellen",
+      "EDIT": "Pool bearbeiten"
+    },
+    "CIDR": {
+      "CREATE": "CIDR erstellen",
+      "EDIT": "CIDR bearbeiten"
+    },
     "PROFILE": {
       "LABEL": "Profil"
     },
@@ -29,9 +37,14 @@
     },
     "BUTTON": {
       "BACK": "Zurück",
+      "CANCEL": "Abbrechen",
       "SUBMIT": "Senden",
+      "OK": "Ok",
       "SAVE": "Speichern",
-      "SEARCH": "Suchen"
+      "SEARCH": "Suchen",
+      "CREATE": "Anlegen",
+      "NEW": "Addiere Element",
+      "RESET": "Zurücksetzen"
     }
   }
 }

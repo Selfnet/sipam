@@ -1,3 +1,63 @@
 /* Import Bootstrap Sass Files. */
-@import 'node_modules/bootstrap/scss/bootstrap';
-@import 'node_modules/bootstrap-vue/src/index.scss';
+// File: custom.scss
+
+// Define your variable overrides here
+$enable-rounded: true;
+$theme-colors: (
+  "primary": #ff5a17,
+  "secondary": #ffffff,
+  "dark": #000000,
+  "light": #ffffff,
+  "selfnet-background": #fefefe
+);
+
+
+
+// Include Bootstrap and BootstrapVue SCSS files
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+
+// General style overrides and custom classes
+body {
+  margin: 0;
+}
+.btn-primary {
+  float: right;
+}
+textarea:focus,
+textarea:hover,
+input:hover,
+input:focus,
+.btn-primary:hover,
+.btn-primary:focus {
+  color: $black;
+  background-color: var(--selfnet-background);
+  box-shadow: 0 0 5px var(--primary);
+  border-color: var(--primary);
+  outline: 0;
+}
+.btn {
+  outline: 0;
+}
+
+footer a:hover {
+  color: var(--primary);
+  text-shadow: none;
+}
+
+a:hover,
+a:active,
+a:visited,
+a:focus  {
+  color: var(--selfnet-black);
+}
+
+a,
+a:visited {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.form-control {
+  border-color: $gray-600;
+}

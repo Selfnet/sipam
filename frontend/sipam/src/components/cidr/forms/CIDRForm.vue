@@ -1,6 +1,16 @@
 <template>
-  <div>
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
+  <b-modal
+    :id="id()"
+    @ok="onSubmit"
+    ref="modal"
+    button-size="lg"
+    :title="edit ? $t('GENERAL.CIDR.EDIT'): $t('GENERAL.CIDR.CREATE')"
+    no-stacking
+  >
+    <form
+      ref="form"
+      @submit.stop.prevent="onSubmit"
+    >
       <b-form-group
         id="input-group-1"
         label="CIDR:"
@@ -54,11 +64,32 @@
           max-rows="3"
       ></b-form-textarea>
       </b-form-group>
-
-      <b-button type="submit" variant="primary">Save</b-button>
-      <b-button type="reset" variant="danger" v-if="!edit">Reset</b-button>
-    </b-form>
-  </div>
+    </form>
+    <template #modal-footer="{ cancel, ok }">
+      <b-button
+        type="reset"
+        v-if="!edit"
+        variant="danger"
+        @click="onReset()"
+      >
+        {{$t("GENERAL.BUTTON.RESET")}}
+      </b-button>
+      <b-button
+        variant="secondary"
+        class="ml-auto"
+        @click="cancel()"
+      >
+        {{$t("GENERAL.BUTTON.CANCEL")}}
+      </b-button>
+      <!-- Emulate built in modal footer ok and cancel button actions -->
+      <b-button
+        variant="primary"
+        @click="ok()"
+      >
+        {{$t("GENERAL.BUTTON.OK")}}
+      </b-button>
+    </template>
+  </b-modal>
 </template>
 
 <script>
@@ -119,6 +150,12 @@ export default {
     ...mapGetters('Pool', {
       getPools: 'poolList',
     }),
+    id() {
+      if (this.parentCIDR !== undefined) {
+        return 'add-cidr-modal';
+      }
+      return this.edit ? 'edit-cidr-modal' : 'create-cidr-modal';
+    },
     onSubmit(evt) {
       evt.preventDefault();
       if (this.edit) {
@@ -130,20 +167,22 @@ export default {
         this.createCIDR(this.form);
       }
       // TODO: Refactor this
-      this.$emit('cidr-form-close');
+      this.$bvModal.hide(this.id());
     },
-
-    onReset(evt) {
-      evt.preventDefault();
+    setDefault() {
       // Reset our form values
       this.form.cidr = '';
       this.form.fqdn = '';
       this.form.flag = 'reservation';
       this.form.description = '';
+    },
+    onReset(evt) {
+      evt.preventDefault();
+      this.setDefault();
       // Trick to reset/clear native browser form validation state
-      this.show = false;
+      this.$bvModal.hide(this.id());
       this.$nextTick(() => {
-        this.show = true;
+        this.$bvModal.show(this.id());
       });
     },
   },
