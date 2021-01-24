@@ -511,7 +511,7 @@ frontend:
     type: RollingUpdate
   config:
     API_URL: '{{ if .Values.ingress.tls.enabled }}https{{ else }}http{{ end }}://{{ .Values.ingress.host }}/api/v1'
-    APP_URL: '{{ if .Values.ingress.tls.enabled }}https{{ else }}http{{ end }}://{{ .Values.ingress.host }}/'
+    APP_URL: '{{ if .Values.ingress.tls.enabled }}https{{ else }}http{{ end }}://{{ .Values.ingress.host }}'
     DEBUG: "{{ .Values.backend.config.debug }}"
     OIDC:
       enabled: "{{ .Values.backend.config.oidc.enabled }}"
