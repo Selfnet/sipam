@@ -16,6 +16,7 @@ export default function routerFactory(config: SIPAMConfiguration, store: Store<R
   Vue.use(Router);
   const router = new Router({
     base: `${config.appURL}`,
+    mode: 'history',
     routes: [
       {
         path: '/',
