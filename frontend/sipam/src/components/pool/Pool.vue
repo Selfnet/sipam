@@ -12,38 +12,6 @@
             class="fa-lg"
           />
         </b-col>
-        <b-col
-          @click="showPrefixes = !showPrefixes"
-          class="pointer"
-        >
-          <b-container fluid>
-            <b-row>
-              <b-col>
-                <b-dropdown
-                  id="editPool"
-                  variant="outline"
-                >
-                  <template v-slot:button-content>
-                    <fai
-                      :icon="['fas', 'cog']"
-                      class="fa-lg"
-                    />
-                  </template>
-                  <b-dropdown-item v-b-modal="modalPoolId">Edit</b-dropdown-item>
-                  <pool-form
-                    :pool="pool"
-                    :edit="true"
-                  >
-                  </pool-form>
-                  <b-dropdown-item
-                    variant="danger"
-                    @click="confirmDelete"
-                  >Delete</b-dropdown-item>
-                </b-dropdown>
-              </b-col>
-            </b-row>
-          </b-container>
-        </b-col>
         <b-col>
           <i>{{ pool.poolType }}</i>
         </b-col>
@@ -52,6 +20,29 @@
           class="pointer"
         >
           <strong>{{ pool.label }}</strong>
+        </b-col>
+        <b-col>
+          <b-dropdown
+            id="editPool"
+            variant="outline"
+          >
+            <template v-slot:button-content>
+              <fai
+                :icon="['fas', 'cog']"
+                class="fa-lg"
+              />
+            </template>
+            <b-dropdown-item v-b-modal="modalPoolId">Edit</b-dropdown-item>
+            <pool-form
+              :pool="pool"
+              :edit="true"
+            >
+            </pool-form>
+            <b-dropdown-item
+              variant="danger"
+              @click="confirmDelete"
+            >Delete</b-dropdown-item>
+          </b-dropdown>
         </b-col>
         <b-col>
           <b-button

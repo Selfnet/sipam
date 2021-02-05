@@ -5,6 +5,18 @@
   >
     <b-row>
       <b-col>
+        <b-badge
+          class="flag"
+          :class="cidr.flag"
+        >{{ flag }}</b-badge>
+      </b-col>
+      <b-col>
+        <span
+          class="network pointer"
+          @click="$emit('cidrClicked')"
+        >{{ cidr.cidr }}</span>
+      </b-col>
+      <b-col>
         <b-dropdown
           id="editCIDR"
           variant="outline"
@@ -37,18 +49,6 @@
             @click="confirmDelete"
           >{{$t('GENERAL.BUTTON.DELETE')}}</b-dropdown-item>
         </b-dropdown>
-      </b-col>
-      <b-col>
-        <b-badge
-          class="flag"
-          :class="cidr.flag"
-        >{{ flag }}</b-badge>
-      </b-col>
-      <b-col>
-        <span
-          class="network pointer"
-          @click="$emit('cidrClicked')"
-        >{{ cidr.cidr }}</span>
       </b-col>
       <b-col>
         <span
