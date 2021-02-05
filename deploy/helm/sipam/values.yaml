@@ -517,6 +517,7 @@ frontend:
       enabled: "{{ .Values.backend.config.oidc.enabled }}"
       client_id: "{{ .Values.backend.config.oidc.clientId }}"
       issuer_url: "{{ .Values.backend.config.oidc.endpoint }}"
+      auto_sign_in: true
   ## Additional environment variables to set
   ## Example:
   ## extraEnvVars:
