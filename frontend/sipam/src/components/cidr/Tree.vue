@@ -1,5 +1,5 @@
 <template>
-  <b-container>
+  <b-container fluid>
     <b-list-group>
       <b-list-group-item>
         <tree-item

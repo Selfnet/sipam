@@ -1,5 +1,10 @@
 <template>
   <div>
+    <b-row>
+      <b-col align-self="left">
+        <h1><span class="h1">CIDRs</span></h1>
+      </b-col>
+    </b-row>
     <b-row class="text-center fixed-bottom">
       <b-col
         offset-xl="10"
