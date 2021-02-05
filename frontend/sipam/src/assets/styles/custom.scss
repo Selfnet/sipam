@@ -52,6 +52,18 @@ a:focus  {
   color: var(--selfnet-black);
 }
 
+.h1 {
+  border-bottom: 1px solid $gray-300;
+  position: relative;
+  bottom: 5px;
+}
+
+.create-button {
+  position: relative;
+  bottom: 15px;
+  right: 45px;
+}
+
 a,
 a:visited {
   color: var(--primary);

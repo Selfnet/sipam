@@ -1,30 +1,41 @@
 <template>
-  <b-row>
-    <b-col cols="10">
-      <tree
-        v-for="cidr in cidrs"
-        v-bind:item="cidr"
-        :key="cidr.id"
-        :cidr="cidr"
+  <div>
+    <b-row class="text-center fixed-bottom">
+      <b-col
+        offset-xl="10"
+        offset-lg="9"
+        offset-md="9"
+        offset-sm="8"
+        offset="7"
       >
-      </tree>
-    </b-col>
-    <b-col>
-      <b-button
-        pill
-        size="lg"
-        variant="primary"
-        v-b-modal.create-cidr-modal
-        class="bottom-tight"
-      >
-        <strong>
-          <fai icon="plus-circle" />
-          CIDR
-        </strong>
-      </b-button>
-    </b-col>
-    <cidr-form :edit="false" />
-  </b-row>
+        <b-button
+          pill
+          size="lg"
+          variant="primary"
+          v-b-modal.create-cidr-modal
+          align-self="end"
+          class="create-button"
+        >
+          <strong>
+            <fai icon="plus-circle" />
+            CIDR
+          </strong>
+        </b-button>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <tree
+          v-for="cidr in cidrs"
+          v-bind:item="cidr"
+          :key="cidr.id"
+          :cidr="cidr"
+        >
+        </tree>
+      </b-col>
+      <cidr-form :edit="false" />
+    </b-row>
+  </div>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';

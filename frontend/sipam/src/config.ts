@@ -1,10 +1,10 @@
 import { VuexOidcClientSettings } from 'vuex-oidc';
-import { SIPAMConfiguration } from './types/config';
+import { SIPAMConfiguration, Configuration } from './types/config';
 
 
 export default async () => {
   const runtimeConfig = await fetch('/config.json');
-  const config = await runtimeConfig.json();
+  const config = await runtimeConfig.json() as Configuration;
 
   // Axios Connection Config
   // TODO: Move to webpack envs
@@ -19,7 +19,7 @@ export default async () => {
       scope: 'openid profile email',
       includeIdTokenInSilentRenew: true,
       automaticSilentRenew: true,
-      automaticSilentSignin: false,
+      automaticSilentSignin: config.OIDC.auto_sign_in as boolean,
       dispatchEventsOnWindow: true,
       silentRedirectUri: `${config.APP_URL}/oidc-renew.html`,
     } as VuexOidcClientSettings,

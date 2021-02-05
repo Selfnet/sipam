@@ -2,15 +2,12 @@
   <div>
   </div>
 </template>
-
 <script>
-import SIPAM from '@/sipam';
-
 export default {
   name: 'OidcLogin',
   methods: {},
   created() {
-    this.$router.push('/home');
+    this.$router.push({ path: 'pools' });
   },
 };
 </script>

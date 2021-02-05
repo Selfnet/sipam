@@ -1,28 +1,44 @@
 <template>
-  <b-row>
-    <b-col cols="10">
-      <pool
-        v-for="pool in pools"
-        :key="pool"
-        :poolID="pool"
-      />
-    </b-col>
-    <b-col>
-      <b-button
-        pill
-        size="lg"
-        variant="primary"
-        v-b-modal.create-pool-modal
-        class="bottom-tight"
+  <div>
+    <b-row>
+      <b-col align-self="left">
+        <h1><span class="h1">Pools</span></h1>
+      </b-col>
+    </b-row>
+    <b-row class="text-center fixed-bottom">
+      <b-col
+        offset-xl="10"
+        offset-lg="9"
+        offset-md="9"
+        offset-sm="8"
+        offset="7"
       >
-        <strong>
-          <fai icon="plus-circle" />
-          POOL
-        </strong>
-      </b-button>
-    </b-col>
-    <pool-form :edit="false" />
-  </b-row>
+        <b-button
+          pill
+          size="lg"
+          variant="primary"
+          v-b-modal.create-pool-modal
+          align-self="end"
+          class="create-button"
+        >
+          <strong>
+            <fai icon="plus-circle" />
+            POOL
+          </strong>
+        </b-button>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col>
+        <pool
+          v-for="pool in pools"
+          :key="pool"
+          :poolID="pool"
+        />
+      </b-col>
+      <pool-form :edit="false" />
+    </b-row>
+  </div>
 </template>
 <script>
 import { mapActions, mapState } from 'vuex';
@@ -59,6 +75,7 @@ export default {
 </script>
 
 <style scoped>
+
 .bottom-right {
   right: 0;
   bottom: 0;

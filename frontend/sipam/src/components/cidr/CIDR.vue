@@ -1,51 +1,66 @@
 <template>
-  <div class="cidr">
-    <div>
-      <span
-        class="network"
-        @click="$emit('cidrClicked')"
-      >{{ cidr.cidr }}</span>
-      <b-dropdown
-        id="editCIDR"
-        variant="outline"
-      >
-        <b-dropdown-item v-b-modal="modalCIDREditID">{{$t('GENERAL.BUTTON.EDIT')}}</b-dropdown-item>
-        <cidr-form
-          :cidr="cidr"
-          :edit="true"
-        ></cidr-form>
+  <b-container
+    fluid
+    class="cidr"
+  >
+    <b-row>
+      <b-col>
+        <b-dropdown
+          id="editCIDR"
+          variant="outline"
+        >
+          <template v-slot:button-content>
+            <fai
+              :icon="['fas', 'cog']"
+              class="fa-lg"
+            />
+          </template>
+          <b-dropdown-item v-b-modal="modalCIDREditID">
+            {{$t('GENERAL.BUTTON.EDIT')}}
+          </b-dropdown-item>
+          <cidr-form
+            :cidr="cidr"
+            :edit="true"
+          ></cidr-form>
 
-        <b-dropdown-item
-          v-b-modal="modalCIDRAddSubID"
-          v-if="!isIP"
-        >{{$t('GENERAL.SUBNET.ADD')}}</b-dropdown-item>
-        <cidr-form
-          :cidr="cidr"
-          :parentCIDR="cidr.cidr"
-          :edit="false"
-        ></cidr-form>
-        <b-dropdown-item
-          variant="danger"
-          @click="confirmDelete"
-        >{{$t('GENERAL.BUTTON.DELETE')}}</b-dropdown-item>
-      </b-dropdown>
-    </div>
-    <div>
-      <b-badge
-        class="flag"
-        :class="cidr.flag"
-      >{{ flag }}</b-badge>
-    </div>
-    <div>
-      <span
-        class="fqdn"
-        v-if="cidr.fqdn"
-      >{{ cidr.fqdn }} </span>
-    </div>
-    <div>
-      <span class="description">{{ cidr.description }} </span>
-    </div>
-  </div>
+          <b-dropdown-item
+            v-b-modal="modalCIDRAddSubID"
+            v-if="!isIP"
+          >{{$t('GENERAL.SUBNET.ADD')}}</b-dropdown-item>
+          <cidr-form
+            :cidr="cidr"
+            :parentCIDR="cidr.cidr"
+            :edit="false"
+          ></cidr-form>
+          <b-dropdown-item
+            variant="danger"
+            @click="confirmDelete"
+          >{{$t('GENERAL.BUTTON.DELETE')}}</b-dropdown-item>
+        </b-dropdown>
+      </b-col>
+      <b-col>
+        <b-badge
+          class="flag"
+          :class="cidr.flag"
+        >{{ flag }}</b-badge>
+      </b-col>
+      <b-col>
+        <span
+          class="network pointer"
+          @click="$emit('cidrClicked')"
+        >{{ cidr.cidr }}</span>
+      </b-col>
+      <b-col>
+        <span
+          class="fqdn"
+          v-show="cidr.fqdn"
+        >{{ cidr.fqdn }} </span>
+      </b-col>
+      <b-col align-self="right">
+        <span class="description">{{ cidr.description }}</span>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
@@ -123,27 +138,27 @@ export default {
 </script>
 
 <style scoped>
-.cidr {
+/* .cidr {
   border-bottom: 1px solid lightgray;
   display: grid;
   grid-template-columns: 22% 2% 40% 30%;
   grid-gap: 10px;
   margin: 2px;
-}
+} */
 
-.network {
+/* .network {
   align-items: left;
   padding: 0.5em;
   cursor: pointer;
-}
+} */
 
-.description {
+/* .description {
   float: right;
 }
 
 .fqdn {
   margin: 1em;
-}
+} */
 
 .reservation {
   background-color: #28a745;

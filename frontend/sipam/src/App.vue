@@ -67,7 +67,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
-    <b-container id="site-container">
+    <b-container fluid id="site-container">
       <router-view />
     </b-container>
   </div>

@@ -67,7 +67,7 @@ export default {
     },
     loginSuccessfull() {
       if (this.getLoggedIn()) {
-        this.$router.push({ path: 'home' });
+        this.$router.push({ path: 'pools' });
       } else {
         this.$router.push({ path: 'login' });
       }

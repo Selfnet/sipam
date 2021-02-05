@@ -1,31 +1,42 @@
 <template>
-  <div>
-    <div :class="{bold: isFolder}">
-      <fai
-        @click="toggle"
-        v-if="isFolder"
-        :icon="isOpen ? 'minus-circle': 'plus-circle'"
-        class="pointer"
-      />
-      <cidr
-        :cidrID="item.id"
-        v-on:cidrClicked="toggle"
-      ></cidr>
-    </div>
-    <b-list-group-item
-      class="nested"
-      v-show="isOpen"
-      v-if="isFolder"
-    >
-      <tree-item
-        class="item"
-        v-for="child in children"
-        :key="child.id"
-        :item="child"
-        @add-item="$emit('add-item', $event)"
-      ></tree-item>
-    </b-list-group-item>
-  </div>
+  <b-container fluid>
+    <b-row :class="{bold: isFolder}">
+      <b-col
+        cols=1
+        align-self="left"
+      >
+        <fai
+          @click="toggle"
+          v-if="isFolder"
+          :icon="isOpen ? 'minus-circle': 'plus-circle'"
+          class="pointer fa-lg"
+        />
+      </b-col>
+      <b-col>
+        <cidr
+          :cidrID="item.id"
+          v-on:cidrClicked="toggle"
+        ></cidr>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=12>
+        <b-list-group-item
+          class="nested"
+          v-show="isOpen"
+          v-if="isFolder"
+        >
+          <tree-item
+            class="item"
+            v-for="child in children"
+            :key="child.id"
+            :item="child"
+            @add-item="$emit('add-item', $event)"
+          ></tree-item>
+        </b-list-group-item>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
