@@ -38,6 +38,11 @@ export default function routerFactory(config: SIPAMConfiguration, store: Store<R
         component: () => import(/* webpackChunkName: "pools" */ './views/Pools.vue'),
       },
       {
+        path: '/tokens',
+        name: 'Token',
+        component: () => import(/* webpackChunkName: "tokens" */ './views/Token.vue'),
+      },
+      {
         path: '/oidc-callback', // Needs to match redirectUri in you oidcSettings
         name: 'oidcCallback',
         component: OidcCallback,

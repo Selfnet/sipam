@@ -5,7 +5,9 @@ import '@/assets/styles/custom.scss';
 
 import workerFactory from '@/registerServiceWorker';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faPlusCircle, faMinusCircle, faCog } from '@fortawesome/free-solid-svg-icons';
+import {
+  faPlusCircle, faMinusCircle, faCog, faEye, faEyeSlash,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import routerFactory from '@/router';
 import Language from '@/utils/Language';
@@ -17,7 +19,7 @@ import apiFactory from './sipam';
 fetchConfig().then((config) => {
   workerFactory(config);
   // Icons
-  library.add(faPlusCircle, faMinusCircle, faCog);
+  library.add(faPlusCircle, faMinusCircle, faCog, faEye, faEyeSlash);
   Vue.component('fai', FontAwesomeIcon);
 
   // Bootstap

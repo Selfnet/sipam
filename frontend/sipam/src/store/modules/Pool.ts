@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import { PoolState, RootState } from '@/types/store';
 import { Assignment, Pool } from '@/types/api';
-import SIPAM from '@/sipam';
 
 export default {
   namespaced: true,

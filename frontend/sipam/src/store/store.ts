@@ -5,6 +5,7 @@ import Pool from '@/store/modules/Pool';
 import Auth from '@/store/modules/Auth';
 import CIDR from '@/store/modules/CIDR';
 import Search from '@/store/modules/Search';
+import Token from '@/store/modules/Token';
 import { RootState } from '@/types/store';
 import { vuexOidcCreateStoreModule, VuexOidcStoreListeners } from 'vuex-oidc';
 import { User } from 'oidc-client';
@@ -43,6 +44,7 @@ export default function storeFactory(config: SIPAMConfiguration, SIPAM: Api) {
       Pool,
       Search,
       Auth,
+      Token,
       AuthOIDC,
     },
     plugins: [vuexLocalStorage.plugin],

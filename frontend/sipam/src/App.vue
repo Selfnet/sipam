@@ -24,6 +24,7 @@
           <b-nav-item to="/home">Home</b-nav-item>
           <b-nav-item to="/pools">Pools</b-nav-item>
           <b-nav-item to="/cidrs">CIDR</b-nav-item>
+          <b-nav-item to="/tokens">Tokens</b-nav-item>
           <b-nav-item to="/about">About</b-nav-item>
           <b-nav-item to="/profile">Profile</b-nav-item>
         </b-navbar-nav>

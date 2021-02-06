@@ -1,4 +1,6 @@
-import { Api, CIDR, Pool } from '@/types/api';
+import {
+  Api, CIDR, Pool, Token,
+} from '@/types/api';
 import { SIPAMConfiguration } from '@/types/config';
 
 export interface RootState {
@@ -15,6 +17,9 @@ export interface PoolDict {
     [id: string] : Pool
 }
 
+export interface TokenDict {
+    [id: string]: Token
+}
 export interface SearchState {
     query: string;
     search: Object;
@@ -40,10 +45,10 @@ export interface CIDRState {
     search: CIDRDict;
 }
 
-export interface PoolsDict {
-    [id: string]: Pool
-}
-
 export interface PoolState {
     pools: PoolDict
+}
+
+export interface TokenState {
+    tokens: TokenDict
 }
