@@ -50,7 +50,7 @@
             @click="showAssignForm = !showAssignForm"
           >Assign</b-button>
         </b-col>
-        <b-col align-self="right">
+        <b-col>
           <span class="description">{{ pool.description }}</span>
         </b-col>
       </b-row>

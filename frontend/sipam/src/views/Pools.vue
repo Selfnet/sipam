@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-row>
-      <b-col align-self="left">
+      <b-col>
         <h1><span class="h1">Pools</span></h1>
       </b-col>
     </b-row>
@@ -18,7 +18,6 @@
           size="lg"
           variant="primary"
           v-b-modal.create-pool-modal
-          align-self="end"
           class="create-button"
         >
           <strong>
@@ -29,15 +28,34 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col>
-        <pool
-          v-for="pool in pools"
-          :key="pool"
-          :poolID="pool"
-        />
-      </b-col>
-      <pool-form :edit="false" />
+      <b-container fluid>
+        <b-row class="pool">
+          <b-col cols="1">
+          </b-col>
+          <b-col>
+            <strong>PoolType</strong>
+          </b-col>
+          <b-col>
+            <strong>PoolName</strong>
+          </b-col>
+          <b-col>
+          </b-col>
+          <b-col>
+          </b-col>
+          <b-col>
+            <strong>Description</strong>
+          </b-col>
+
+        </b-row>
+      </b-container>
+
     </b-row>
+    <pool
+      v-for="pool in pools"
+      :key="pool"
+      :poolID="pool"
+    />
+    <pool-form :edit="false" />
   </div>
 </template>
 <script>
@@ -75,7 +93,17 @@ export default {
 </script>
 
 <style scoped>
-
+.description {
+  float: right;
+}
+.pool {
+  border: 1px solid lightgray;
+  /* display: grid;
+  grid-template-columns: 20% 40% 20%;
+  grid-gap: 10px; */
+  margin: 2px;
+  padding: 5px;
+}
 .bottom-right {
   right: 0;
   bottom: 0;

@@ -58,6 +58,10 @@ a:focus  {
   bottom: 5px;
 }
 
+.heading {
+  text-decoration: $gray-300 solid underline;
+}
+
 .create-button {
   position: relative;
   bottom: 15px;

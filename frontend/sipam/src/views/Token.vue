@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-row>
-      <b-col align-self="left">
+      <b-col>
         <h1><span class="h1">Tokens</span></h1>
       </b-col>
     </b-row>
@@ -18,7 +18,6 @@
           size="lg"
           variant="primary"
           v-b-modal.create-token-modal
-          align-self="end"
           class="create-button"
         >
           <strong>

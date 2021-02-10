@@ -1,10 +1,7 @@
 <template>
   <b-container fluid>
     <b-row :class="{bold: isFolder}">
-      <b-col
-        cols=1
-        align-self="left"
-      >
+      <b-col cols="1">
         <fai
           @click="toggle"
           v-if="isFolder"
@@ -19,21 +16,22 @@
         ></cidr>
       </b-col>
     </b-row>
-    <b-row>
+    <b-row v-if="isFolder">
       <b-col cols=12>
-        <b-list-group-item
-          class="nested"
-          v-show="isOpen"
-          v-if="isFolder"
+        <b-collapse
+          id="show-children"
+          v-model="isOpen"
         >
-          <tree-item
-            class="item"
-            v-for="child in children"
-            :key="child.id"
-            :item="child"
-            @add-item="$emit('add-item', $event)"
-          ></tree-item>
-        </b-list-group-item>
+          <b-card>
+            <tree-item
+              class="item"
+              v-for="child in children"
+              :key="child.id"
+              :item="child"
+              @add-item="$emit('add-item', $event)"
+            ></tree-item>
+          </b-card>
+        </b-collapse>
       </b-col>
     </b-row>
   </b-container>

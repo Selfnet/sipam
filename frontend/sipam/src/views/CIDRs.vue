@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-row>
-      <b-col align-self="left">
+      <b-col>
         <h1><span class="h1">CIDRs</span></h1>
       </b-col>
     </b-row>
@@ -18,7 +18,6 @@
           size="lg"
           variant="primary"
           v-b-modal.create-cidr-modal
-          align-self="end"
           class="create-button"
         >
           <strong>
@@ -29,17 +28,45 @@
       </b-col>
     </b-row>
     <b-row>
-      <b-col>
-        <tree
-          v-for="cidr in cidrs"
-          v-bind:item="cidr"
-          :key="cidr.id"
-          :cidr="cidr"
-        >
-        </tree>
+      <b-col cols=12>
+        <b-list-group>
+          <b-list-group-item>
+            <b-container fluid>
+              <b-row class="bold headline">
+                <b-col cols="1">
+                </b-col>
+                <b-col>
+                  <b-container fluid>
+                    <b-row>
+                      <b-col>
+                        <strong>Flag</strong>
+                      </b-col>
+                      <b-col>
+                        <strong>Prefix</strong>
+                      </b-col>
+                      <b-col offset="2">
+                        <strong>FQDN</strong>
+                      </b-col>
+                      <b-col>
+                        <strong class="description">Description</strong>
+                      </b-col>
+                    </b-row>
+                  </b-container>
+                </b-col>
+              </b-row>
+            </b-container>
+          </b-list-group-item>
+        </b-list-group>
       </b-col>
-      <cidr-form :edit="false" />
     </b-row>
+    <tree
+      v-for="cidr in cidrs"
+      v-bind:item="cidr"
+      :key="cidr.id"
+      :cidr="cidr"
+    >
+    </tree>
+    <cidr-form :edit="false" />
   </div>
 </template>
 <script>
@@ -86,3 +113,15 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+.description {
+  float: right;
+}
+.headline {
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+</style>

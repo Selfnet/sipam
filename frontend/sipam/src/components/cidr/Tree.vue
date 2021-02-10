@@ -1,16 +1,18 @@
 <template>
-  <b-container fluid>
-    <b-list-group>
-      <b-list-group-item>
+  <b-row>
+    <b-col cols=12>
+      <b-list-group>
+        <b-list-group-item>
         <tree-item
           class="item"
           :item="cidr"
           @make-folder="makeFolder"
           @add-item="addItem"
         />
-      </b-list-group-item>
-    </b-list-group>
-  </b-container>
+        </b-list-group-item>
+      </b-list-group>
+    </b-col>
+  </b-row>
 </template>
 
 <script>

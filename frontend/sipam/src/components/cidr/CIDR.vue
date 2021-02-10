@@ -56,7 +56,7 @@
           v-show="cidr.fqdn"
         >{{ cidr.fqdn }} </span>
       </b-col>
-      <b-col align-self="right">
+      <b-col>
         <span class="description">{{ cidr.description }}</span>
       </b-col>
     </b-row>
@@ -150,15 +150,15 @@ export default {
   align-items: left;
   padding: 0.5em;
   cursor: pointer;
-} */
-
-/* .description {
-  float: right;
 }
 
 .fqdn {
   margin: 1em;
 } */
+
+.description {
+  float: right;
+}
 
 .reservation {
   background-color: #28a745;
