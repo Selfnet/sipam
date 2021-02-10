@@ -24,7 +24,6 @@
           <b-nav-item to="/home">Home</b-nav-item>
           <b-nav-item to="/pools">Pools</b-nav-item>
           <b-nav-item to="/cidrs">CIDR</b-nav-item>
-          <b-nav-item to="/tokens">Tokens</b-nav-item>
           <b-nav-item to="/about">About</b-nav-item>
           <b-nav-item to="/profile">Profile</b-nav-item>
         </b-navbar-nav>
@@ -58,11 +57,13 @@
               <em>{{ userDisplay }}</em>
             </template>
             <b-dropdown-item
-              @click=logout
-            >{{$t("GENERAL.LOGOUT.LABEL")}}</b-dropdown-item>
-            <b-dropdown-item
               to="/profile"
             >{{$t("GENERAL.PROFILE.LABEL")}}</b-dropdown-item>
+            <b-dropdown-item
+              to="/tokens">{{$t("GENERAL.PROFILE.TOKENS")}}</b-dropdown-item>
+            <b-dropdown-item
+              @click=logout
+            >{{$t("GENERAL.LOGOUT.LABEL")}}</b-dropdown-item>
           </b-nav-item-dropdown>
           <b-button v-else to="/login">{{$t("GENERAL.LOGIN.LABEL")}}</b-button>
         </b-navbar-nav>

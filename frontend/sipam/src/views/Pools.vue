@@ -33,17 +33,17 @@
           <b-col cols="1">
           </b-col>
           <b-col>
-            <strong>PoolType</strong>
+            <strong>{{$t("GENERAL.POOL.TYPE")}}</strong>
           </b-col>
           <b-col>
-            <strong>PoolName</strong>
+            <strong>{{$t("GENERAL.POOL.NAME")}}</strong>
           </b-col>
           <b-col>
           </b-col>
           <b-col>
           </b-col>
           <b-col>
-            <strong>Description</strong>
+            <strong>{{$t("GENERAL.POOL.DESCRIPTION")}}</strong>
           </b-col>
 
         </b-row>

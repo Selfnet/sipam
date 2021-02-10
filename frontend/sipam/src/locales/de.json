@@ -10,14 +10,21 @@
     },
     "POOL": {
       "CREATE": "Pool erstellen",
-      "EDIT": "Pool bearbeiten"
+      "EDIT": "Pool bearbeiten",
+      "DESCRIPTION": "Beschreibung",
+      "NAME": "Name",
+      "TYPE": "Typ"
     },
     "CIDR": {
       "CREATE": "CIDR erstellen",
-      "EDIT": "CIDR bearbeiten"
+      "EDIT": "CIDR bearbeiten",
+      "DESCRIPTION": "Beschreibung",
+      "FLAG": "Marker",
+      "PREFIX": "Präfix"
     },
     "PROFILE": {
-      "LABEL": "Profil"
+      "LABEL": "Profil",
+      "TOKENS": "API-Schlüssel"
     },
     "LOGIN": {
       "LABEL": "Einloggen",

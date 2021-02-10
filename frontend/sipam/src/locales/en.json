@@ -10,14 +10,21 @@
     },
     "POOL": {
       "CREATE": "Create Pool",
-      "EDIT": "Edit Pool"
+      "EDIT": "Edit Pool",
+      "DESCRIPTION": "Description",
+      "NAME": "Name",
+      "TYPE": "Type"
     },
     "CIDR": {
       "CREATE": "Create CIDR",
-      "EDIT": "Edit CIDR"
+      "EDIT": "Edit CIDR",
+      "DESCRIPTION": "Description",
+      "FLAG": "Flag",
+      "PREFIX": "Prefix"
     },
     "PROFILE": {
-      "LABEL": "Profile"
+      "LABEL": "Profile",
+      "TOKENS": "API-Tokens"
     },
     "LOGIN": {
       "LABEL": "Sign In",

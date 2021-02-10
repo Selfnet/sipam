@@ -39,16 +39,16 @@
                   <b-container fluid>
                     <b-row>
                       <b-col>
-                        <strong>Flag</strong>
+                        <strong>{{$t("GENERAL.CIDR.FLAG")}}</strong>
                       </b-col>
                       <b-col>
-                        <strong>Prefix</strong>
+                        <strong>{{$t("GENERAL.CIDR.PREFIX")}}</strong>
                       </b-col>
                       <b-col offset="2">
                         <strong>FQDN</strong>
                       </b-col>
                       <b-col>
-                        <strong class="description">Description</strong>
+                        <strong class="description">{{$t("GENERAL.CIDR.DESCRIPTION")}}</strong>
                       </b-col>
                     </b-row>
                   </b-container>
