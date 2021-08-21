@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import { vuexOidcCreateRouterMiddleware } from 'vuex-oidc';
+import { Store } from 'vuex';
 import Home from '@/views/Home.vue';
 import Login from '@/views/Login.vue';
 import OidcCallback from '@/views/oidc/OidcCallback.vue';
 import OidcCallbackError from '@/views/oidc/OidcCallbackError.vue';
 import OidcCallbackPopup from '@/views/oidc/OidcCallbackPopup.vue';
 import OidcLogin from '@/views/oidc/OidcLogin.vue';
-import { vuexOidcCreateRouterMiddleware } from 'vuex-oidc';
 import { SIPAMConfiguration } from '@/types/config';
-import { Store } from 'vuex';
 import { RootState } from './types/store';
 
 
@@ -84,7 +84,7 @@ export default function routerFactory(config: SIPAMConfiguration, store: Store<R
     router.beforeEach(vuexOidcCreateRouterMiddleware(store, 'AuthOIDC'));
   } else {
     router.beforeEach((to, from, next) => {
-      if (to.fullPath === '/login' || to.meta.isPublic) {
+      if (to.fullPath === '/login' || (to.meta && to.meta.isPublic)) {
         next();
         return;
       }
