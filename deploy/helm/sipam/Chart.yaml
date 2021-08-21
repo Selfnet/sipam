@@ -18,4 +18,4 @@ maintainers:
 name: sipam
 sources:
   - https://github.com/selfnet/sipam
-version: 0.1.2
+version: 0.1.3
