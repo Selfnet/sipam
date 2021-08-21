@@ -1,4 +1,4 @@
-image: python:3.8-buster
+image: python:3.9-bullseye
 
 variables:
   POSTGRES_USER: sipam
@@ -6,7 +6,7 @@ variables:
   POSTGRES_DB: sipam
   prometheus_multiproc_dir: /tmp
   npm_prefix: frontend/sipam/
-  KUBECONFORM_VERSION: "0.4.2"
+  KUBECONFORM_VERSION: "0.4.8"
 
 stages:
   - test
@@ -14,7 +14,7 @@ stages:
   - build_containers
 
 eslint:
-  image: node:lts-buster
+  image: node:lts-bullseye
   stage: test
   before_script:
     - yarn --cwd ${npm_prefix} install
@@ -22,7 +22,7 @@ eslint:
     - yarn --cwd ${npm_prefix} lint
 
 yarn_build:
-  image: node:lts-buster
+  image: node:lts-bullseye
   stage: build
   before_script:
     - yarn --cwd ${npm_prefix} install
@@ -42,7 +42,7 @@ helm_build:
   script:
     - helm dependency build deploy/helm/sipam
     - helm package deploy/helm/sipam
-    - curl -T *.tgz -v -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "${NEXUS_URL}/repository/selfnet-helm/" 
+    - curl -T *.tgz -v -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "${NEXUS_URL}/repository/selfnet-helm/"
   needs:
     - helm_lint
   only:
