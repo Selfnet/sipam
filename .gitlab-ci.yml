@@ -94,8 +94,8 @@ backend_container:
   script:
     - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -f docker/Dockerfile.backend .
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
-    - if [ "$CI_COMMIT_REF_NAME" == "master" ]; then buildah tag $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/backend:latest; fi
-    - if [ "$CI_COMMIT_REF_NAME" == "master" ]; then buildah push $CI_REGISTRY_IMAGE/backend:latest; fi
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah tag $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/backend:latest; fi
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah push $CI_REGISTRY_IMAGE/backend:latest; fi
   needs:
     - flake8
     - pytest
@@ -112,8 +112,8 @@ frontend_container:
   script:
     - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -f docker/Dockerfile.frontend .
     - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
-    - if [ "$CI_COMMIT_REF_NAME" == "master" ]; then buildah tag $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/frontend:latest; fi
-    - if [ "$CI_COMMIT_REF_NAME" == "master" ]; then buildah push $CI_REGISTRY_IMAGE/frontend:latest; fi
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah tag $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/frontend:latest; fi
+    - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah push $CI_REGISTRY_IMAGE/frontend:latest; fi
   needs:
     - yarn_build
     - eslint
