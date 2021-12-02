@@ -35,7 +35,7 @@ export default {
       // Include the cild underneath the parent
       // Otherwise the tree won't be redrawn correctly
       if (payload && payload.parent && state.cidrs[payload.parent].children) {
-        // eslint-disable-next-line no-undefined, no-null
+        // eslint-disable-next-line no-undefined
         const child = state.cidrs[payload.parent].children;
         if (child) {
           child.push(payload.id);
@@ -49,7 +49,7 @@ export default {
 
       // Check for null and undefined (even though ts still complains for no reason)
       if (parentID) {
-        // eslint-disable-next-line no-undefined, no-null
+        // eslint-disable-next-line no-undefined
         const child = state.cidrs[parentID].children;
         if (child) {
           child.splice(child.indexOf(payload), 1);

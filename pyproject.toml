@@ -7,8 +7,8 @@ license = "Apache-2.0"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-django = "^3.2.6"
-django-netfields = "^1.2.2"
+django = "^3.2.9"
+django-netfields = "^1.2.4"
 djangorestframework = "^3.12.4"
 psycopg2-binary = "^2.8.6"
 fqdn = "^1.5.0"

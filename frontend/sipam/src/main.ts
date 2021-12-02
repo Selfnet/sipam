@@ -1,14 +1,15 @@
 import Vue from 'vue';
-import BootstrapVue from 'bootstrap-vue';
+import { BootstrapVue } from 'bootstrap-vue';
 import I18n from 'vue-i18n';
+
 import '@/assets/styles/custom.scss';
 
-import workerFactory from '@/registerServiceWorker';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import {
   faPlusCircle, faMinusCircle, faCog, faEye, faEyeSlash,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import workerFactory from '@/registerServiceWorker';
 import routerFactory from '@/router';
 import Language from '@/utils/Language';
 import App from '@/App.vue';

@@ -85,16 +85,12 @@ export default {
     LanguagePicker,
   },
   computed: {
-    ...mapGetters(
-      'AuthOIDC', {
-        user: 'oidcUser',
-      },
-    ),
-    ...mapGetters(
-      'Search', {
-        getQuery: 'query',
-      },
-    ),
+    ...mapGetters('AuthOIDC', {
+      user: 'oidcUser',
+    }),
+    ...mapGetters('Search', {
+      getQuery: 'query',
+    }),
     query: {
       get() {
         return this.getQuery;
@@ -165,7 +161,6 @@ export default {
 };
 </script>
 
-
 <style lang="scss">
 @import "@/assets/styles/custom.scss";
 
@@ -235,7 +230,6 @@ footer a:active,
 footer a:focus {
   color: $white;
 }
-
 
 @font-face {
   font-family: "Source Sans Pro";

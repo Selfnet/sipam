@@ -4,8 +4,8 @@
 </template>
 
 <script>
-import SIPAM from '@/sipam';
 import { mapActions } from 'vuex';
+import SIPAM from '@/sipam';
 
 export default {
   name: 'OidcCallback',
