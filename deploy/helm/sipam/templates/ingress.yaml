@@ -35,6 +35,13 @@ spec:
             name: {{ include "common.names.fullname" . }}-backend
             port:
               number: {{ .Values.backend.service.port }}
+      - path: /swagger.json
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "common.names.fullname" . }}-backend
+            port:
+              number: {{ .Values.backend.service.port }}
       - path: /swagger
         pathType: Prefix
         backend:
