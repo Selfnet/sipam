@@ -6,11 +6,11 @@ authors = ["Thore <thore@selfnet.de>", "Marcel <marcelf@selfnet.de>"]
 license = "Apache-2.0"
 
 [tool.poetry.dependencies]
-python = "^3.9"
-django = "^4.0.0"
+python = "^3.10"
+django = "^4.0.1"
 django-netfields = "^1.2.4"
 djangorestframework = "^3.13.0"
-psycopg2-binary = "^2.9.3"
+psycopg2 = "^2.9.3"
 fqdn = "^1.5.0"
 coreapi = "^2.3.3"
 pyyaml = "^5.4.1"
@@ -22,7 +22,8 @@ django-mptt = "^0.13.0"
 drf-yasg = "^1.20.0"
 djangorestframework-simplejwt = "^4.6.0"
 environ-config = "^21.2.0"
-drf-oidc-auth =  { git = "https://github.com/ThoreKr/drf-oidc-auth.git", branch = "django-40", rev = "4fec140" }
+drf-oidc-auth = { git = "https://github.com/ThoreKr/drf-oidc-auth.git", branch = "django-40" }
+gunicorn = "^20.1.0"
 
 [tool.poetry.dev-dependencies]
 autopep8 = "^1.5.4"

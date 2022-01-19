@@ -1,4 +1,21 @@
-FROM python:3.9-slim-bullseye
+FROM python:3.10-slim AS builder
+
+RUN mkdir -p /app
+RUN apt-get update && apt-get install -y git gcc python3-dev libpq-dev
+
+WORKDIR /app
+RUN pip --no-cache-dir install --upgrade setuptools wheel
+
+ADD manage.py pyproject.toml poetry.lock /app
+ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+
+ADD accounts accounts/
+ADD sipam sipam/
+
+RUN pip wheel . --wheel-dir /wheels
+
+# Now build
+FROM python:3.10-slim
 
 ARG UNAME=sipam
 ARG UID=1000
@@ -7,16 +24,13 @@ RUN groupadd -g $GID -o $UNAME
 RUN useradd -m -u $UID -g $GID -o -s /bin/bash $UNAME
 WORKDIR /usr/src/app
 
-# First copy basic dependencies
-ADD manage.py pyproject.toml poetry.lock ./
-ENV PYTHONPATH=${PYTHONPATH}:${PWD}
+RUN apt-get update && apt-get install -y git libpq-dev && rm -rf /var/lib/apt/lists/*
 
-# Install dependencies
-RUN pip install poetry gunicorn
-RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev
+COPY --from=builder /wheels /wheels
+RUN pip --no-cache-dir install --find-links /wheels --no-index sipam
 
 # Copy application code (here, so the above can be cached and reused on code changes)
+ADD manage.py pyproject.toml poetry.lock .
 ADD accounts accounts/
 ADD sipam sipam/
 
