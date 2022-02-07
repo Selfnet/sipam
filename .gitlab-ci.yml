@@ -85,10 +85,9 @@ pytest:
     - poetry run coverage report
 
 backend_container:
-  image: quay.io/containers/buildah:latest
+  image: quay.io/redhat-github-actions/buildah-runner:latest
   stage: build_containers
   before_script:
-    - export STORAGE_DRIVER=vfs
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
@@ -103,10 +102,9 @@ backend_container:
     - branches
 
 frontend_container:
-  image: quay.io/containers/buildah:latest
+  image: quay.io/redhat-github-actions/buildah-runner:latest
   stage: build_containers
   before_script:
-    - export STORAGE_DRIVER=vfs
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
@@ -121,10 +119,9 @@ frontend_container:
     - branches
 
 backend_container_release:
-  image: quay.io/containers/buildah:latest
+  image: quay.io/redhat-github-actions/buildah-runner:latest
   stage: build_containers
   before_script:
-    - export STORAGE_DRIVER=vfs
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
@@ -138,10 +135,9 @@ backend_container_release:
     - tags
 
 frontend_container_release:
-  image: quay.io/containers/buildah:latest
+  image: quay.io/redhat-github-actions/buildah-runner:latest
   stage: build_containers
   before_script:
-    - export STORAGE_DRIVER=vfs
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
