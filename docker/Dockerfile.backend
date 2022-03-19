@@ -45,4 +45,4 @@ ENV SIPAM_DEBUG=false
 ENV SIPAM_GUNICORN_WORKERS=4
 EXPOSE 8080
 
-CMD python manage.py migrate && gunicorn --workers=${SIPAM_GUNICORN_WORKERS} sipam.wsgi -b 0.0.0.0:8080
+CMD python manage.py migrate && gunicorn --workers=${SIPAM_GUNICORN_WORKERS} sipam.wsgi -b [::]:8080
