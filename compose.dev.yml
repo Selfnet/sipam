@@ -1,0 +1,58 @@
+version: "3"
+
+services:
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:?err}
+      POSTGRES_USER: ${DATABASE_USER:?err}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?err}
+      PGDATA: /data/db
+    volumes:
+      - ./data/db:/data/db:z
+    restart: unless-stopped
+
+  frontend:
+    image: node:20-alpine
+    entrypoint: sh -c 'if [ ! -d "node_modules" ]; then yarn install; fi && yarn dev'
+    volumes:
+      - ./frontend:/app:z
+    working_dir: /app
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      # TODO: image does not provide hot reloading
+      context: backend
+      dockerfile: Containerfile.dev
+    command: ["runserver", "0.0.0.0:8000"]
+    volumes:
+      - ./backend:/app:z
+    working_dir: /app
+    environment:
+      SIPAM_DATABASE_HOST: ${DATABASE_HOST:-postgres}
+      SIPAM_DATABASE_NAME: ${DATABASE_NAME:?err}
+      SIPAM_DATABASE_USER_NAME: ${DATABASE_USER:?err}
+      SIPAM_DATABASE_USER_PASSWORD: ${DATABASE_PASSWORD:?err}
+      SIPAM_OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-sipam-dev}
+      SIPAM_OIDC_ENDPOINT: ${OIDC_ENDPOINT:-https://sap.selfnet.de/auth/realms/master}
+    ports:
+      - 8000:8000
+    restart: unless-stopped
+    depends_on:
+      - postgres
+
+  pgadmin:
+    image: dpage/pgadmin4:7
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?err}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?err}
+    ports:
+      - ${PGADMIN_PORT:-3030}:80
+    restart: unless-stopped
+    depends_on:
+      - postgres

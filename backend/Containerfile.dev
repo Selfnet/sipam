@@ -1,0 +1,33 @@
+FROM python:3.11-alpine
+
+ENV DJANGO_ENV=${DJANGO_ENV} \
+  # Python
+  PYTHONFAULTHANDLER=1 \
+  PYTHONUNBUFFERED=1 \
+  PYTHONDONTWRITEBYTECODE=1 \
+  # Pip
+  PIP_NO_CACHE_DIR=1 \
+  PIP_DISABLE_PIP_VERSION_CHECK=1 \
+  PIP_DEFAULT_TIMEOUT=100 \
+  PIP_ROOT_USER_ACTION=ignore \
+  # Poetry
+  POETRY_VERSION=1.5.1 \
+  POETRY_NO_INTERACTION=1 \
+  POETRY_VIRTUALENVS_CREATE=false \
+  POETRY_CACHE_DIR='/var/cache/pypoetry' \
+  POETRY_HOME='/usr/local'
+
+# System deps
+RUN apk add gcc python3-dev libpq-dev libffi-dev musl-dev postgresql-dev libxml2-dev libxslt-dev linux-headers bash
+
+# Create app directory and copy poetry files
+WORKDIR /app
+COPY poetry.lock pyproject.toml /app/
+RUN pip install "poetry==$POETRY_VERSION" \
+    && poetry install $(if [ "$DJANGO_ENV" = 'production' ]; then echo '--only main'; fi) --no-interaction --no-ansi --no-root --no-directory
+
+# Project initialization
+COPY sipam accounts /app/
+RUN poetry install $(if [ "$DJANGO_ENV" = 'production' ]; then echo '--only main'; fi) --no-interaction --no-ansi
+
+ENTRYPOINT ["poetry", "run", "python", "manage.py"]
