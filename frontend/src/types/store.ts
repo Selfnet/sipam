@@ -1,7 +1,7 @@
 import {
   Api, CIDR, Pool, Token,
 } from '@/types/api';
-import { SIPAMConfiguration } from '@/types/config';
+import { SIPAMConfiguration } from '@/config';
 
 export interface RootState {
     version: string;

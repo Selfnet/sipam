@@ -14,7 +14,14 @@ services:
 
   frontend:
     image: node:16-alpine
-    entrypoint: sh -c 'if [ ! -d "node_modules" ]; then yarn install; fi && yarn serve'
+    entrypoint: sh -c 'if [ ! -d "node_modules" ]; then yarn ci; fi && yarn serve'
+    environment:
+      OIDC_ENDPOINT: ${OIDC_ENDPOINT:-https://sap.selfnet.de/auth/realms/master}
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-sipam-dev}
+      OIDC_AUTO_SIGNIN: ${OIDC_AUTO_SIGNIN:-true}
+      API_URL: ${API_URL:-http://localhost:8000/api/v1}
+      APP_URL: ${APP_URL:-http://localhost:8181}
+      DEBUG: true
     volumes:
       - ./frontend:/app:z
     working_dir: /app

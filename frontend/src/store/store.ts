@@ -9,7 +9,7 @@ import CIDR from '@/store/modules/CIDR';
 import Search from '@/store/modules/Search';
 import Token from '@/store/modules/Token';
 import { RootState } from '@/types/store';
-import { SIPAMConfiguration } from '@/types/config';
+import { SIPAMConfiguration } from '@/config';
 import { Api } from '@/types/api';
 
 

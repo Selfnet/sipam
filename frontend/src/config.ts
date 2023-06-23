@@ -1,30 +1,30 @@
 import { VuexOidcClientSettings } from 'vuex-oidc';
-import { SIPAMConfiguration, Configuration } from './types/config';
 
+export interface SIPAMConfiguration {
+  oidcSettings: VuexOidcClientSettings;
+  apiURL: string;
+  baseURL: string;
+  oidc: boolean;
+}
 
-export default async () => {
-  const runtimeConfig = await fetch('/config.json');
-  const config = await runtimeConfig.json() as Configuration;
-
-  // Axios Connection Config
-  // TODO: Move to webpack envs
-  return {
-    oidcSettings: {
-      authority: config.OIDC.issuer_url,
-      clientId: config.OIDC.client_id,
-      redirectUri: `${config.APP_URL}/oidc-callback`,
-      redirect_uri: `${config.APP_URL}/oidc-callback-error`,
-      popupRedirectUri: `${config.APP_URL}/oidc-callback-popup`,
-      responseType: 'code',
-      scope: 'openid profile email',
-      includeIdTokenInSilentRenew: true,
-      automaticSilentRenew: true,
-      automaticSilentSignin: config.OIDC.auto_sign_in as boolean,
-      dispatchEventsOnWindow: true,
-      silentRedirectUri: `${config.APP_URL}/oidc-renew.html`,
-    } as VuexOidcClientSettings,
-    apiURL: config.API_URL,
-    baseURL: config.BASE_URL || process.env.BASE_URL,
-    oidc: config.OIDC.enabled,
-  } as SIPAMConfiguration;
+const CONFIG: SIPAMConfiguration = {
+  oidcSettings: {
+    authority: process.env.OIDC_ENDPOINT,
+    clientId: process.env.OIDC_CLIENT_ID,
+    redirectUri: `${process.env.APP_URL}/oidc-callback`,
+    redirect_uri: `${process.env.APP_URL}/oidc-callback-error`,
+    popupRedirectUri: `${process.env.APP_URL}/oidc-callback-popup`,
+    responseType: 'code',
+    scope: 'openid profile email',
+    includeIdTokenInSilentRenew: true,
+    automaticSilentRenew: true,
+    automaticSilentSignin: process.env.OIDC_AUTO_SIGNIN === 'true',
+    dispatchEventsOnWindow: true,
+    silentRedirectUri: `${process.env.APP_URL}/oidc-renew.html`,
+  } as VuexOidcClientSettings,
+  apiURL: process.env.API_URL || 'http://localhost:8000/api/v1',
+  baseURL: process.env.BASE_URL || '/',
+  oidc: !!process.env.OIDC_ENDPOINT,
 };
+
+export default CONFIG;

@@ -11,6 +11,5 @@ secret.py
 sipam.egg-info
 *.tgz
 charts/
-frontend/sipam/public/config.json
 .pytest_cache
 .venv/

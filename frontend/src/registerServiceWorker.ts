@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker';
-import { SIPAMConfiguration } from './types/config';
+import { SIPAMConfiguration } from './config';
 
 export default function workerFactory(config: SIPAMConfiguration) {
   if (process.env.NODE_ENV === 'production') {

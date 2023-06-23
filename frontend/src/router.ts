@@ -8,7 +8,7 @@ import OidcCallback from '@/views/oidc/OidcCallback.vue';
 import OidcCallbackError from '@/views/oidc/OidcCallbackError.vue';
 import OidcCallbackPopup from '@/views/oidc/OidcCallbackPopup.vue';
 import OidcLogin from '@/views/oidc/OidcLogin.vue';
-import { SIPAMConfiguration } from '@/types/config';
+import { SIPAMConfiguration } from '@/config';
 import { RootState } from './types/store';
 
 

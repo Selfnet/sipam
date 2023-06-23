@@ -1,5 +1,5 @@
 import { RequestParams, Api } from './types/api';
-import { SIPAMConfiguration } from './types/config';
+import { SIPAMConfiguration } from './config';
 
 export default function apiFactory(config: SIPAMConfiguration) {
   function getToken(accessToken?: string | null | undefined): string {
