@@ -1,8 +1,11 @@
-FROM docker.io/library/node:lts-bullseye AS build_frontend
+FROM docker.io/library/node:16-bullseye AS build_frontend
+
 WORKDIR /usr/src/app/
-COPY frontend/sipam/ .
+COPY frontend/ .
+
 RUN yarn install && yarn build
 
 FROM docker.io/nginxinc/nginx-unprivileged:stable-alpine
+
 COPY docker/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build_frontend /usr/src/app/dist /usr/share/nginx/html

@@ -1,12 +1,12 @@
-image: python:3.10-bullseye
-
 variables:
   POSTGRES_USER: sipam
   POSTGRES_PASSWORD: sipam
   POSTGRES_DB: sipam
+  POETRY_VERSION: "1.5.1"
   prometheus_multiproc_dir: /tmp
-  npm_prefix: frontend/sipam/
   KUBECONFORM_VERSION: "0.4.8"
+  nodejs_version: "16"
+  python_version: "3.11"
 
 stages:
   - test
@@ -14,24 +14,25 @@ stages:
   - build_containers
 
 eslint:
-  image: node:lts-bullseye
+  image: node:${nodejs_version}-alpine
   stage: test
   before_script:
-    - yarn --cwd ${npm_prefix} install
+    - cd frontend
+    - yarn install
   script:
-    - yarn --cwd ${npm_prefix} lint
+    - yarn lint
 
 yarn_build:
-  image: node:lts-bullseye
+  image: node:${nodejs_version}-alpine
   stage: build
   before_script:
-    - yarn --cwd ${npm_prefix} install
+    - cd frontend
+    - yarn install
   script:
-    - yarn --cwd ${npm_prefix} build
+    - yarn build
   artifacts:
     paths:
-      - frontend/sipam/dist
-  needs: []
+      - dist
 
 helm_build:
   image: docker.io/dtzar/helm-kubectl:3.5.0
@@ -65,20 +66,23 @@ helm_lint:
     - helm template sipam deploy/helm/sipam | /kubeconform -ignore-missing-schemas -summary
 
 flake8:
+  image: python:${python_version}-bullseye
   stage: test
   before_script:
-    - pip install poetry
+    - cd backend
+    - pip install "poetry==${POETRY_VERSION}"
     - poetry install
   script:
-    - poetry --version
     - poetry run flake8 .
 
 pytest:
+  image: python:${python_version}-bullseye
   services:
     - postgres:latest
   stage: test
   before_script:
-    - pip install poetry
+    - cd backend
+    - pip install "poetry==${POETRY_VERSION}"
     - poetry install
   script:
     - poetry run coverage run -m pytest
@@ -91,7 +95,7 @@ backend_container:
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -f docker/Dockerfile.backend .
+    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -f backend/Containerfile .
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah tag $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/backend:latest; fi
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah push $CI_REGISTRY_IMAGE/backend:latest; fi
@@ -108,7 +112,7 @@ frontend_container:
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -f docker/Dockerfile.frontend .
+    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -f frontend/Containerfile .
     - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah tag $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/frontend:latest; fi
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah push $CI_REGISTRY_IMAGE/frontend:latest; fi
@@ -125,7 +129,7 @@ backend_container_release:
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_NAME -f docker/Dockerfile.backend .
+    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_NAME -f backend/Containerfile .
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_NAME
   needs:
@@ -141,7 +145,7 @@ frontend_container_release:
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_NAME -f docker/Dockerfile.frontend .
+    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_NAME -f frontend/Containerfile .
     - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
     - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_NAME
   needs:
