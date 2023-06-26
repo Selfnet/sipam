@@ -2,8 +2,6 @@
 data/
 env/
 static/
-*.pyc
-__pycache__/
 *.sqlite3
 secret.py
 .vscode/
@@ -11,5 +9,4 @@ secret.py
 sipam.egg-info
 *.tgz
 charts/
-.pytest_cache
-.venv/
+compose.dev-override.yml

@@ -14,7 +14,7 @@ services:
 
   frontend:
     image: node:16-alpine
-    entrypoint: sh -c 'if [ ! -d "node_modules" ]; then yarn ci; fi && yarn serve'
+    entrypoint: sh -c 'if [ ! -d "node_modules" ]; then yarn install; fi && yarn serve'
     environment:
       OIDC_ENDPOINT: ${OIDC_ENDPOINT:-https://sap.selfnet.de/auth/realms/master}
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-sipam-dev}
@@ -59,7 +59,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?err}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?err}
     ports:
-      - ${PGADMIN_PORT:-3030}:80
+      - ${PGADMIN_PORT:-5050}:80
     restart: unless-stopped
     depends_on:
       - postgres

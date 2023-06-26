@@ -6,30 +6,32 @@
 [![Vulnerabilities](https://sonarcloud.io/api/project_badges/measure?project=Selfnet_sipam&metric=vulnerabilities)](https://sonarcloud.io/dashboard?id=Selfnet_sipam)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Selfnet_sipam&metric=alert_status)](https://sonarcloud.io/dashboard?id=Selfnet_sipam)
 
+## Getting Started
 
-## Developer Initialization
+> This project utilizes **poetry**, **podman**, **docker-compose**, and **just** for managing scripts, containers, and dependencies.
 
-### Docker Postgres
+1. Install `podman`, `docker-compose`, and `just`
+2. Create a `.env` at least with the following content:
 
-* Install `docker`, `docker-compose` on a VM, PC, of your choice for the database Setup.
-* Create a `.env` file in the project directory with the following stuff inside.
+   ```.env
+   DATABASE_HOST=sipam
+   DATABASE_NAME=sipam
+   SIPAM_DATABASE_USER_NAME=sipam
+   SIPAM_DATABASE_USER_PASSWORD=<password>
+   PGADMIN_DEFAULT_EMAIL=sipam@selfnet.de
+   PGADMIN_DEFAULT_PASSWORD=<password>
+   PGADMIN_PORT=5050
+   ```
 
-```.env
-POSTGRES_PASSWORD=<password>
-POSTGRES_USER=sipam
-PGADMIN_DEFAULT_EMAIL=sipam@selfnet.de
-PGADMIN_DEFAULT_PASSWORD=<password>
-PGADMIN_PORT=5050
-```
+3. Run `just up -d` (this will initially build the containers and start them)
+4. After the containers are up and running, run `just init-setup` (this will initialize the database and create a superuser)
 
-```sh
-docker-compose up -d # this starts both container for development
-```
+## Deprecated
 
 ### Manual Postgres
 
-* Install `postgresql` on your local System
-* Checkout the postgres user via and run the predefined commands
+- Install `postgresql` on your local System
+- Checkout the postgres user via and run the predefined commands
 
 ```bash
 sudo -iu postgres
@@ -53,16 +55,16 @@ exit
 
 1. The Database `sipam` is reachable with the user `sipam` and the `POSTGRES_PASSWORD`.
 1. The Webinterface for the database management is reachable under `:::5050`.
-    * this is not the case in the manual setup.
+   - this is not the case in the manual setup.
 1. Please note if you want the database and the management listen on localhost addresses you must
-edit the `docker-compose.yml` file.
+   edit the `docker-compose.yml` file.
 
-* This project uses [poetry](https://python-poetry.org/) for dependency management.
-  * Setup is as easy as running `poetry install`
-  * New packages can be added with `poetry add <package>`
-  * If the package is only required for development purposes use `poetry add --dev <package>`
-* create a file `sipam/secret.py` add the variable `PASSWORD="<password>` and `HOST="<hostname>"`
-* If you have a local redis instance set the `REDIS_HOSTNAME` accordingly in `sipam/secret.py`. If you set it to `None` a dummy cache (aka. none) will be used.
+- This project uses [poetry](https://python-poetry.org/) for dependency management.
+  - Setup is as easy as running `poetry install`
+  - New packages can be added with `poetry add <package>`
+  - If the package is only required for development purposes use `poetry add --dev <package>`
+- create a file `sipam/secret.py` add the variable `PASSWORD="<password>` and `HOST="<hostname>"`
+- If you have a local redis instance set the `REDIS_HOSTNAME` accordingly in `sipam/secret.py`. If you set it to `None` a dummy cache (aka. none) will be used.
 
 ### Initialize the project
 
@@ -73,17 +75,9 @@ python manage.py migrate sipam # this triggers all migrations for the database o
 python manage.py runserver # runs the server
 ```
 
-```.env
-SIPAM_DATABASE_HOST=localhost
-SIPAM_DATABASE_USER_NAME=sipam
-SIPAM_DATABASE_USER_PASSWORD=<secure_password>
-SIPAM_OIDC_CLIENT_ID=sipam-dev
-SIPAM_OIDC_ENDPOINT=${PATH_TO_TOKEN_ISSUER/auth/realms/realm-name}
-```
+### Backend Development
 
-## Backend Development
-
-### Base developer Dataset
+#### Base developer Dataset
 
 Create some Base Datase for the database `sipam`. `sipam.pgsql` can be imported for this purpose.
 
@@ -99,7 +93,7 @@ psql -U sipam sipam < sipam.pgsql
 
 Now the database should be filled with some sample data.
 
-### Read Fixture Data into dev server
+#### Read Fixture Data into dev server
 
 This is an import of the existing nipap database.
 The fixture can be found in a well-known place (just ask)
@@ -110,7 +104,7 @@ python manage.py loaddata -e auth -e contenttypes /tmp/nipap_import.json
 
 ```
 
-### Testing
+#### Testing
 
 Make sure you have a user with createdb privileges (pytest will automatically setup a test database and delete it afterwards).
 
@@ -128,21 +122,21 @@ coverage report -m
 
 Happy testing.
 
-### IP Functions
+#### IP Functions
 
 - Postgres: https://www.postgresql.org/docs/11/functions-net.html
 - Netfields: https://github.com/jimfunk/django-postgresql-netfields
 
-
-## Frontend Development
+### Frontend Development
 
 Install `@vue/cli`
-* Archlinux
-  * yay -S vue-cli
-* Others
-  * npm install --global @vue/cli
 
-### Running
+- Archlinux
+  - yay -S vue-cli
+- Others
+  - npm install --global @vue/cli
+
+#### Running
 
 For local development `yarn serve` and the development Django server are sufficient.
 To make life easier it is recommended to generate a superuser account for login.

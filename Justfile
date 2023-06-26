@@ -53,7 +53,7 @@ postgres_data_dir := "data/db"
 @createsuperuser:
     {{ run }} backend createsuperuser
 
-# prepare the database for development (single-use-only)
+# prepare the database for development (migrate, loaddata, createsuperuser)
 @init-setup: migrate loaddata createsuperuser
 
 # show the live logs (of a specified container)
