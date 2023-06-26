@@ -71,7 +71,7 @@ flake8:
   before_script:
     - cd backend
     - pip install "poetry==${POETRY_VERSION}"
-    - poetry install
+    - poetry install --only dev
   script:
     - poetry run flake8 .
 
@@ -95,7 +95,7 @@ backend_container:
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -f backend/Containerfile .
+    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -f Containerfile backend 
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah tag $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/backend:latest; fi
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah push $CI_REGISTRY_IMAGE/backend:latest; fi
@@ -112,7 +112,7 @@ frontend_container:
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -f frontend/Containerfile .
+    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -f Containerfile frontend
     - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah tag $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/frontend:latest; fi
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah push $CI_REGISTRY_IMAGE/frontend:latest; fi
@@ -129,7 +129,7 @@ backend_container_release:
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_NAME -f backend/Containerfile .
+    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_NAME -f Containerfile backend
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_NAME
   needs:
@@ -145,7 +145,7 @@ frontend_container_release:
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_NAME -f frontend/Containerfile .
+    - buildah bud -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA -t $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_NAME -f Containerfile frontend
     - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_SHORT_SHA
     - buildah push $CI_REGISTRY_IMAGE/frontend:$CI_COMMIT_REF_NAME
   needs:

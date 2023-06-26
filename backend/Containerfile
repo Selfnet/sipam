@@ -6,11 +6,11 @@ RUN apk add git gcc python3-dev build-base libpq-dev
 WORKDIR /app
 RUN pip --no-cache-dir install --upgrade setuptools wheel
 
-ADD manage.py pyproject.toml poetry.lock /app
+COPY manage.py pyproject.toml poetry.lock /app
 ENV PYTHONPATH=${PYTHONPATH}:${PWD}
 
-ADD accounts accounts/
-ADD sipam sipam/
+COPY accounts accounts/
+COPY sipam sipam/
 
 RUN pip wheel . --wheel-dir /wheels
 
@@ -19,15 +19,15 @@ FROM python:3.11-alpine
 
 WORKDIR /usr/src/app
 
-RUN apk add git libpq-dev && rm -rf /var/lib/apt/lists/*
+RUN apk add git libpq-dev
 
 COPY --from=builder /wheels /wheels
 RUN pip --no-cache-dir install --find-links /wheels --no-index sipam
 
 # Copy application code (here, so the above can be cached and reused on code changes)
-ADD manage.py pyproject.toml poetry.lock .
-ADD accounts accounts/
-ADD sipam sipam/
+COPY manage.py pyproject.toml poetry.lock ./
+COPY accounts accounts/
+COPY sipam sipam/
 
 # Assemble staticfiles for drf ui
 RUN python manage.py collectstatic --noinput
