@@ -52,14 +52,3 @@ services:
     restart: unless-stopped
     depends_on:
       - postgres
-
-  pgadmin:
-    image: dpage/pgadmin4:7
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?err}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?err}
-    ports:
-      - ${PGADMIN_PORT:-5050}:80
-    restart: unless-stopped
-    depends_on:
-      - postgres
