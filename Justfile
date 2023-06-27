@@ -64,13 +64,13 @@ postgres_data_dir := "data/db"
 @manage *COMMAND:
     {{ run }} backend {{ COMMAND }}
 
-# run the linter locally
-@lint:
-    {{ run }} --entrypoint flake8 backend
-
 # expose frontend scripts
 @frontend *ARGS:
     {{ run }} --entrypoint "npm run" frontend {{ ARGS }}
+
+# expose backend scripts
+@backend *ARGS:
+    {{ run }} --entrypoint "poetry run poe" backend {{ ARGS }}
 
 # pass all arguments to docker-compose
 @compose *ARGS: _check_dotenv_file _postgres_data_dir

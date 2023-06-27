@@ -33,7 +33,36 @@ flake8 = "^3.8.4"
 pylint-django = "^2.3.0"
 rope = "^0.18.0"
 pytest-django = "^4.1.0"
-coverage = "^5.3.1"
+poethepoet = "^0.20.0"
+pytest-cov = "^4.1.0"
+
+[tool.poe.tasks]
+test = "pytest -s"
+coverage = "pytest --cov=sipam --cov-report=term-missing"
+lint = "flake8 ."
+check = "mypy ."
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "sipam.settings"
+python_files = "*_test.py"
+
+[tool.coverage.run]
+source = ["sipam"]
+branch = true
+
+[tool.coverage.report]
+omit = [
+  "*/tests/*",
+  "*/migrations/*",
+  "*/wsgi.py",
+  "*/urls.py",
+  "*/settings.py",
+  "manage.py",
+  "settings.py",
+  ".cache/*",
+]
+show_missing = true
+skip_covered = true
 
 [build-system]
 requires = ["poetry-core>=1.5.1"]
