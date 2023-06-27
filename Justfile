@@ -1,4 +1,4 @@
-set dotenv-load := true
+set dotenv-load
 
 export DOCKER_HOST := "unix://" + env_var("XDG_RUNTIME_DIR") + "/podman/podman.sock"
 

@@ -8,7 +8,7 @@
 
 ## Getting Started
 
-> This project utilizes **poetry**, **podman**, **docker-compose**, and **just** for managing scripts, containers, and dependencies.
+> This project utilizes **[poetry](https://python-poetry.org/)**, **[podman](https://podman.io/)**, **[docker-compose](https://github.com/docker/compose)**, and **[just](https://github.com/casey/just)** for managing scripts, containers, and dependencies.
 
 1. Install `podman`, `docker-compose`, and `just`
 2. Create a `.env` at least with the following content:
@@ -23,6 +23,7 @@
 3. Run `just up -d` (this will initially build the containers and start them)
 4. After the containers are up and running, run `just init-setup` (this will initialize the database and create a superuser)
     - You will be ask to create a superuser. This is the user you will use to login to the web interface of django.
+    - This step will also fill the database with some sample data. If you need more data **just ask**.
 
 To see what commands are available, run just `just`. This will list all available commands including a short description.
 
@@ -53,12 +54,14 @@ If you want a UI for the database you can use `pgadmin`. This gives you full acc
 
 This is only an example of how you can customize the compose file. This file also allows to override the default values of the `compose.dev.yml` file.
 
+## Other
+
+**IP Functions:**
+
+- Postgres: <https://www.postgresql.org/docs/11/functions-net.html>
+- Netfields: <https://github.com/jimfunk/django-postgresql-netfields>
+
 ## Deprecated
-
-### Manual Postgres
-
-- Install `postgresql` on your local System
-- Checkout the postgres user via and run the predefined commands
 
 ```bash
 sudo -iu postgres
@@ -80,12 +83,6 @@ GRANT ALL PRIVILEGES ON DATABASE sipam TO sipam;
 exit
 ```
 
-1. The Database `sipam` is reachable with the user `sipam` and the `POSTGRES_PASSWORD`.
-1. The Webinterface for the database management is reachable under `:::5050`.
-    - this is not the case in the manual setup.
-1. Please note if you want the database and the management listen on localhost addresses you must
-   edit the `docker-compose.yml` file.
-
 - This project uses [poetry](https://python-poetry.org/) for dependency management.
   - Setup is as easy as running `poetry install`
   - New packages can be added with `poetry add <package>`
@@ -93,77 +90,7 @@ exit
 - create a file `sipam/secret.py` add the variable `PASSWORD="<password>` and `HOST="<hostname>"`
 - If you have a local redis instance set the `REDIS_HOSTNAME` accordingly in `sipam/secret.py`. If you set it to `None` a dummy cache (aka. none) will be used.
 
-### Initialize the project
-
-```bash
-poetry shell
-python manage.py migrate  # this triggers all migrations for django
-python manage.py migrate sipam # this triggers all migrations for the database of sipam.
-python manage.py runserver # runs the server
-```
-
-### Backend Development
-
-#### Base developer Dataset
-
-Create some Base Datase for the database `sipam`. `sipam.pgsql` can be imported for this purpose.
-
-```bash
-sudo cp ./sipam.pgsql /var/lib/postgres/data/sipam.pgsql # Ensure this is the right directory on your system
-sudo -iu postgres
-cd data
-psql -U sipam sipam < sipam.pgsql
-
-# Flush the database
-./manage.py sqlflush | ./manage.py dbshell
-```
-
-Now the database should be filled with some sample data.
-
-#### Read Fixture Data into dev server
-
-This is an import of the existing nipap database.
-The fixture can be found in a well-known place (just ask)
-
-```bash
-# exclude auth and contentypes view.
-python manage.py loaddata -e auth -e contenttypes /tmp/nipap_import.json
-
-```
-
-#### Testing
-
-Make sure you have a user with createdb privileges (pytest will automatically setup a test database and delete it afterwards).
-
-Tests can be run with `pytest -s` (`-s` will not eat print statements).
-
-The actual testcases are in each app in the `tests` subfolder.
-Pytests autodetection will find new ones.
-
-When interested in getting coverage data run
-
-```bash
-coverage run --source './'  -m pytest
-coverage report -m
-```
-
-Happy testing.
-
-#### IP Functions
-
-- Postgres: <https://www.postgresql.org/docs/11/functions-net.html>
-- Netfields: <https://github.com/jimfunk/django-postgresql-netfields>
-
-### Frontend Development
-
-Install `@vue/cli`
-
-- Archlinux
-  - yay -S vue-cli
-- Others
-  - npm install --global @vue/cli
-
-#### Running
+### Running
 
 For local development `yarn serve` and the development Django server are sufficient.
 To make life easier it is recommended to generate a superuser account for login.

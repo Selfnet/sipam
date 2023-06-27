@@ -4,7 +4,7 @@ services:
   postgres:
     image: postgres:15
     environment:
-      POSTGRES_DB: ${DATABASE_NAME:?err}
+      POSTGRES_DB: ${DATABASE_NAME:-sipam}
       POSTGRES_USER: ${DATABASE_USER:?err}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?err}
       PGDATA: /data/db
@@ -19,7 +19,7 @@ services:
       VITE_OIDC_ENDPOINT: ${OIDC_ENDPOINT:-https://sap.selfnet.de/auth/realms/master}
       VITE_OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-sipam-dev}
       VITE_OIDC_AUTO_SIGNIN: true
-      VITE_API_URL: ${API_URL:-http://backend:8000/api/v1}
+      VITE_API_URL: ${API_URL:-http://backend:${BACKEND_PORT:-8000}/api/v1}
       VITE_APP_URL: ${APP_URL:-http://localhost:3000}
       VITE_DEBUG: true
     volumes:
@@ -27,7 +27,7 @@ services:
     working_dir: /app
     restart: unless-stopped
     ports:
-      - ${FRONTEND_PORT:-3000}:3000
+      - 3000:3000
     depends_on:
       - backend
 
@@ -42,13 +42,13 @@ services:
     working_dir: /app
     environment:
       SIPAM_DATABASE_HOST: ${DATABASE_HOST:-postgres}
-      SIPAM_DATABASE_NAME: ${DATABASE_NAME:?err}
+      SIPAM_DATABASE_NAME: ${DATABASE_NAME:-sipam}
       SIPAM_DATABASE_USER_NAME: ${DATABASE_USER:?err}
       SIPAM_DATABASE_USER_PASSWORD: ${DATABASE_PASSWORD:?err}
       SIPAM_OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-sipam-dev}
       SIPAM_OIDC_ENDPOINT: ${OIDC_ENDPOINT:-https://sap.selfnet.de/auth/realms/master}
     ports:
-      - 8000:8000
+      - ${BACKEND_PORT:-8000}:8000
     restart: unless-stopped
     depends_on:
       - postgres
