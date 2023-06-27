@@ -5,9 +5,7 @@ import I18n from 'vue-i18n';
 import '@/assets/styles/custom.scss';
 
 import { library } from '@fortawesome/fontawesome-svg-core';
-import {
-  faPlusCircle, faMinusCircle, faCog, faEye, faEyeSlash,
-} from '@fortawesome/free-solid-svg-icons';
+import { faPlusCircle, faMinusCircle, faCog, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import workerFactory from '@/registerServiceWorker';
 import routerFactory from '@/router';
@@ -25,7 +23,7 @@ Vue.component('fai', FontAwesomeIcon);
 // Bootstap
 Vue.use(BootstrapVue);
 Vue.use(I18n);
-Vue.config.productionTip = (process.env.NODE_ENV === 'development');
+Vue.config.productionTip = import.meta.env.DEV;
 
 const i18n = new I18n();
 Language.init(i18n);
@@ -47,5 +45,5 @@ new Vue({
   router,
   store,
   i18n,
-  render: h => h(App),
+  render: (h) => h(App),
 }).$mount('#app');

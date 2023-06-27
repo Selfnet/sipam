@@ -8,14 +8,12 @@ $theme-colors: (
   "secondary": #ffffff,
   "dark": #000000,
   "light": #ffffff,
-  "selfnet-background": #fefefe
+  "selfnet-background": #fefefe,
 );
 
-
-
 // Include Bootstrap and BootstrapVue SCSS files
-@import '~bootstrap/scss/bootstrap.scss';
-@import '~bootstrap-vue/src/index.scss';
+@import "bootstrap/scss/bootstrap.scss";
+@import "bootstrap-vue/src/index.scss";
 
 // General style overrides and custom classes
 body {
@@ -48,7 +46,7 @@ footer a:hover {
 a:hover,
 a:active,
 a:visited,
-a:focus  {
+a:focus {
   color: var(--selfnet-black);
 }
 

@@ -1,0 +1,25 @@
+{
+  "root": true,
+  "env": {
+    "node": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "parser": "@typescript-eslint/parser",
+    "project": "./tsconfig.json"
+  },
+  "extends": [
+    "plugin:vue/essential",
+    "eslint:recommended",
+    "@vue/eslint-config-typescript/recommended",
+    "@vue/airbnb",
+    "prettier"
+  ],
+  "settings": {
+    "import/resolver": {
+      "typescript": {},
+      "project": "./tsconfig.json",
+      "extensions": [".js", ".jsx", ".ts", ".tsx", ".vue"]
+    }
+  }
+}

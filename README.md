@@ -13,18 +13,45 @@
 1. Install `podman`, `docker-compose`, and `just`
 2. Create a `.env` at least with the following content:
 
-   ```.env
-   DATABASE_HOST=sipam
-   DATABASE_NAME=sipam
-   SIPAM_DATABASE_USER_NAME=sipam
-   SIPAM_DATABASE_USER_PASSWORD=<password>
-   PGADMIN_DEFAULT_EMAIL=sipam@selfnet.de
-   PGADMIN_DEFAULT_PASSWORD=<password>
-   PGADMIN_PORT=5050
-   ```
+    ```.env
+    DATABASE_HOST=sipam
+    DATABASE_NAME=sipam
+    SIPAM_DATABASE_USER_NAME=sipam
+    SIPAM_DATABASE_USER_PASSWORD=<password>
+    ```
 
 3. Run `just up -d` (this will initially build the containers and start them)
 4. After the containers are up and running, run `just init-setup` (this will initialize the database and create a superuser)
+    - You will be ask to create a superuser. This is the user you will use to login to the web interface of django.
+
+To see what commands are available, run just `just`. This will list all available commands including a short description.
+
+### Advanced
+
+> Note: Depending on your `container.dev-override.yml` you may need to define more environment variables in your `.env` file.
+
+If you want a UI for the database you can use `pgadmin`. This gives you full access to the database. Follow the steps below to get it running.
+
+1. If the container are already running, stop them with `just down`
+2. Add the following to your `container.dev-override.yml`:
+
+    ```yaml
+    services:
+        pgadmin:
+        image: dpage/pgadmin4:7
+        environment:
+            PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:?err}
+            PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:?err}
+        ports:
+            - ${PGADMIN_PORT:-5050}:80
+        restart: unless-stopped
+        depends_on:
+            - postgres
+    ```
+
+3. Run `just up -d` (this will initially build the containers and start them)
+
+This is only an example of how you can customize the compose file. This file also allows to override the default values of the `compose.dev.yml` file.
 
 ## Deprecated
 
@@ -55,7 +82,7 @@ exit
 
 1. The Database `sipam` is reachable with the user `sipam` and the `POSTGRES_PASSWORD`.
 1. The Webinterface for the database management is reachable under `:::5050`.
-   - this is not the case in the manual setup.
+    - this is not the case in the manual setup.
 1. Please note if you want the database and the management listen on localhost addresses you must
    edit the `docker-compose.yml` file.
 
@@ -124,8 +151,8 @@ Happy testing.
 
 #### IP Functions
 
-- Postgres: https://www.postgresql.org/docs/11/functions-net.html
-- Netfields: https://github.com/jimfunk/django-postgresql-netfields
+- Postgres: <https://www.postgresql.org/docs/11/functions-net.html>
+- Netfields: <https://github.com/jimfunk/django-postgresql-netfields>
 
 ### Frontend Development
 

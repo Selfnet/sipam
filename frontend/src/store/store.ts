@@ -12,11 +12,9 @@ import { RootState } from '@/types/store';
 import { SIPAMConfiguration } from '@/config';
 import { Api } from '@/types/api';
 
-
 export default function storeFactory(config: SIPAMConfiguration, SIPAM: Api) {
   Vue.use(Vuex);
 
-  const debug = process.env.NODE_ENV !== 'production';
   const listeners: VuexOidcStoreListeners = {
     userLoaded: (user: User) => SIPAM.setSecurityData(user.access_token),
     userUnloaded: () => SIPAM.setSecurityData(null),
@@ -48,7 +46,7 @@ export default function storeFactory(config: SIPAMConfiguration, SIPAM: Api) {
       AuthOIDC,
     },
     plugins: [vuexLocalStorage.plugin],
-    strict: debug,
+    strict: import.meta.env.DEV,
   };
   return new Vuex.Store<RootState>(storeOptions);
 }

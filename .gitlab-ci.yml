@@ -5,7 +5,7 @@ variables:
   POETRY_VERSION: "1.5.1"
   prometheus_multiproc_dir: /tmp
   KUBECONFORM_VERSION: "0.4.8"
-  nodejs_version: "16"
+  nodejs_version: "20"
   python_version: "3.11"
 
 stages:
@@ -95,7 +95,7 @@ backend_container:
     - export BUILDAH_FORMAT=docker
     - echo "$CI_REGISTRY_PASSWORD" | buildah login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
   script:
-    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -f Containerfile backend 
+    - buildah bud -t $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA -f Containerfile backend
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah tag $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/backend:latest; fi
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah push $CI_REGISTRY_IMAGE/backend:latest; fi

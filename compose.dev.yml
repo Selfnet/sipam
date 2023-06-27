@@ -13,27 +13,27 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: node:16-alpine
-    entrypoint: sh -c 'if [ ! -d "node_modules" ]; then yarn install; fi && yarn serve'
+    image: node:20-alpine
+    entrypoint: sh -c 'if [ ! -d "node_modules" ]; then yarn install; fi && yarn dev --host'
     environment:
-      OIDC_ENDPOINT: ${OIDC_ENDPOINT:-https://sap.selfnet.de/auth/realms/master}
-      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-sipam-dev}
-      OIDC_AUTO_SIGNIN: ${OIDC_AUTO_SIGNIN:-true}
-      API_URL: ${API_URL:-http://localhost:8000/api/v1}
-      APP_URL: ${APP_URL:-http://localhost:8181}
-      DEBUG: true
+      VITE_OIDC_ENDPOINT: ${OIDC_ENDPOINT:-https://sap.selfnet.de/auth/realms/master}
+      VITE_OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-sipam-dev}
+      VITE_OIDC_AUTO_SIGNIN: true
+      VITE_API_URL: ${API_URL:-http://backend:8000/api/v1}
+      VITE_APP_URL: ${APP_URL:-http://localhost:3000}
+      VITE_DEBUG: true
     volumes:
       - ./frontend:/app:z
     working_dir: /app
     restart: unless-stopped
     ports:
-      - 8181:8181
+      - ${FRONTEND_PORT:-3000}:3000
     depends_on:
       - backend
 
   backend:
     build:
-      # TODO: image does not provide hot reloading
+      # TODO: image does only provide semi-hot-reloading
       context: backend
       dockerfile: Containerfile.dev
     command: ["runserver", "0.0.0.0:8000"]
