@@ -27,6 +27,8 @@
 
 To see what commands are available, run just `just`. This will list all available commands including a short description.
 
+After starting the containers you should be able to access the vue frontend at <http://localhost:3000> and the django backend at <http://localhost:8000/api/v1/>.
+
 ### Advanced
 
 > Note: Depending on your `container.dev-override.yml` you may need to define more environment variables in your `.env` file.
