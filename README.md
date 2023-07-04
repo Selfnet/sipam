@@ -11,6 +11,7 @@
 > This project utilizes **[poetry](https://python-poetry.org/)**, **[podman](https://podman.io/)**, **[docker-compose](https://github.com/docker/compose)**, and **[just](https://github.com/casey/just)** for managing scripts, containers, and dependencies.
 
 1. Install `podman`, `docker-compose`, and `just`
+    - Arch user might have to install additional packages for rootless podman. See [here](https://wiki.archlinux.org/title/Podman) for more information.
 2. Create a `.env` at least with the following content:
 
     ```.env

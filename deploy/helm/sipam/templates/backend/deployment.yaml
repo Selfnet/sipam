@@ -138,7 +138,7 @@ spec:
             - name: SIPAM_DATABASE_HOST
               ## The RDBMS Hostname to use to connect to.
               ##
-              value: "{{ .Values.backend.config.db.host | default "postgres" }}"
+              value: "{{ .Values.backend.config.db.host | default "db" }}"
             - name: SIPAM_DATABASE_PORT
               ## The RDBMS Port to use to connect to.
               ##
