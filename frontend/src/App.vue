@@ -74,11 +74,10 @@
     </b-container>
   </div>
 </template>
-<script>
-import { mapGetters, mapActions, mapState } from 'vuex';
-import GenericAuth from '@/store/modules/GenericAuth';
+<script  lang="ts">
+import { mapGetters, mapActions } from 'vuex';
+import GenericAuth from '@/store/modules/GenericAuth.ts';
 import LanguagePicker from './components/LanguagePicker.vue';
-import sipam from './sipam';
 
 export default {
   components: {
@@ -123,7 +122,7 @@ export default {
       removeOidcUser: 'AuthOIDC/removeOidcUser',
       authenticateOidcPopup: 'AuthOIDC/authenticateOidcPopup',
     }),
-    userLoaded(user) {
+    userLoaded(e) {
       console.log('I am listening to the user loaded event in vuex-oidc', e.detail);
     },
     oidcError(e) {

@@ -36,7 +36,8 @@
     </b-row>
   </b-container>
 </template>
-<script>
+
+<script  lang="ts">
 import { mapGetters, mapActions } from 'vuex';
 import CIDR from '@/components/cidr/CIDR.vue';
 

@@ -7,13 +7,14 @@ import '@/assets/styles/custom.scss';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlusCircle, faMinusCircle, faCog, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import workerFactory from '@/registerServiceWorker';
-import routerFactory from '@/router';
-import Language from '@/utils/Language';
+import workerFactory from '@/registerServiceWorker.ts';
+import routerFactory from '@/router.ts';
+import Language from '@/utils/Language.ts';
 import App from '@/App.vue';
-import storeFactory from '@/store/store';
-import apiFactory from './sipam';
-import CONFIG from './config';
+import storeFactory from '@/store/store.ts';
+import apiFactory from '@/sipam.ts';
+import CONFIG from '@/config.ts';
+import Vuex from 'vuex';
 
 workerFactory(CONFIG);
 // Icons
@@ -28,6 +29,7 @@ Vue.config.productionTip = import.meta.env.DEV;
 const i18n = new I18n();
 Language.init(i18n);
 
+Vue.use(Vuex);
 const api = apiFactory(CONFIG);
 const store = storeFactory(CONFIG, api);
 const router = routerFactory(CONFIG, store);

@@ -4,6 +4,7 @@
       <img
         src="../assets/imgs/flags/en.svg"
         class="flag"
+        alt="English Flag"
       />
       {{$t("GENERAL.LANGUAGE.ENGLISH")}}
     </b-dropdown-item>
@@ -14,14 +15,15 @@
       <img
         src="../assets/imgs/flags/de.svg"
         class="flag"
+        alt="German Flag"
       />
       {{$t("GENERAL.LANGUAGE.GERMAN")}}
     </b-dropdown-item>
   </b-nav-item-dropdown>
 </template>
 
-<script>
-import Language from '@/utils/Language';
+<script  lang="ts">
+import Language from '@/utils/Language.ts';
 
 export default {
   name: 'LanguagePicker',

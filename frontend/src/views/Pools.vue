@@ -58,12 +58,13 @@
     <pool-form :edit="false" />
   </div>
 </template>
-<script>
+<script  lang="ts">
 import { mapActions, mapState } from 'vuex';
 import Pool from '@/components/pool/Pool.vue';
 import PoolForm from '@/components/pool/modals/PoolForm.vue';
 
 export default {
+  name: 'PoolView',
   components: {
     Pool,
     PoolForm,

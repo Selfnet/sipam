@@ -1,5 +1,6 @@
 {
   "GENERAL": {
+    "PERMISSION": "Permission",
     "PASSWORD": {
       "PLACEHOLDER": "Password",
       "DESCRIPTION": "Please insert your password."
@@ -25,6 +26,12 @@
     "PROFILE": {
       "LABEL": "Profile",
       "TOKENS": "API-Tokens"
+    },
+    "TOKEN": {
+      "CREATE": "Create Token",
+      "EDIT": "Edit Token",
+      "PERMISSION": "Write Permission",
+      "DESCRIPTION": "Description"
     },
     "LOGIN": {
       "LABEL": "Sign In",

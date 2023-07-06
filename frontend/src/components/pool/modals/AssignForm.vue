@@ -76,7 +76,7 @@
   </div>
 </template>
 
-<script>
+<script  lang="ts">
 import { mapActions } from 'vuex';
 import AssignCompletedModal from './AssignCompletedModal.vue';
 
@@ -123,7 +123,7 @@ export default {
           // TDOD: Show failed modal
         });
     },
-    onModalClose(bvModalEvt) {
+    onModalClose() {
       this.showAssignCompleteModal = false;
       this.$emit('assign-form-close');
     },

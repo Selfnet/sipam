@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { SearchState } from '@/types/store';
+import { SearchState } from '@/types/store.ts';
 
 export default {
   namespaced: true,
@@ -14,7 +14,7 @@ export default {
   },
 
   mutations: {
-    SET_QUERY(state: SearchState, payload: String) {
+    SET_QUERY(state: SearchState, payload: string) {
       Vue.set(state, 'query', payload);
     },
   },

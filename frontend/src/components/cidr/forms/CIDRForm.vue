@@ -104,7 +104,7 @@
   </b-modal>
 </template>
 
-<script>
+<script  lang="ts">
 import { mapActions, mapGetters } from 'vuex';
 
 export default {

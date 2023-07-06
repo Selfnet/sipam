@@ -63,12 +63,12 @@
   </b-container>
 </template>
 
-<script>
+<script  lang="ts">
 import { mapState, mapActions } from 'vuex';
 import CIDRForm from './forms/CIDRForm.vue';
 
 export default {
-  name: 'cidr',
+  name: 'CidrComponent',
   props: {
     cidrID: String,
   },

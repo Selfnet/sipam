@@ -69,7 +69,7 @@
     <cidr-form :edit="false" />
   </div>
 </template>
-<script>
+<script  lang="ts">
 import { mapGetters, mapActions } from 'vuex';
 import Tree from '@/components/cidr/Tree.vue';
 import CIDRForm from '@/components/cidr/forms/CIDRForm.vue';
@@ -99,7 +99,7 @@ export default {
       this.cidrs = this.getCIDRs();
     });
     // eslint-disable-next-line no-unused-vars
-    this.$store.subscribe((mutation, state) => {
+    this.$store.subscribe((mutation) => {
       if (mutation.type === 'Search/SET_QUERY' && mutation.payload.length > 0) {
         this.searchCIDR(mutation.payload).then(() => {
           this.cidrs = this.getCIDRs();

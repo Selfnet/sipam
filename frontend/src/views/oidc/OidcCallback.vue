@@ -3,9 +3,8 @@
   </div>
 </template>
 
-<script>
+<script  lang="ts">
 import { mapActions } from 'vuex';
-import SIPAM from '@/sipam';
 
 export default {
   name: 'OidcCallback',
@@ -17,7 +16,7 @@ export default {
       .then((redirectPath) => {
         this.$router.push(redirectPath);
       })
-      .catch((err) => {
+      .catch(() => {
         this.$router.push('/oidc-callback-error'); // Handle errors any way you want
       });
   },

@@ -1,4 +1,4 @@
-import { BasicToken, AuthState } from '@/types/store';
+import { BasicToken, AuthState } from '@/types/store.ts';
 
 const emptyToken = {
   access: undefined,

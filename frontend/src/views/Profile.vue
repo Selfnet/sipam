@@ -27,7 +27,7 @@
     </textarea>
 
     <p>
-      <button @click="reauthenticate">Reauthenticate silently</button>
+      <button type="button" @click="reauthenticate">Reauthenticate silently</button>
     </p>
 
   </div>
@@ -35,12 +35,12 @@
   <p v-else>Silent renew is in progress...</p>
 </template>
 
-<script>
+<script  lang="ts">
 import { mapGetters, mapActions } from 'vuex';
 import jsonMarkup from 'json-markup';
 
 export default {
-  name: 'Profile',
+  name: 'ProfileView',
   computed: {
     ...mapGetters('AuthOIDC', [
       'oidcIsAuthenticated',

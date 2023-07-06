@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { CIDRState, CIDRGet, RootState } from '@/types/store';
-import { CIDR } from '@/types/api';
+import { CIDRState, CIDRGet, RootState } from '@/types/store.ts';
+import { CIDR } from '@/types/api.ts';
 
 export default {
   namespaced: true,

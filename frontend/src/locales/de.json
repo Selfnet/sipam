@@ -1,5 +1,6 @@
 {
   "GENERAL": {
+    "PERMISSION": "Berechtigung",
     "PASSWORD": {
       "PLACEHOLDER": "Passwort",
       "DESCRIPTION": "Bitte Passwort eingeben."
@@ -25,6 +26,12 @@
     "PROFILE": {
       "LABEL": "Profil",
       "TOKENS": "API-Schlüssel"
+    },
+    "TOKEN": {
+      "CREATE": "API-Schlüssel erstellen",
+      "EDIT": "API-Schlüssel bearbeiten",
+      "PERMISSION": "Schreibrechte",
+      "DESCRIPTION": "Beschreibung"
     },
     "LOGIN": {
       "LABEL": "Einloggen",

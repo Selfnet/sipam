@@ -42,12 +42,12 @@
   </b-form>
 </template>
 
-<script>
+<script  lang="ts">
 import { mapGetters, mapActions } from 'vuex';
-import SIPAM from '@/sipam';
+import SIPAM from '@/sipam.ts';
 
 export default {
-  name: 'Login',
+  name: 'LoginView',
   data() {
     return {
       username: '',
@@ -83,6 +83,7 @@ export default {
   },
 };
 </script>
+
 <style lang="css" scoped>
 .form-signin {
   background-color: #efefef;

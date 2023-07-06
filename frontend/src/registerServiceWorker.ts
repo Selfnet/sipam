@@ -1,14 +1,14 @@
 /* eslint-disable no-console */
 
 import { register } from 'register-service-worker';
-import { SIPAMConfiguration } from './config';
+import { SIPAMConfiguration } from '@/config.ts';
 
 export default function workerFactory(config: SIPAMConfiguration) {
   if (import.meta.env.PROD) {
     register(`${config.baseURL}service-worker.js`, {
       ready() {
         console.log(
-          'App is being served from cache by a service worker.\n' + 'For more details, visit https://goo.gl/AFskqB',
+          'App is being served from cache by a service worker.\nFor more details, visit https://goo.gl/AFskqB',
         );
       },
       registered() {

@@ -1,7 +1,5 @@
-import {
-  Api, CIDR, Pool, Token,
-} from '@/types/api';
-import { SIPAMConfiguration } from '@/config';
+import { Api, CIDR, Pool, Token } from '@/types/api.ts';
+import { SIPAMConfiguration } from '@/config.ts';
 
 export interface RootState {
     version: string;
@@ -22,17 +20,17 @@ export interface TokenDict {
 }
 export interface SearchState {
     query: string;
-    search: Object;
+    search: object;
 }
 
 export interface BasicToken {
     access: string| undefined;
     refresh: string | undefined;
-    [key: string]: any;
+    [key: string]: unknown;
 }
 export interface AuthState {
     token: BasicToken;
-    username: String;
+    username: string;
     loggedIn: boolean;
 }
 

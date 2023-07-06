@@ -35,12 +35,14 @@
     <token-form :edit="false" />
   </div>
 </template>
-<script>
+
+<script  lang="ts">
 import { mapActions, mapState } from 'vuex';
 import Token from '@/components/token/Token.vue';
 import TokenForm from '@/components/token/modals/TokenForm.vue';
 
 export default {
+  name: 'TokenView',
   components: {
     Token,
     TokenForm,
@@ -70,7 +72,6 @@ export default {
 </script>
 
 <style scoped>
-
 .bottom-right {
   right: 0;
   bottom: 0;

@@ -92,14 +92,14 @@
   </b-row>
 </template>
 
-<script>
+<script  lang="ts">
 import { mapState, mapActions } from 'vuex';
 import CIDR from '@/components/cidr/CIDR.vue';
 import AssignForm from './modals/AssignForm.vue';
 import PoolForm from './modals/PoolForm.vue';
 
 export default {
-  name: 'pool',
+  name: 'PoolComponent',
   props: {
     poolID: String,
   },

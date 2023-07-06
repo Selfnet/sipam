@@ -1,8 +1,7 @@
 import Vue from 'vue';
-import SIPAM from '@/sipam';
-import { AuthState, BasicToken, RootState } from '@/types/store';
-import { TokenObtainPair, TokenRefresh, TokenVerify } from '@/types/api';
-import GenericAuth from './GenericAuth';
+import { AuthState, BasicToken, RootState } from '@/types/store.ts';
+import { TokenObtainPair, TokenRefresh, TokenVerify } from '@/types/api.ts';
+import GenericAuth from '@/store/modules/GenericAuth.ts';
 
 export default {
   namespaced: true,
@@ -25,11 +24,11 @@ export default {
         this.DELETE_TOKEN(state);
       }
     },
-    SAVE_USERNAME(state: AuthState, username: String) {
+    SAVE_USERNAME(state: AuthState, username: string) {
       Vue.set(state, 'username', username);
     },
     SAVE_TOKEN(state: AuthState, newToken: BasicToken) {
-      Vue.set(state, 'token', Object.assign({}, state.token, newToken));
+      Vue.set(state, 'token', { ...state.token, ...newToken});
       Vue.set(state, 'loggedIn', true);
     },
     DELETE_TOKEN(state: AuthState) {

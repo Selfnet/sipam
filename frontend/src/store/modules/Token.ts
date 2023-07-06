@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { TokenState, RootState } from '@/types/store';
-import { Token } from '@/types/api';
+import { TokenState, RootState } from '@/types/store.ts';
+import { Token } from '@/types/api.ts';
 
 export default {
   namespaced: true,

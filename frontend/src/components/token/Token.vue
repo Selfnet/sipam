@@ -5,7 +5,7 @@
     </b-col>
     <b-col>
       <span>
-        <strong>Permission:</strong>
+        <strong>{{$t("GENERAL.PERMISSION")}}:</strong>
         {{ permission }}
       </span>
     </b-col>
@@ -58,12 +58,12 @@
   </b-row>
 </template>
 
-<script>
+<script  lang="ts">
 import { mapState, mapActions } from 'vuex';
 import TokenForm from './modals/TokenForm.vue';
 
 export default {
-  name: 'token',
+  name: 'TokenComponent',
   props: {
     tokenKey: String,
   },

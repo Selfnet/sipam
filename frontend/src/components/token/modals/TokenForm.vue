@@ -13,7 +13,7 @@
     >
       <b-form-group
         id="input-group-1"
-        label="permission:"
+        :label="$t('GENERAL.TOKEN.PERMISSION')"
         label-for="input-permission"
         description
       >
@@ -27,7 +27,7 @@
 
       <b-form-group
         id="input-group-2"
-        label="Description"
+        :label="$t('GENERAL.TOKEN.DESCRIPTION')"
         label-for="input-description"
       >
         <b-form-textarea
@@ -66,7 +66,7 @@
   </b-modal>
 </template>
 
-<script>
+<script  lang="ts">
 import { mapActions } from 'vuex';
 
 export default {

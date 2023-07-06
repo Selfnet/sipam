@@ -8,11 +8,9 @@
   </div>
 </template>
 
-<script>
-// @ is an alias to /src
-
+<script  lang="ts">
 export default {
-  name: 'home',
+  name: 'HomeView',
   components: {},
 };
 </script>

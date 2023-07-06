@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import { PoolState, RootState } from '@/types/store';
-import { Assignment, Pool } from '@/types/api';
+import { PoolState, RootState } from '@/types/store.ts';
+import { Assignment, Pool } from '@/types/api.ts';
 
 export default {
   namespaced: true,

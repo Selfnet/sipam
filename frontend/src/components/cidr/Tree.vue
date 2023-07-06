@@ -15,12 +15,12 @@
   </b-row>
 </template>
 
-<script>
+<script lang="ts">
 import Vue from 'vue';
 import TreeItem from './TreeItem.vue';
 
 export default {
-  name: 'tree',
+  name: 'TreeComponent',
   props: {
     cidr: Object,
   },
@@ -40,5 +40,6 @@ export default {
   },
 };
 </script>
+
 <style lang="scss">
 </style>
