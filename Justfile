@@ -12,6 +12,11 @@ compose_cli := env_var_or_default('COMPOSE_CLI', 'docker-compose')
 compose := compose_cli + " -f compose.dev.yml " + " " + compose_override_flag
 run := compose + " run --rm"
 
+# alias for just targets
+alias f := frontend
+alias b := backend
+alias s := shell
+
 # print a list of available commands
 @help:
     just --list
