@@ -1,4 +1,4 @@
-FROM docker.io/library/node:20-alpine AS build_frontend
+FROM docker.io/library/node:20-bullseye AS build_frontend
 
 WORKDIR /usr/src/app/
 COPY ./ ./
