@@ -1,7 +1,7 @@
 set dotenv-load
 
 export DOCKER_HOST := "unix://" + env_var("XDG_RUNTIME_DIR") + "/podman/podman.sock"
-db_data_dir := env_var_or_default('DATA_DIR', './data') + "/db"
+db_data_dir := env_var_or_default('DATA_DIR', './data') + "/postgres"
 
 # use override file if it exists
 compose_override_file := "compose.dev-override.yml"
@@ -39,7 +39,7 @@ alias s := shell
 
 # open psql shell in the postgres container
 @psql:
-    just compose exec db sh -c 'psql $$POSTGRES_USER $$POSTGRES_DB'
+    just compose exec postgres sh -c 'psql $$POSTGRES_USER $$POSTGRES_DB'
 
 # create django database migrations
 @makemigrations:
@@ -83,10 +83,6 @@ alias s := shell
 # docker-compose down [*flags]
 @down *FLAGS:
     just compose down {{ FLAGS }}
-
-# docker-compose build [*flags]
-@build *FLAGS:
-    just compose build {{ FLAGS }}
 
 # docker-compose ps [*flags]
 @ps *FLAGS:

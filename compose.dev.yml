@@ -1,15 +1,15 @@
 version: "3"
 
 services:
-  db:
+  postgres:
     image: postgres:15
     environment:
       POSTGRES_DB: ${DATABASE_NAME:-sipam}
       POSTGRES_USER: ${DATABASE_USER:?err}
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD:?err}
-      PGDATA: /data/db
+      PGDATA: /data/postgres
     volumes:
-      - ${DATA_DIR:-./data}/db:/data/db:z
+      - ${DATA_DIR:-./data}/postgres:/data/postgres:z
     restart: unless-stopped
 
   frontend:
@@ -41,7 +41,7 @@ services:
       - ./backend:/app:z
     working_dir: /app
     environment:
-      SIPAM_DATABASE_HOST: ${DATABASE_HOST:-db}
+      SIPAM_DATABASE_HOST: ${DATABASE_HOST:-postgres}
       SIPAM_DATABASE_NAME: ${DATABASE_NAME:-sipam}
       SIPAM_DATABASE_USER_NAME: ${DATABASE_USER:?err}
       SIPAM_DATABASE_USER_PASSWORD: ${DATABASE_PASSWORD:?err}
@@ -51,4 +51,4 @@ services:
       - ${BACKEND_PORT:-8000}:8000
     restart: unless-stopped
     depends_on:
-      - db
+      - postgres

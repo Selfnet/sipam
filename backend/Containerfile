@@ -17,6 +17,11 @@ RUN pip wheel . --wheel-dir /wheels
 # Now build
 FROM python:3.11-alpine
 
+ARG UNAME=sipam
+ARG UID=1000
+ARG GID=1000
+RUN addgroup -g $GID $UNAME
+RUN adduser -D -u $UID -G $UNAME $UNAME -s /bin/bash
 WORKDIR /usr/src/app
 
 RUN apk add git libpq-dev
@@ -28,6 +33,10 @@ RUN pip --no-cache-dir install --find-links /wheels --no-index sipam
 COPY manage.py pyproject.toml poetry.lock ./
 COPY accounts accounts/
 COPY sipam sipam/
+
+RUN chown -R sipam:sipam /usr/src/app
+
+USER $UNAME
 
 # Assemble staticfiles for drf ui
 RUN python manage.py collectstatic --noinput

@@ -32,7 +32,7 @@ yarn_build:
     - yarn build
   artifacts:
     paths:
-      - dist
+      - frontend/dist
 
 helm_build:
   image: docker.io/dtzar/helm-kubectl:3.5.0
