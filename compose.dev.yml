@@ -13,7 +13,7 @@ services:
     restart: unless-stopped
 
   frontend:
-    image: node:20-alpine
+    image: node:18-alpine
     entrypoint: sh -c 'if [ ! -d "node_modules" ]; then yarn install; fi && yarn dev --host'
     environment:
       VITE_OIDC_ENDPOINT: ${OIDC_ENDPOINT:-https://sap.selfnet.de/auth/realms/master}
