@@ -7,7 +7,7 @@ from netfields import CidrAddressField, NetManager
 
 from sipam import utilities
 from sipam.utilities.enums import IP, FlagChoices
-from sipam.utilities.error import NotEnoughSpace
+from sipam.utilities.error import NotEnoughSpaceError
 from sipam.utilities.fields import FQDNField
 
 from .base import BaseModel
@@ -57,8 +57,7 @@ class CIDR(MPTTModel, BaseModel):
 
     @property
     def version(self) -> IP:
-        """Returns the version of this object
-        Either IPv4 our IPv6.
+        """Returns the version of this object Either IPv4 our IPv6.
 
         Returns
         -------
@@ -135,7 +134,7 @@ class CIDR(MPTTModel, BaseModel):
                 net {CidrAddressField} -- Net to start with
                 size {int} -- subnet size
 
-            Returns:
+            Returns
             -------
                 int -- The actual distance
             """
@@ -148,7 +147,7 @@ class CIDR(MPTTModel, BaseModel):
             return startAddress
 
         if size <= self.cidr.prefixlen:
-            raise NotEnoughSpace
+            raise NotEnoughSpaceError
 
         gapSize = 2 ** (self.cidr.max_prefixlen - size)
 
@@ -192,7 +191,7 @@ class CIDR(MPTTModel, BaseModel):
             smallestGap = {"address": ip_address(lastGapStart), "length": lastGap}
 
         if smallestGap is None:
-            raise NotEnoughSpace
+            raise NotEnoughSpaceError
 
         # This is ugly but apparently IPVXNetwork has no way to change the netmask
         newNet = str(smallestGap["address"]) + "/" + str(size)

@@ -7,7 +7,7 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 
 from sipam.serializers import AssignmentSerializer, PoolSerializer
 from sipam.utilities.enums import IP
-from sipam.utilities.error import NoSuchPrefix
+from sipam.utilities.error import NoSuchPrefixError
 from sipam.views import PoolViewSet
 
 
@@ -24,7 +24,7 @@ class PoolTest(TestCase):
         assert len(self.linkPool.getPrefixes()) == 1
 
     def test_assign_from_empty_pool(self):
-        with pytest.raises(NoSuchPrefix):
+        with pytest.raises(NoSuchPrefixError):
             assert self.emptyPool.assignFromPool(IP.v4, "Desc", "host")
 
     def test_assign_from_pool(self):

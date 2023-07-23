@@ -28,7 +28,7 @@ def oidc_backend(request, token: dict):
             user.username = token["preferred_username"]
             user.save()
         except KeyError:
-            raise AuthenticationFailed("You are not authorized to login.")
+            raise AuthenticationFailed("You are not authorized to login.") from KeyError
         return user
 
     def authenticate(request, token: dict):

@@ -13,6 +13,7 @@ import os
 import sys
 import warnings
 from datetime import timedelta
+from pathlib import Path
 
 import environ
 from django.core.cache import CacheKeyWarning
@@ -31,7 +32,7 @@ except environ.exceptions.MissingEnvValueError as e:
 warnings.simplefilter("ignore", CacheKeyWarning)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).parent.parent
 
 
 # Quick-start development settings - unsuitable for production
@@ -216,4 +217,4 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+STATIC_ROOT = BASE_DIR / "static"

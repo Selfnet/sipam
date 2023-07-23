@@ -3,7 +3,7 @@ from django.db import transaction
 from django.db.models import CharField, TextField
 
 from sipam.utilities.enums import IP, PoolType
-from sipam.utilities.error import NoSuchPrefix, NotEnoughSpace
+from sipam.utilities.error import NoSuchPrefixError, NotEnoughSpaceError
 
 from .base import BaseModel
 from .cidr import CIDR
@@ -28,7 +28,7 @@ class Pool(BaseModel):
         -----------------
             version {IP} -- 4 or 6 (default: {None})
 
-        Returns:
+        Returns
         -------
             List[CIDR] -- List of all prefixes attached to this pool
         """
@@ -52,11 +52,11 @@ class Pool(BaseModel):
             description {str} -- Description of the new net
             hostname {str} -- Hostname for this host
 
-        Raises:
+        Raises
         ------
             NoSuchPrefix: There are no subnets of this type assigned to this pool
 
-        Returns:
+        Returns
         -------
             Optional[CIDR] -- Newly assigned cidr objects or None, if all pools were full.
         """
@@ -64,7 +64,7 @@ class Pool(BaseModel):
 
         # Check first, if we have prefixes to assign from
         if len(prefixes) == 0:
-            raise NoSuchPrefix
+            raise NoSuchPrefixError
 
         assign = None
         # Try for each prefix in prefixes.
@@ -81,7 +81,7 @@ class Pool(BaseModel):
                     break
 
             # When there is not enough space an exception is thrown, we continue with the next subnet
-            except NotEnoughSpace:
+            except NotEnoughSpaceError:
                 continue
 
         return assign

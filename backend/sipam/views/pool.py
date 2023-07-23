@@ -8,7 +8,7 @@ from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
 from sipam.models import Pool
 from sipam.serializers import AssignmentSerializer, PoolSerializer
 from sipam.utilities.enums import IP
-from sipam.utilities.error import NoSuchPrefix
+from sipam.utilities.error import NoSuchPrefixError
 
 
 class PoolViewSet(ModelViewSet):
@@ -52,7 +52,7 @@ class PoolViewSet(ModelViewSet):
         for IPType in IP:
             try:
                 result[IPType] = pool.assignFromPool(IPType, description, hostname)
-            except NoSuchPrefix:
+            except NoSuchPrefixError:
                 noprefix[IPType] = True
 
         # Check whether the pool is full

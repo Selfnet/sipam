@@ -7,7 +7,7 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 
 from sipam.models import CIDR
 from sipam.utilities.enums import IP
-from sipam.utilities.error import NotEnoughSpace
+from sipam.utilities.error import NotEnoughSpaceError
 from sipam.views import CIDRViewSet
 
 
@@ -18,7 +18,7 @@ class CIDRTest(TestCase):
 
     def test_assign_too_large(self):
         # Should raise an exception
-        with pytest.raises(NotEnoughSpace):
+        with pytest.raises(NotEnoughSpaceError):
             assert self.cidr.assignNet(8, "Too large")
 
     def test_assign_first(self):
@@ -47,7 +47,7 @@ class CIDRTest(TestCase):
 
     def test_assign_until_full(self):
         # Should raise an exception
-        with pytest.raises(NotEnoughSpace):
+        with pytest.raises(NotEnoughSpaceError):
             for i in range(17):
                 assert self.cidrSmallEmpty.assignIP(f"Some IP No {i}", f"mail-{i}")
 

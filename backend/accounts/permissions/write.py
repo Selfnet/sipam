@@ -14,8 +14,7 @@ class WriteToken(BasePermission):
 
 
 class UserAccess(BasePermission):
-    """A class verifying whether a user is authenticated
-    and not using an auth token.
+    """A class verifying whether a user is authenticated and not using an auth token.
 
     Users have read and write access.
     """

@@ -14,13 +14,14 @@ class AuthenticatedReadOnly(BasePermission):
 
 
 class ReadOnlyToken(BasePermission):
-    """Verifying a token is being handled and this token allows only read access
-    So only read methods are allowed.
-    """
+    """Verifying a token is being handled and this token allows only read access so only read methods are allowed."""
 
     def has_permission(self, request, view):
-        if isinstance(request.auth, FlaggedToken):
-            if not request.auth.write and request.method in SAFE_METHODS:
-                return True
+        if (
+            isinstance(request.auth, FlaggedToken)
+            and not request.auth.write
+            and request.method in SAFE_METHODS
+        ):
+            return True
 
         return False

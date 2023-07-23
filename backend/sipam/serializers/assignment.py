@@ -4,7 +4,7 @@ from .cidr import CIDRSerializer
 
 
 class AssignmentSerializer(serializers.Serializer):
-    """This is a serializer for a custom form."""
+    """A serializer for a custom form."""
 
     hostname = serializers.CharField(required=False, write_only=True)
     useDefaultDomain = serializers.BooleanField(default=True, write_only=True, help_text="Use pools default domain")
