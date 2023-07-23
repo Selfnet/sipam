@@ -10,32 +10,28 @@ from ..serializers import LabelSerializer
 
 class LabelViewSet(ModelViewSet):
     """
-        API endpoint that allows Labels to be added and removed from a network.
+    API endpoint that allows Labels to be added and removed from a network.
     """
+
     serializer_class = LabelSerializer
     permission_classes = [ReadOnlyToken | WriteToken | UserAccess]
 
     def get_queryset(self):
-        return Label.objects.filter(cidr_id=self.kwargs.get('cidr_pk'))
+        return Label.objects.filter(cidr_id=self.kwargs.get("cidr_pk"))
 
     def list(self, request, cidr_pk=None):
         """
-            Get labels as key-value pair
+        Get labels as key-value pair
         """
         queryset = Label.objects.filter(cidr_id=cidr_pk)
-        labels = LabelSerializer(
-            queryset,
-            many=True,
-            read_only=True,
-            context={'request': request}).data
+        labels = LabelSerializer(queryset, many=True, read_only=True, context={"request": request}).data
 
-        labelDict = {label['name']: label['value'] for label in labels}
+        labelDict = {label["name"]: label["value"] for label in labels}
 
         return Response(labelDict)
 
     def update(self, request, pk=None, cidr_pk=None):
-        """Updates a given label
-        """
+        """Updates a given label"""
         try:
             label = Label.objects.get(name=pk, cidr=cidr_pk)
         except Label.DoesNotExist:
@@ -47,8 +43,7 @@ class LabelViewSet(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request, pk=None, cidr_pk=None):
-        """Delete this label
-        """
+        """Delete this label"""
         try:
             Label.objects.get(name=pk, cidr=cidr_pk).delete()
         except Label.DoesNotExist:

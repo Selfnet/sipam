@@ -5,15 +5,18 @@ import sipam.utilities.enums
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('sipam', '0001_initial'),
+        ("sipam", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pool',
-            name='poolType',
-            field=models.CharField(choices=[('Host Linknet', 'Host Linknet'), ('VM Linknet', 'VM Linknet'), ('Arbitrary', 'Arbitrary')], default=sipam.utilities.enums.PoolType['ARBITRARY'], max_length=12),
+            model_name="pool",
+            name="poolType",
+            field=models.CharField(
+                choices=[("Host Linknet", "Host Linknet"), ("VM Linknet", "VM Linknet"), ("Arbitrary", "Arbitrary")],
+                default=sipam.utilities.enums.PoolType["ARBITRARY"],
+                max_length=12,
+            ),
         ),
     ]

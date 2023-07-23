@@ -7,5 +7,5 @@ class TokenSerializer(ModelSerializer):
 
     class Meta:
         model = FlaggedToken
-        fields = ['key', 'user', 'write', 'description']
-        read_only_fields = ['key', 'user']
+        fields = ["key", "user", "write", "description"]
+        read_only_fields = ["key", "user"]

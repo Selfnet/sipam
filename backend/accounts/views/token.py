@@ -8,17 +8,16 @@ from ..models import FlaggedToken
 from ..serializers import TokenSerializer
 
 
-class TokenViewSet(mixins.ListModelMixin,
-                   mixins.UpdateModelMixin,
-                   mixins.DestroyModelMixin,
-                   mixins.CreateModelMixin,
-                   GenericViewSet):
+class TokenViewSet(
+    mixins.ListModelMixin, mixins.UpdateModelMixin, mixins.DestroyModelMixin, mixins.CreateModelMixin, GenericViewSet
+):
     """
-        API endpoint that allows tokens to be manged by a user or staffer.
+    API endpoint that allows tokens to be manged by a user or staffer.
     """
+
     serializer_class = TokenSerializer
     filter_backends = [SearchFilter]
-    search_fields = ['user__username', 'write']
+    search_fields = ["user__username", "write"]
 
     permission_classes = [UserAccess]
 
@@ -32,36 +31,29 @@ class TokenViewSet(mixins.ListModelMixin,
         return FlaggedToken.objects.filter(user_id=user.id)
 
     def list(self, request, *args, **kwargs):
-        """Get own tokens or all tokens if admin
-        """
+        """Get own tokens or all tokens if admin"""
 
         return Response(
-            self.serializer_class(
-                self.get_queryset(),
-                many=True,
-                read_only=True,
-                context={'request': request}).data)
+            self.serializer_class(self.get_queryset(), many=True, read_only=True, context={"request": request}).data
+        )
 
     def create(self, request):
-        """Create a new authtoken for this user.
-        """
+        """Create a new authtoken for this user."""
 
-        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer = self.serializer_class(data=request.data, context={"request": request})
 
         if not serializer.is_valid():
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
         data = serializer.validated_data
-        token = FlaggedToken.objects.create(user=request.user, write=data.get('write', False), description=data.get('description', ''))
+        token = FlaggedToken.objects.create(
+            user=request.user, write=data.get("write", False), description=data.get("description", "")
+        )
 
-        return Response(self.serializer_class(
-            token,
-            context={'request': request}).data,
-            status=status.HTTP_201_CREATED)
+        return Response(self.serializer_class(token, context={"request": request}).data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, pk=None):
-        """Delete a token
-        """
+        """Delete a token"""
         try:
             if request.user.is_staff:
                 FlaggedToken.objects.get(pk=pk).delete()
@@ -73,8 +65,7 @@ class TokenViewSet(mixins.ListModelMixin,
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def update(self, request, pk=None):
-        """Update Description oder Write Flag
-        """
+        """Update Description oder Write Flag"""
 
         try:
             if request.user.is_staff:
@@ -82,21 +73,18 @@ class TokenViewSet(mixins.ListModelMixin,
             else:
                 token = FlaggedToken.objects.get(pk=pk, user=request.user)
 
-            serializer = self.serializer_class(data=request.data, context={'request': request})
+            serializer = self.serializer_class(data=request.data, context={"request": request})
 
             if not serializer.is_valid():
                 return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
             data = serializer.validated_data
 
-            token.description = data['description']
-            token.write = data['write']
+            token.description = data["description"]
+            token.write = data["write"]
             token.save()
 
         except FlaggedToken.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
-        return Response(self.serializer_class(
-            token,
-            context={'request': request}).data,
-            status=status.HTTP_200_OK)
+        return Response(self.serializer_class(token, context={"request": request}).data, status=status.HTTP_200_OK)

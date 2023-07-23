@@ -6,8 +6,8 @@ from fqdn import FQDN
 
 @deconstructible
 class FQDNValidator:
-    message = _('Enter a valid FQDN.')
-    code = 'invalid'
+    message = _("Enter a valid FQDN.")
+    code = "invalid"
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -23,19 +23,21 @@ class FQDNField(CharField):
     description = _("FQDN")
 
     def __init__(self, verbose_name=None, name=None, **kwargs):
-        kwargs.setdefault('max_length', 200)
+        kwargs.setdefault("max_length", 200)
         super().__init__(verbose_name, name, **kwargs)
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
         if kwargs.get("max_length") == 200:
-            del kwargs['max_length']
+            del kwargs["max_length"]
         return name, path, args, kwargs
 
     def formfield(self, **kwargs):
         # As with CharField, this will cause URL validation to be performed
         # twice.
-        return super().formfield(**{
-            'form_class': forms.URLField,
-            **kwargs,
-        })
+        return super().formfield(
+            **{
+                "form_class": forms.URLField,
+                **kwargs,
+            }
+        )

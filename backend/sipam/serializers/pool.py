@@ -11,10 +11,10 @@ class PoolSerializer(ModelSerializer):
     class Meta:
         model = Pool
         fields = (
-            'id',
-            'label',
-            'description',
-            'poolType',
-            'defaultDomain',
-            'prefixes',
+            "id",
+            "label",
+            "description",
+            "poolType",
+            "defaultDomain",
+            "prefixes",
         )

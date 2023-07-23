@@ -14,6 +14,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from accounts.urls import router as auth_router
+
 # from django.contrib import admin
 from django.urls import include, path, re_path
 from drf_yasg import openapi
@@ -26,7 +27,7 @@ from sipam import views
 schema_view = get_schema_view(
     openapi.Info(
         title="SIPAM API",
-        default_version='v1',
+        default_version="v1",
         description="Selfnet e.V. IP Address Management API",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="support@selfnet.de"),
@@ -38,45 +39,31 @@ schema_view = get_schema_view(
 
 
 router = routers.DefaultRouter()
-router.register(r'cidr', views.CIDRViewSet, basename='cidr')
-router.register(r'pool', views.PoolViewSet)
+router.register(r"cidr", views.CIDRViewSet, basename="cidr")
+router.register(r"pool", views.PoolViewSet)
 
-cidr_router = routers.NestedSimpleRouter(router, r'cidr', lookup='cidr')
-cidr_router.register(r'labels', views.LabelViewSet, basename='cidr-labels')
+cidr_router = routers.NestedSimpleRouter(router, r"cidr", lookup="cidr")
+cidr_router.register(r"labels", views.LabelViewSet, basename="cidr-labels")
 
 
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     # API
-    path('api/v1/', include(router.urls)),
-    path('api/v1/', include(cidr_router.urls)),
-    path('api/v1/', include(auth_router.urls)),
+    path("api/v1/", include(router.urls)),
+    path("api/v1/", include(cidr_router.urls)),
+    path("api/v1/", include(auth_router.urls)),
     # Authentication
-    path('api/v1/jwt/', views.SIPAMTokenView.as_view(), name='token_obtain_pair'),
-    path('api/v1/jwt/refresh/', views.SIPAMRefreshView.as_view(), name='token_refresh'),
-    path('api/v1/jwt/verify/', views.SIPAMTokenVerifyView.as_view(), name='token_verify'),
-    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path("api/v1/jwt/", views.SIPAMTokenView.as_view(), name="token_obtain_pair"),
+    path("api/v1/jwt/refresh/", views.SIPAMRefreshView.as_view(), name="token_refresh"),
+    path("api/v1/jwt/verify/", views.SIPAMTokenVerifyView.as_view(), name="token_verify"),
+    path("auth/", include("rest_framework.urls", namespace="rest_framework")),
     # Only Documentation
-    re_path(
-        r'^swagger(?P<format>\.json|\.yaml)$',
-        schema_view.without_ui(cache_timeout=0),
-        name='schema-json'),
-    re_path(
-        r'^swagger/$',
-        schema_view.with_ui(
-            'swagger',
-            cache_timeout=0),
-        name='schema-swagger-ui'),
-    re_path(
-        r'^redoc/$',
-        schema_view.with_ui(
-            'redoc',
-            cache_timeout=0),
-        name='schema-redoc'),
+    re_path(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json"),
+    re_path(r"^swagger/$", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
+    re_path(r"^redoc/$", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
     # Prometheus Metrics Endpoints.
-    re_path('', include('django_prometheus.urls')),
-
+    re_path("", include("django_prometheus.urls")),
 ]
 
 # urlpatterns = [

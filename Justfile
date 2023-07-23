@@ -76,7 +76,7 @@ alias s := shell
 
 # expose backend scripts
 @backend *args:
-    {{ run }} --entrypoint "poetry run poe" backend {{ args }}
+    {{ run }} --entrypoint "poe" backend {{ args }}
 
 # docker-compose up [*flags]
 @up *flags: _check_dotenv_file _db_data_dir

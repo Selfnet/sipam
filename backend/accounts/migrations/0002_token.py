@@ -6,34 +6,43 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('accounts', '0001_initial'),
+        ("accounts", "0001_initial"),
     ]
 
     operations = [
         migrations.RemoveField(
-            model_name='flaggedtoken',
-            name='id',
+            model_name="flaggedtoken",
+            name="id",
         ),
         migrations.AlterField(
-            model_name='flaggedtoken',
-            name='key',
-            field=models.CharField(max_length=40, primary_key=True, serialize=False, verbose_name='Key'),
+            model_name="flaggedtoken",
+            name="key",
+            field=models.CharField(max_length=40, primary_key=True, serialize=False, verbose_name="Key"),
         ),
         migrations.AlterField(
-            model_name='flaggedtoken',
-            name='user',
-            field=models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='auth_token', to=settings.AUTH_USER_MODEL, verbose_name='User'),
+            model_name="flaggedtoken",
+            name="user",
+            field=models.OneToOneField(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="auth_token",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="User",
+            ),
         ),
         migrations.AlterField(
-            model_name='user',
-            name='first_name',
-            field=models.CharField(blank=True, max_length=150, verbose_name='first name'),
+            model_name="user",
+            name="first_name",
+            field=models.CharField(blank=True, max_length=150, verbose_name="first name"),
         ),
         migrations.AlterField(
-            model_name='flaggedtoken',
-            name='user',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='auth_token', to=settings.AUTH_USER_MODEL, verbose_name='User'),
+            model_name="flaggedtoken",
+            name="user",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="auth_token",
+                to=settings.AUTH_USER_MODEL,
+                verbose_name="User",
+            ),
         ),
     ]

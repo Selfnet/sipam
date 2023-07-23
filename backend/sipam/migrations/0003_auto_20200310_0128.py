@@ -4,20 +4,19 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('sipam', '0002_pool_pooltype'),
+        ("sipam", "0002_pool_pooltype"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='pool',
-            name='defaultDomain',
+            model_name="pool",
+            name="defaultDomain",
             field=models.CharField(blank=True, max_length=100),
         ),
         migrations.AlterField(
-            model_name='pool',
-            name='description',
+            model_name="pool",
+            name="description",
             field=models.TextField(blank=True),
         ),
     ]

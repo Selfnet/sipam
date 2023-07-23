@@ -4,8 +4,8 @@ from accounts.models import FlaggedToken, User
 
 
 class WriteToken(BasePermission):
-    """A class verifying we actually handle a Token and this token has a write flag
-    """
+    """A class verifying we actually handle a Token and this token has a write flag"""
+
     def has_permission(self, request, view):
         if isinstance(request.auth, FlaggedToken):
             return request.auth.write
@@ -19,6 +19,7 @@ class UserAccess(BasePermission):
 
     Users have read and write access.
     """
+
     def has_permission(self, request, view):
         if not isinstance(request.auth, FlaggedToken) and isinstance(request.user, User):
             return True
