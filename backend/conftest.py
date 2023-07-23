@@ -13,7 +13,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
 
 @pytest.fixture(scope="class")
-def testData(request) -> CIDR:
+def testData(request) -> None:
     """Attach test data to be easily accessible from tests Test data are imported in the previous step."""
     # Pin CIDRs to request objects
     request.cls.cidr = CIDR.objects.get(cidr="10.3.141.0/24")
@@ -31,7 +31,7 @@ def testData(request) -> CIDR:
 
 
 @pytest.fixture(scope="class")
-def testUser(request):
+def testUser(request) -> None:
     username = "test"
     password = "very_secure"
 
@@ -43,7 +43,7 @@ def testUser(request):
 
 
 @pytest.fixture(scope="class")
-def testAdmin(request):
+def testAdmin(request) -> None:
     username = "Admin"
     password = "very_very_secure"
 
@@ -59,7 +59,7 @@ def testAdmin(request):
 
 
 @pytest.fixture(scope="class")
-def testToken(request, testAdmin, testUser):
+def testToken(request, testAdmin, testUser) -> None:
     admin = User.objects.get(username="Admin")
     user = User.objects.get(username="test")
 

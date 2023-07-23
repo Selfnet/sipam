@@ -66,5 +66,3 @@ urlpatterns = [
     # Prometheus Metrics Endpoints.
     re_path("", include("django_prometheus.urls")),
 ]
-
-
