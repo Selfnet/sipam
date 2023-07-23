@@ -4,6 +4,7 @@ version = "0.1.6"
 description = "Selfnets very own IPAM"
 authors = ["Thore <thore@selfnet.de>", "Marcel <marcelf@selfnet.de>"]
 license = "Apache-2.0"
+packages = [{ include = "sipam" }, { include = "accounts" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
@@ -33,6 +34,14 @@ pytest-django = "^4.5.2"
 pytest-cov = "^4.1.0"
 poethepoet = "^0.20.0"
 
+[tool.poetry.group.types]
+optional = true
+
+[tool.poetry.group.types.dependencies]
+django-stubs = {extras = ["compatible-mypy"], version = "^4.2.3"}
+djangorestframework-stubs = {extras = ["compatible-mypy"], version = "^3.14.2"}
+drf-yasg-stubs = "^0.1.4"
+
 [tool.poe.tasks]
 test = "pytest -s"
 coverage = "pytest --cov=sipam --cov-report=term-missing"
@@ -42,18 +51,18 @@ check = "mypy ."
 
 [tool.ruff]
 ignore = [
-  "E501", # ignore line-length which is handled by black
-  "D100", # ignore missing docstring in public module
-  "D101", # ignore missing docstring in public class
-  "D102", # ignore missing docstring in public method
-  "D103", # ignore missing docstring in public function
-  "D104", # ignore missing docstring in public package
-  "D105", # ignore missing docstring in magic method
-  "D106", # ignore missing docstring in public nested class
-  "D107", # ignore missing docstring in __init__
-  "D401", # ignore first line should be in imperative mood
+  "E501",    # ignore line-length which is handled by black
+  "D100",    # ignore missing docstring in public module
+  "D101",    # ignore missing docstring in public class
+  "D102",    # ignore missing docstring in public method
+  "D103",    # ignore missing docstring in public function
+  "D104",    # ignore missing docstring in public package
+  "D105",    # ignore missing docstring in magic method
+  "D106",    # ignore missing docstring in public nested class
+  "D107",    # ignore missing docstring in __init__
+  "D401",    # ignore first line should be in imperative mood
   "PLR2004", # ignore magic numbers
-  "DJ001", # ignore avoide `null=True` on a string-based field
+  "DJ001",   # ignore avoide `null=True` on a string-based field
 ]
 extend-select = [
   "B",   # flake8-bugbear
@@ -86,6 +95,14 @@ convention = "numpy"
 [tool.black]
 line-length = 120
 target-version = ['py311']
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "sipam.settings"
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "sipam.settings"
