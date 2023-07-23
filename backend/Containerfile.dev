@@ -1,33 +1,51 @@
-FROM python:3.11-alpine
+# This file is based on https://stackoverflow.com/questions/72465421/how-to-use-poetry-with-docker
+FROM python:3.11-alpine as base
 
-ENV DJANGO_ENV=${DJANGO_ENV} \
-  # Python
-  PYTHONFAULTHANDLER=1 \
-  PYTHONUNBUFFERED=1 \
-  PYTHONDONTWRITEBYTECODE=1 \
-  # Pip
-  PIP_NO_CACHE_DIR=1 \
-  PIP_DISABLE_PIP_VERSION_CHECK=1 \
-  PIP_DEFAULT_TIMEOUT=100 \
-  PIP_ROOT_USER_ACTION=ignore \
-  # Poetry
-  POETRY_VERSION=1.5.1 \
-  POETRY_NO_INTERACTION=1 \
-  POETRY_VIRTUALENVS_CREATE=false \
-  POETRY_CACHE_DIR='/var/cache/pypoetry' \
-  POETRY_HOME='/usr/local'
+ENV DJANGO_ENV=${DJANGO_ENV}
+
+# Poetry
+ENV POETRY_VERSION=1.5.1
+ENV POETRY_CACHE_DIR="/var/cache/pypoetry"
+ENV POETRY_VENV="/opt/poetry-venv"
+
+# Tell Poetry where to place its cache and virtual environment
+ENV POETRY_CACHE_DIR=/opt/.cache
 
 # System deps
 RUN apk add gcc python3-dev libpq-dev libffi-dev musl-dev postgresql-dev libxml2-dev libxslt-dev linux-headers bash
 
-# Create app directory and copy poetry files
-WORKDIR /app
-COPY poetry.lock pyproject.toml /app/
-RUN pip install "poetry==$POETRY_VERSION" \
-    && poetry install $(if [ "$DJANGO_ENV" = 'production' ]; then echo '--only main'; fi) --no-interaction --no-ansi --no-root --no-directory
+# Create stage for Poetry installation
+FROM base as poetry
 
-# Project initialization
-COPY sipam accounts /app/
-RUN poetry install $(if [ "$DJANGO_ENV" = 'production' ]; then echo '--only main'; fi) --no-interaction --no-ansi
+# Creating a virtual environment just for poetry and install it with pip
+RUN python3 -m venv $POETRY_VENV \
+    && $POETRY_VENV/bin/pip install -U pip setuptools \
+    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION}
+
+# Create a new stage from the base python image
+FROM base as sipam
+
+# Copy Poetry to app image
+COPY --from=poetry ${POETRY_VENV} ${POETRY_VENV}
+
+# Add Poetry to PATH
+ENV PATH="${PATH}:${POETRY_VENV}/bin"
+
+WORKDIR /app
+
+COPY poetry.lock pyproject.toml manage.py /app/
+
+# [OPTIONAL] Validate the project is properly configured
+RUN poetry check
+
+# Install Dependencies without local packages
+RUN poetry install $(if [ "$DJANGO_ENV" = "production" ]; then echo "--only main"; else echo "--with types"; fi) --no-interaction --no-ansi --no-root --no-directory
+
+# Copy Application
+COPY sipam /app/sipam
+COPY accounts /app/accounts
+
+# Install local app as a package
+RUN poetry install $(if [ "$DJANGO_ENV" = "production" ]; then echo "--only main"; else echo "--with types"; fi) --no-interaction --no-ansi
 
 ENTRYPOINT ["poetry", "run", "python", "manage.py"]

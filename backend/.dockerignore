@@ -1,1 +1,10 @@
 .venv/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+**/__pycache__/
+**/fixtures/
+**/tests/
+Containerfile
+Containerfile.dev
+.coverage
