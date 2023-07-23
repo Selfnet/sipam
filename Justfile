@@ -39,6 +39,10 @@ alias s := shell
 @shell service:
     {{ compose }} exec {{ service }} sh -c "{{ shell_finder }}"
 
+# spawn a new service to debug entrypoint problems
+@spawn service:
+    {{ run }} -it --entrypoint "sh -c '{{ shell_finder }}'" {{ service }}
+
 # open psql shell in the postgres container
 @psql:
     just compose exec postgres sh -c 'psql $$POSTGRES_USER $$POSTGRES_DB'
@@ -76,7 +80,7 @@ alias s := shell
 
 # expose backend scripts
 @backend *args:
-    {{ run }} --entrypoint "poe" backend {{ args }}
+    {{ run }} --entrypoint "poetry run poe" backend {{ args }}
 
 # docker-compose up [*flags]
 @up *flags: _check_dotenv_file _db_data_dir
