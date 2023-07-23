@@ -66,7 +66,7 @@ helm_lint:
     - helm lint deploy/helm/sipam
     - helm template sipam deploy/helm/sipam | /kubeconform -ignore-missing-schemas -summary
 
-flake8:
+ruff:
   image: python:${PYTHON_VERSION}-bullseye
   stage: test
   before_script:
@@ -74,7 +74,7 @@ flake8:
     - pip install "poetry==${POETRY_VERSION}"
     - poetry install --only dev
   script:
-    - poetry run flake8 .
+    - poetry run poe lint
 
 pytest:
   image: python:${PYTHON_VERSION}-bullseye
@@ -101,7 +101,7 @@ backend_container:
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah tag $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA $CI_REGISTRY_IMAGE/backend:latest; fi
     - if [ "$CI_COMMIT_REF_NAME" == "main" ]; then buildah push $CI_REGISTRY_IMAGE/backend:latest; fi
   needs:
-    - flake8
+    - ruff
     - pytest
   only:
     - branches
@@ -134,7 +134,7 @@ backend_container_release:
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_SHORT_SHA
     - buildah push $CI_REGISTRY_IMAGE/backend:$CI_COMMIT_REF_NAME
   needs:
-    - flake8
+    - ruff
     - pytest
   only:
     - tags

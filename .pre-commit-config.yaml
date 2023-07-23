@@ -15,18 +15,16 @@ repos:
       - id: check-json
         exclude: frontend/(.eslintrc|tsconfig).json
 
-  # TODO: Replace with ruff
   # - repo: https://github.com/psf/black
   #   rev: 22.8.0
   #   hooks:
   #     - id: black
   #       name: Format python (Black)
 
-  - repo: https://github.com/PyCQA/flake8
-    rev: 5.0.4
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.0.280
     hooks:
-      - id: flake8
-        name: Check code style (Flake8)
+      - id: ruff
         files: backend/
 
   # TODO: Fix typing issues or configure mypy to ignore them

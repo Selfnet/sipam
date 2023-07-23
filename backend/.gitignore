@@ -4,3 +4,4 @@
 __pycache__/
 sipam/fixtures/nipap_mptt.json*
 .mypy_cache/
+.ruff_cache/

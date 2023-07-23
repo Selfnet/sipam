@@ -12,6 +12,8 @@ compose_cli := env_var_or_default('COMPOSE_CLI', 'docker-compose')
 compose := compose_cli + " -f compose.dev.yml " + " " + compose_override_flag
 run := compose + " run --rm"
 
+shell_finder := 'for s in bash dash ash sh; do if command -v \$s; then \$s; break; fi; done'
+
 # alias for just targets
 alias f := frontend
 alias b := backend
@@ -30,12 +32,12 @@ alias s := shell
     if [ ! -f ".env" ]; then echo "Config file '.env' does not exist"; exit 1; fi
 
 # pass all arguments to docker-compose
-@compose *ARGS: _check_dotenv_file _db_data_dir
-    {{ compose }} {{ ARGS }}
+@compose *args:
+    {{ compose }} {{ args }}
 
 # open shell in a running container
-@shell CONTAINER:
-    just compose exec {{ CONTAINER }} sh -c 'for s in bash dash ash sh; do if command -v $s; then $s; break; fi; done'
+@shell service:
+    {{ compose }} exec {{ service }} sh -c "{{ shell_finder }}"
 
 # open psql shell in the postgres container
 @psql:
@@ -61,29 +63,29 @@ alias s := shell
 @init-setup: migrate loaddata createsuperuser
 
 # show the live logs (of a specified container)
-@logs CONTAINER="":
-    just compose logs -f {{ CONTAINER }}
+@logs service="":
+    just compose logs -f {{ service }}
 
 # run a django manage.py command
-@manage *COMMAND:
-    {{ run }} backend {{ COMMAND }}
+@manage *command:
+    {{ run }} backend {{ command }}
 
 # expose frontend scripts
-@frontend *ARGS:
-    {{ run }} --entrypoint "npm run" frontend {{ ARGS }}
+@frontend *args:
+    {{ run }} --entrypoint "npm run" frontend {{ args }}
 
 # expose backend scripts
-@backend *ARGS:
-    {{ run }} --entrypoint "poetry run poe" backend {{ ARGS }}
+@backend *args:
+    {{ run }} --entrypoint "poetry run poe" backend {{ args }}
 
 # docker-compose up [*flags]
-@up *FLAGS:
-    just compose up {{ FLAGS }}
+@up *flags: _check_dotenv_file _db_data_dir
+    just compose up {{ flags }}
 
 # docker-compose down [*flags]
-@down *FLAGS:
-    just compose down {{ FLAGS }}
+@down *flags:
+    just compose down {{ flags }}
 
 # docker-compose ps [*flags]
-@ps *FLAGS:
-    just compose ps {{ FLAGS }}
+@ps *flags:
+    just compose ps {{ flags }}
