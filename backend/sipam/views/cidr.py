@@ -1,6 +1,5 @@
 from ipaddress import ip_network
 
-from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
 from django.shortcuts import get_object_or_404
 from netfields.functions import Masklen
 from rest_framework import status
@@ -9,14 +8,13 @@ from rest_framework.filters import SearchFilter
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from ..models import CIDR
-from ..serializers import CIDRSerializer, RecursiveCIDRSerializer
+from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
+from sipam.models import CIDR
+from sipam.serializers import CIDRSerializer, RecursiveCIDRSerializer
 
 
 class CIDRViewSet(ModelViewSet):
-    """
-    API endpoint that allows Prefixes to be viewed or edited.
-    """
+    """API endpoint that allows Prefixes to be viewed or edited."""
 
     queryset = CIDR.objects.all()
     serializer_class = CIDRSerializer
@@ -26,9 +24,7 @@ class CIDRViewSet(ModelViewSet):
     permission_classes = [ReadOnlyToken | WriteToken | UserAccess]
 
     def list(self, request):
-        """
-        Get the Root Prefixes with their children
-        """
+        """Get the Root Prefixes with their children."""
         # If a search term is available apply it to the queryset
         if self.request.query_params.get("search", False):
             queryset = self.filter_queryset(self.queryset)
@@ -54,8 +50,7 @@ class CIDRViewSet(ModelViewSet):
         return Response(self.serializer_class(cidr, context={"request": request}).data)
 
     def create(self, request, *args, **kwargs):
-        """Create a new cidr object by automatically detecting parents"""
-
+        """Create a new cidr object by automatically detecting parents."""
         serializer = self.serializer_class(data=request.data, context={"request": request})
 
         if not serializer.is_valid():
@@ -75,27 +70,21 @@ class CIDRViewSet(ModelViewSet):
 
     @action(detail=True)
     def supercidr(self, request, pk=None):
-        """
-        API endpoint that allows direct super cidr (network) to be viewed.
-        """
+        """API endpoint that allows direct super cidr (network) to be viewed."""
         return Response(
             CIDRSerializer(self.get_object().supercidr, many=False, read_only=True, context={"request": request}).data
         )
 
     @action(detail=True)
     def subcidr(self, request, pk=None):
-        """
-        API endpoint that allows direct subordinary cidr (networks) to be viewed.
-        """
+        """API endpoint that allows direct subordinary cidr (networks) to be viewed."""
         return Response(
             CIDRSerializer(self.get_object().subcidr, many=True, read_only=True, context={"request": request}).data
         )
 
     @action(detail=True)
     def ips(self, request, pk=None):
-        """
-        API Endpoint that allows direct children ips to be viewed.
-        """
+        """API Endpoint that allows direct children ips to be viewed."""
         return Response(
             CIDRSerializer(self.get_object().ips, many=True, read_only=True, context={"request": request}).data
         )

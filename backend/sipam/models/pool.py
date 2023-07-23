@@ -1,10 +1,10 @@
-from typing import List, Optional
 
 from django.db import transaction
 from django.db.models import CharField, TextField
 
-from ..utilities.enums import IP, PoolType
-from ..utilities.error import NoSuchPrefix, NotEnoughSpace
+from sipam.utilities.enums import IP, PoolType
+from sipam.utilities.error import NoSuchPrefix, NotEnoughSpace
+
 from .base import BaseModel
 from .cidr import CIDR
 
@@ -21,13 +21,15 @@ class Pool(BaseModel):
     )
     defaultDomain = CharField(max_length=100, blank=True)
 
-    def getPrefixes(self, version: IP = None) -> List[CIDR]:
-        """Get prefixes for this pool selectable by IPv4 or IPv6
+    def getPrefixes(self, version: IP = None) -> list[CIDR]:
+        """Get prefixes for this pool selectable by IPv4 or IPv6.
 
         Keyword Arguments:
+        -----------------
             version {IP} -- 4 or 6 (default: {None})
 
         Returns:
+        -------
             List[CIDR] -- List of all prefixes attached to this pool
         """
         if version is None:
@@ -36,23 +38,26 @@ class Pool(BaseModel):
         prefixes = self.prefixes.all()
 
         if len(prefixes) == 0:
-            return list()
+            return []
 
         return [prefix for prefix in prefixes if prefix.version == version]
 
     @transaction.atomic
-    def assignFromPool(self, version: IP, description: str, hostname: str) -> Optional[CIDR]:
-        """Assign a Network or IP from this pool
+    def assignFromPool(self, version: IP, description: str, hostname: str) -> CIDR | None:
+        """Assign a Network or IP from this pool.
 
         Arguments:
+        ---------
             version {IP} -- v4 or v6
             description {str} -- Description of the new net
             hostname {str} -- Hostname for this host
 
         Raises:
+        ------
             NoSuchPrefix: There are no subnets of this type assigned to this pool
 
         Returns:
+        -------
             Optional[CIDR] -- Newly assigned cidr objects or None, if all pools were full.
         """
         prefixes = self.getPrefixes(version)

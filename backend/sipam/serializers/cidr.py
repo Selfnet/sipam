@@ -1,5 +1,4 @@
 from ipaddress import IPv4Network, IPv6Network
-from typing import Dict, List
 
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework.serializers import (
@@ -10,9 +9,9 @@ from rest_framework.serializers import (
     SerializerMethodField,
     ValidationError,
 )
-from sipam.models import CIDR
 
-from ..utilities import subcidr
+from sipam.models import CIDR
+from sipam.utilities import subcidr
 
 
 class StringListField(ListField):
@@ -45,23 +44,21 @@ class CIDRSerializer(ModelSerializer):
         read_only_fields = ("parent", "children", "id")
 
     @swagger_serializer_method(serializer_or_field=StringListField)
-    def get_children(self, obj) -> List[str]:
+    def get_children(self, obj) -> list[str]:
         return obj.getChildIDs()
 
     @swagger_serializer_method(serializer_or_field=DocumentField)
-    def get_labels(self, obj) -> Dict[str, str]:
+    def get_labels(self, obj) -> dict[str, str]:
         return obj.labelDict
 
 
 class RecursiveCIDRSerializer(CIDRSerializer):
-    def get_children(self, obj) -> List["CIDR"]:
+    def get_children(self, obj) -> list["CIDR"]:
         return RecursiveCIDRSerializer(obj.subcidr, many=True, read_only=True, context=self.context).data
 
     def validate(self, data):
-        """
-        Check that the flag is correctly set for /32 and /128
-        """
-        if not isinstance(data.get("cidr"), (IPv4Network, IPv6Network)):
+        """Check that the flag is correctly set for /32 and /128."""
+        if not isinstance(data.get("cidr"), IPv4Network | IPv6Network):
             raise ValidationError("cidr should not be type {}".format(type(data["cidr"])))
 
         if not subcidr(data["cidr"]):

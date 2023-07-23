@@ -1,9 +1,10 @@
 import pytest
-from accounts.models import FlaggedToken
-from accounts.views import TokenViewSet
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory, force_authenticate
+
+from accounts.models import FlaggedToken
+from accounts.views import TokenViewSet
 
 
 @pytest.mark.usefixtures("testToken", "testAdmin", "testUser")

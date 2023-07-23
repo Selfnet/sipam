@@ -1,10 +1,8 @@
-from django.db.models import Model, DateTimeField
+from django.db.models import DateTimeField, Model
 
 
 class BaseModel(Model):
-    """Base Model to use for all other models
-    provides timestamps
-    """
+    """Base Model to use for all other models provides timestamps."""
 
     created = DateTimeField(auto_now_add=True, editable=False)
     edited = DateTimeField(auto_now=True)

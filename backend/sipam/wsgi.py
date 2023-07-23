@@ -1,5 +1,4 @@
-"""
-WSGI config for sipam project.
+"""WSGI config for sipam project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

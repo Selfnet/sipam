@@ -1,10 +1,11 @@
-from rest_framework.permissions import BasePermission, SAFE_METHODS
 from django.contrib.auth.models import AnonymousUser
+from rest_framework.permissions import SAFE_METHODS, BasePermission
+
 from accounts.models import FlaggedToken
 
 
 class AuthenticatedReadOnly(BasePermission):
-    """Enforces authentication for ReadOnly access"""
+    """Enforces authentication for ReadOnly access."""
 
     def has_permission(self, request, view):
         if isinstance(request.user, AnonymousUser):

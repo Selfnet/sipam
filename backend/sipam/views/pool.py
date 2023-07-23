@@ -1,20 +1,18 @@
-from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
 from django.db import transaction
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
-from ..models import Pool
-from ..serializers import AssignmentSerializer, PoolSerializer
-from ..utilities.enums import IP
-from ..utilities.error import NoSuchPrefix
+from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
+from sipam.models import Pool
+from sipam.serializers import AssignmentSerializer, PoolSerializer
+from sipam.utilities.enums import IP
+from sipam.utilities.error import NoSuchPrefix
 
 
 class PoolViewSet(ModelViewSet):
-    """
-    API endpoint that allows Pools to be viewed or edited.
-    """
+    """API endpoint that allows Pools to be viewed or edited."""
 
     queryset = Pool.objects.all()
     serializer_class = PoolSerializer
@@ -22,7 +20,7 @@ class PoolViewSet(ModelViewSet):
     permission_classes = [ReadOnlyToken | WriteToken | UserAccess]
 
     def list(self, request):
-        """List all pools"""
+        """List all pools."""
         return Response(
             PoolSerializer(Pool.objects.all(), many=True, read_only=True, context={"request": request}).data
         )
@@ -30,7 +28,7 @@ class PoolViewSet(ModelViewSet):
     @transaction.atomic
     @action(detail=True, methods=["POST"], name="Assign Subnet from Pool", serializer_class=AssignmentSerializer)
     def assign(self, request, pk=None):
-        """Adds a new address within the pool"""
+        """Adds a new address within the pool."""
         pool = self.get_object()
 
         # Check if we have prefixes to assign from
@@ -80,5 +78,4 @@ class PoolViewSet(ModelViewSet):
 
     @assign.mapping.delete
     def deleteAssignment(self, request, pk=None):
-        """Deletes an assigned address"""
-        pass
+        """Deletes an assigned address."""

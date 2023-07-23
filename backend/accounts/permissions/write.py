@@ -4,7 +4,7 @@ from accounts.models import FlaggedToken, User
 
 
 class WriteToken(BasePermission):
-    """A class verifying we actually handle a Token and this token has a write flag"""
+    """A class verifying we actually handle a Token and this token has a write flag."""
 
     def has_permission(self, request, view):
         if isinstance(request.auth, FlaggedToken):

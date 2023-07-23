@@ -1,16 +1,15 @@
 import uuid
 from ipaddress import ip_address, ip_network
-from typing import List, Tuple
 
 from django.db import models, transaction
 from mptt.models import MPTTModel, TreeForeignKey
 from netfields import CidrAddressField, NetManager
 
-import sipam.utilities as utilities
+from sipam import utilities
+from sipam.utilities.enums import IP, FlagChoices
+from sipam.utilities.error import NotEnoughSpace
+from sipam.utilities.fields import FQDNField
 
-from ..utilities.enums import IP, FlagChoices
-from ..utilities.error import NotEnoughSpace
-from ..utilities.fields import FQDNField
 from .base import BaseModel
 
 
@@ -34,64 +33,59 @@ class CIDR(MPTTModel, BaseModel):
 
     @property
     def supercidr(self) -> "CIDR":
-        """
-        :returns: the direct parent of self (by cidr)
-        """
+        """:returns: the direct parent of self (by cidr)"""
         return self.parent
 
     @property
-    def subcidr(self) -> List["CIDR"]:
-        """
-        :returns: the direct subcidr of self (by cidr)
-        """
+    def subcidr(self) -> list["CIDR"]:
+        """:returns: the direct subcidr of self (by cidr)"""
         return list(CIDR.objects.filter(parent=self).order_by("cidr").all())
 
-    def getChildIDs(self) -> List[str]:
-        """Get the IDs of every child
+    def getChildIDs(self) -> list[str]:
+        """Get the IDs of every child.
 
-        Returns:
+        Returns
+        -------
             List[str] -- List of child IDs
         """
         return [child.id for child in CIDR.objects.filter(parent=self).order_by("cidr").all()]
 
     @property
-    def ips(self) -> List["CIDR"]:
-        """
-        :returns: the direct ips allocated under this prefix
-        """
+    def ips(self) -> list["CIDR"]:
+        """:returns: the direct ips allocated under this prefix"""
         return [cidr for cidr in self.get_children() if not utilities.subcidr(cidr.cidr)]
 
     @property
     def version(self) -> IP:
         """Returns the version of this object
-        Either IPv4 our IPv6
+        Either IPv4 our IPv6.
 
-        Returns:
+        Returns
+        -------
             IP -- Version (IP.v4 or IP.v6)
         """
         return IP(self.cidr.version)
 
     @property
     def labelDict(self) -> dict:
-        """Get labels as key value pair
+        """Get labels as key value pair.
 
-        Returns:
+        Returns
+        -------
             dict -- Labels as key-value pair
         """
         return {label.name: label.value for label in self.labels.all()}
 
     @transaction.atomic
-    def assignLinknet(self, description: str, hostname=None) -> Tuple["CIDR", "CIDR", "CIDR"]:
-        """Assigns a new linknet from the pool to be used with physical nodes
+    def assignLinknet(self, description: str, hostname=None) -> tuple["CIDR", "CIDR", "CIDR"]:
+        """Assigns a new linknet from the pool to be used with physical nodes.
 
         Arguments:
+        ---------
             description {str} -- Description of the use for this subnet
             hostname {str} -- Hostname to use
         """
-        if self.version == IP.v4:
-            size = 31
-        else:
-            size = 127
+        size = 31 if self.version == IP.v4 else 127
 
         net = self.assignNet(size, description)
 
@@ -107,40 +101,42 @@ class CIDR(MPTTModel, BaseModel):
         return net, gateway, ip
 
     def assignIP(self, description: str, hostname=None) -> "CIDR":
-        """Assigns a new single ip to be used for VMs
+        """Assigns a new single ip to be used for VMs.
 
         Arguments:
+        ---------
             description {str} -- Description of the use for this subnet
             hostname {str} -- Hostname to use
         """
-        if self.version == IP.v4:
-            size = 32
-        else:
-            size = 128
+        size = 32 if self.version == IP.v4 else 128
 
         return self.assignNet(size, description, hostname, flag=FlagChoices.HOST)
 
     def assignNet(self, size: int, description: str, hostname=None, flag=FlagChoices.RESERVATION, offset=1) -> "CIDR":
-        """Assign a subnet of requested size from this network
+        """Assign a subnet of requested size from this network.
 
         Arguments:
+        ---------
             size {int} -- Desired size of the subnet
             description {str} -- Description of the use for this subnet
 
         Keyword Arguments:
+        -----------------
             hostname {[type]} -- Hostname to use (default: {None})
             flag: {FlagChoices} -- Network type (reservation, assignment, host)
             offset: {int} -- Offset from the network address (e.g. to allow network address assignments)
         """
 
         def getStartAddress(net: CidrAddressField, size: int) -> int:
-            """Calculate the next possible start address of a network with requested size
+            """Calculate the next possible start address of a network with requested size.
 
             Arguments:
+            ---------
                 net {CidrAddressField} -- Net to start with
                 size {int} -- subnet size
 
             Returns:
+            -------
                 int -- The actual distance
             """
             if size >= net.prefixlen:

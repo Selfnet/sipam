@@ -1,8 +1,7 @@
 from rest_framework.serializers import ModelSerializer
 
 from sipam.models import Pool
-
-from ..serializers import CIDRSerializer
+from sipam.serializers import CIDRSerializer
 
 
 class PoolSerializer(ModelSerializer):

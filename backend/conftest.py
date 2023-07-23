@@ -14,9 +14,7 @@ def django_db_setup(django_db_setup, django_db_blocker):
 
 @pytest.fixture(scope="class")
 def testData(request) -> CIDR:
-    """Attach test data to be easily accessible from tests
-    Test data are imported in the previous step
-    """
+    """Attach test data to be easily accessible from tests Test data are imported in the previous step."""
     # Pin CIDRs to request objects
     request.cls.cidr = CIDR.objects.get(cidr="10.3.141.0/24")
     request.cls.cidrLink = CIDR.objects.get(cidr="10.3.142.0/24")

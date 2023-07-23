@@ -2,7 +2,6 @@
 # -*- coding: UTF-8 -*-
 import datetime
 import logging
-from typing import List, Union
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -13,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 def oidc_backend(request, token: dict):
-    def append_groups(user, groups: Union[List[str], None]):
+    def append_groups(user, groups: list[str] | None):
         if groups is not None:
             user.groups.set(Group.objects.get_or_create(name=group)[0] for group in groups)
         return user

@@ -3,15 +3,12 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
-
-from ..models import Label
-from ..serializers import LabelSerializer
+from sipam.models import Label
+from sipam.serializers import LabelSerializer
 
 
 class LabelViewSet(ModelViewSet):
-    """
-    API endpoint that allows Labels to be added and removed from a network.
-    """
+    """API endpoint that allows Labels to be added and removed from a network."""
 
     serializer_class = LabelSerializer
     permission_classes = [ReadOnlyToken | WriteToken | UserAccess]
@@ -20,9 +17,7 @@ class LabelViewSet(ModelViewSet):
         return Label.objects.filter(cidr_id=self.kwargs.get("cidr_pk"))
 
     def list(self, request, cidr_pk=None):
-        """
-        Get labels as key-value pair
-        """
+        """Get labels as key-value pair."""
         queryset = Label.objects.filter(cidr_id=cidr_pk)
         labels = LabelSerializer(queryset, many=True, read_only=True, context={"request": request}).data
 
@@ -31,7 +26,7 @@ class LabelViewSet(ModelViewSet):
         return Response(labelDict)
 
     def update(self, request, pk=None, cidr_pk=None):
-        """Updates a given label"""
+        """Updates a given label."""
         try:
             label = Label.objects.get(name=pk, cidr=cidr_pk)
         except Label.DoesNotExist:
@@ -43,7 +38,7 @@ class LabelViewSet(ModelViewSet):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     def destroy(self, request, pk=None, cidr_pk=None):
-        """Delete this label"""
+        """Delete this label."""
         try:
             Label.objects.get(name=pk, cidr=cidr_pk).delete()
         except Label.DoesNotExist:

@@ -6,7 +6,7 @@ from .base import BaseModel
 
 
 class Label(BaseModel):
-    """Defining a Label which can be applied to a network"""
+    """Defining a Label which can be applied to a network."""
 
     # Required because using name and cidr seems not possible
     id = UUIDField(primary_key=True, default=uuid4)

@@ -4,6 +4,7 @@ import pytest
 from django.test import TestCase
 from django.urls import reverse
 from rest_framework.test import APIRequestFactory, force_authenticate
+
 from sipam.serializers import AssignmentSerializer, PoolSerializer
 from sipam.utilities.enums import IP
 from sipam.utilities.error import NoSuchPrefix
@@ -12,7 +13,7 @@ from sipam.views import PoolViewSet
 
 @pytest.mark.usefixtures("testData", "testToken", "testAdmin")
 class PoolTest(TestCase):
-    """Test pool creation and assignments"""
+    """Test pool creation and assignments."""
 
     def test_get_pool(self):
         assert self.pool.id == "vm"
@@ -38,9 +39,7 @@ class PoolTest(TestCase):
     def test_pool_serializer(self):
         serializer = PoolSerializer(instance=self.pool)
 
-        assert set(serializer.data.keys()) == set(
-            ["id", "label", "prefixes", "poolType", "description", "defaultDomain"]
-        )
+        assert set(serializer.data.keys()) == {"id", "label", "prefixes", "poolType", "description", "defaultDomain"}
 
     def test_pool_view(self):
         factory = APIRequestFactory()

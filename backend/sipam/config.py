@@ -9,7 +9,7 @@ class Env(enum.Enum):
 
 
 def list_converter(value: str) -> list:
-    if "" == value:
+    if value == "":
         return []
     return value.split(",")
 

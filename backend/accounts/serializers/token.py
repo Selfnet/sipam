@@ -1,5 +1,6 @@
-from accounts.models import FlaggedToken
 from rest_framework.serializers import ModelSerializer, StringRelatedField
+
+from accounts.models import FlaggedToken
 
 
 class TokenSerializer(ModelSerializer):
