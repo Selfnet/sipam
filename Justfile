@@ -37,11 +37,11 @@ alias s := shell
 
 # open shell in a running container
 @shell service:
-    {{ compose }} exec {{ service }} sh -c "{{ shell_finder }}"
+    {{ compose }} exec {{ file_stem(service) }} sh -c "{{ shell_finder }}"
 
 # spawn a new service to debug entrypoint problems
 @spawn service:
-    {{ run }} -it --entrypoint "sh -c '{{ shell_finder }}'" {{ service }}
+    {{ run }} -it --entrypoint "sh -c '{{ file_stem(shell_finder) }}'" {{ service }}
 
 # open psql shell in the postgres container
 @psql:
