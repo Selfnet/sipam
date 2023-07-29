@@ -10,3 +10,4 @@ sipam.egg-info
 *.tgz
 charts/
 compose.dev-override.yml
+.tool-versions
