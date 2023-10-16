@@ -1,3 +1,4 @@
+import logging
 from ipaddress import ip_network
 
 from django.shortcuts import get_object_or_404
@@ -11,6 +12,8 @@ from rest_framework.viewsets import ModelViewSet
 from accounts.permissions import ReadOnlyToken, UserAccess, WriteToken
 from sipam.models import CIDR
 from sipam.serializers import CIDRSerializer, RecursiveCIDRSerializer
+
+logger = logging.getLogger(__name__)
 
 
 class CIDRViewSet(ModelViewSet):
@@ -54,6 +57,7 @@ class CIDRViewSet(ModelViewSet):
         serializer = self.serializer_class(data=request.data, context={"request": request})
 
         if not serializer.is_valid():
+            logger.error(serializer.errors)
             return Response(status=status.HTTP_406_NOT_ACCEPTABLE)
 
         data = serializer.validated_data
