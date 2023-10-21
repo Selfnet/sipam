@@ -16,7 +16,9 @@ import apiFactory from '@/sipam.ts';
 import CONFIG from '@/config.ts';
 import Vuex from 'vuex';
 
-workerFactory(CONFIG);
+const config = await CONFIG();
+
+workerFactory(config);
 // Icons
 library.add(faPlusCircle, faMinusCircle, faCog, faEye, faEyeSlash);
 Vue.component('fai', FontAwesomeIcon);
@@ -30,15 +32,15 @@ const i18n = new I18n();
 Language.init(i18n);
 
 Vue.use(Vuex);
-const api = apiFactory(CONFIG);
-const store = storeFactory(CONFIG, api);
-const router = routerFactory(CONFIG, store);
+const api = apiFactory(config);
+const store = storeFactory(config, api);
+const router = routerFactory(config, store);
 
 Vue.mixin({
   data() {
     return {
       // Distribute runtime configs into every Vue component
-      CONFIG,
+      config,
     };
   },
 });
