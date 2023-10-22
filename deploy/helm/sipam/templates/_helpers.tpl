@@ -2,14 +2,18 @@
 Return the proper backend image name
 */}}
 {{- define "sipam.backend.image" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.backend.image "global" .Values.global) }}
+{{- $tag := default .Chart.AppVersion .Values.backend.image.tag -}}
+{{- $imageRoot := dict "registry" .Values.backend.image.registry "repository" .Values.backend.image.repository "tag" $tag -}}
+{{ include "common.images.image" (dict "imageRoot" $imageRoot "global" .Values.global) }}
 {{- end -}}
 
 {{/*
 Return the proper frontend image name
 */}}
 {{- define "sipam.frontend.image" -}}
-{{ include "common.images.image" (dict "imageRoot" .Values.frontend.image "global" .Values.global) }}
+{{- $tag := default .Chart.AppVersion .Values.frontend.image.tag -}}
+{{- $imageRoot := dict "registry" .Values.frontend.image.registry "repository" .Values.frontend.image.repository "tag" $tag -}}
+{{ include "common.images.image" (dict "imageRoot" $imageRoot "global" .Values.global) }}
 {{- end -}}
 
 {{/*
@@ -88,4 +92,3 @@ Compile all warnings into a single message.
 {{-   printf "\nVALUES VALIDATION:\n%s" $message -}}
 {{- end -}}
 {{- end -}}
-

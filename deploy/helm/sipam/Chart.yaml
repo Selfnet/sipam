@@ -1,5 +1,4 @@
 apiVersion: v2
-appVersion: v0.2.2
 dependencies:
   - name: common
     repository: https://charts.bitnami.com/bitnami
@@ -18,4 +17,5 @@ maintainers:
 name: sipam
 sources:
   - https://github.com/selfnet/sipam
-version: 0.2.2
+version: 0.0.1-DEVELOP
+appVersion: 0.0.1-DEVELOP

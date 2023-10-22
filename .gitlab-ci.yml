@@ -43,7 +43,7 @@ helm_build:
     - helm repo add selfnet "${NEXUS_URL}/repository/selfnet-helm/" --username "${NEXUS_USERNAME}" --password "${NEXUS_PASSWORD}"
   script:
     - helm dependency build deploy/helm/sipam
-    - helm package deploy/helm/sipam
+    - helm package --version ${CI_COMMIT_REF_NAME#v} --app-version ${CI_COMMIT_REF_NAME#v} deploy/helm/sipam
     - curl -T *.tgz -v -u "${NEXUS_USERNAME}:${NEXUS_PASSWORD}" "${NEXUS_URL}/repository/selfnet-helm/"
   needs:
     - helm_lint
