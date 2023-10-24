@@ -7,7 +7,6 @@ import '@/assets/styles/custom.scss';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faPlusCircle, faMinusCircle, faCog, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import workerFactory from '@/registerServiceWorker.ts';
 import routerFactory from '@/router.ts';
 import Language from '@/utils/Language.ts';
 import App from '@/App.vue';
@@ -18,7 +17,6 @@ import Vuex from 'vuex';
 
 const config = await CONFIG();
 
-workerFactory(config);
 // Icons
 library.add(faPlusCircle, faMinusCircle, faCog, faEye, faEyeSlash);
 Vue.component('fai', FontAwesomeIcon);
