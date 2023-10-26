@@ -21,6 +21,7 @@
     "bootstrap-vue": "^2.21.2",
     "json-markup": "^1.1.4",
     "oidc-client": "^1.11.5",
+    "oidc-client-ts": "^2.3.0",
     "path": "^0.12.7",
     "register-service-worker": "^1.7.2",
     "vue": "^2.7.14",
@@ -29,7 +30,7 @@
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^3.6.5",
     "vuex": "^3.6.2",
-    "vuex-oidc": "^3.11.1"
+    "vuex-oidc": "^4.0.2"
   },
   "devDependencies": {
     "@types/node": "^20.4.1",

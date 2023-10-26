@@ -5,7 +5,7 @@ import path from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue(), VitePWA({ registerType: 'autoUpdate' })],
+  plugins: [vue()],
   server: {
     port: 3000,
   },
