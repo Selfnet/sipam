@@ -88,16 +88,16 @@ class CIDR(MPTTModel, BaseModel):
 
         net = self.assignNet(size, description)
 
-        # Assign gateway ip manually because network adress = assignment is prohibited by assign net
+        # Assign gateway ip manually because network address = assignment is prohibited by assign net
         gateway_ip = str(net.cidr.network_address) + "/" + str(size + 1)
         gateway_ip = ip_network(gateway_ip)
         gateway = CIDR(cidr=gateway_ip, description="Gateway", flag=FlagChoices.ASSIGNMENT, parent=net)
         gateway.save()
 
         # Now use assignIP to not do the assign workaround again
-        ip = net.assignIP(description, hostname)
+        _ = net.assignIP(description, hostname)
 
-        return net, gateway, ip
+        return net
 
     def assignIP(self, description: str, hostname=None) -> "CIDR":
         """Assigns a new single ip to be used for VMs.

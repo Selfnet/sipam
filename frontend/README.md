@@ -7,7 +7,7 @@ yarn install
 
 ### Compiles and hot-reloads for development
 ```
-yarn run serve
+VITE_OIDC_ENDPOINT=https://sap.selfnet.de/auth/realms/master VITE_OIDC_CLIENT_ID=sipam-dev VITE_APP_URL=http://localhost:8181 yarn dev --port 8181
 ```
 
 ### Compiles and minifies for production

@@ -2087,6 +2087,11 @@ crypto-js@^4.0.0:
   resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.1.1.tgz#9e485bcf03521041bd85844786b83fb7619736cf"
   integrity sha512-o2JlM7ydqd3Qk9CA0L4NL6mTzU2sdx96a+oOfPu8Mkl/PK51vSyoi8/rQ8NknZtk44vq15lmhAj9CIAGwgeWKw==
 
+crypto-js@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/crypto-js/-/crypto-js-4.2.0.tgz#4d931639ecdfd12ff80e8186dba6af2c2e856631"
+  integrity sha512-KALDyEYgpY+Rlob/iriUtjV6d5Eq+Y191A5g4UqLAi8CyGP9N1+FdVbkc1SxKc2r4YAYqG8JzO2KGL+AizD70Q==
+
 crypto-random-string@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/crypto-random-string/-/crypto-random-string-2.0.0.tgz#ef2a7a966ec11083388369baa02ebead229b30d5"
@@ -3712,6 +3717,11 @@ jsonpointer@^5.0.0:
     array-includes "^3.1.5"
     object.assign "^4.1.3"
 
+jwt-decode@^3.1.2:
+  version "3.1.2"
+  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-3.1.2.tgz#3fb319f3675a2df0c2895c8f5e9fa4b67b04ed59"
+  integrity sha512-UfpWE/VZn0iP50d8cz9NrZLM9lSWhcJ+0Gt/nm4by88UL+J1SiKN8/5dkjMmbEzwL2CAe+67GsegCbIKtbp75A==
+
 language-subtag-registry@~0.3.2:
   version "0.3.22"
   resolved "https://registry.yarnpkg.com/language-subtag-registry/-/language-subtag-registry-0.3.22.tgz#2e1500861b2e457eba7e7ae86877cbd08fa1fd1d"
@@ -4108,6 +4118,14 @@ object.values@^1.1.6:
     call-bind "^1.0.2"
     define-properties "^1.1.4"
     es-abstract "^1.20.4"
+
+oidc-client-ts@^2.3.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/oidc-client-ts/-/oidc-client-ts-2.4.0.tgz#764c8a33de542026e2798de9849ce8049047d7e5"
+  integrity sha512-WijhkTrlXK2VvgGoakWJiBdfIsVGz6CFzgjNNqZU1hPKV2kyeEaJgLs7RwuiSp2WhLfWBQuLvr2SxVlZnk3N1w==
+  dependencies:
+    crypto-js "^4.2.0"
+    jwt-decode "^3.1.2"
 
 oidc-client@^1.11.5:
   version "1.11.5"
@@ -5308,10 +5326,10 @@ vue@^2.6.11, vue@^2.7.14:
     "@vue/compiler-sfc" "2.7.14"
     csstype "^3.1.0"
 
-vuex-oidc@^3.11.1:
-  version "3.11.1"
-  resolved "https://registry.yarnpkg.com/vuex-oidc/-/vuex-oidc-3.11.1.tgz#9394ba504084c8cb52bb458d0c192af7bc64faf2"
-  integrity sha512-eAAbqC/c99jwkx1AuVAw6PW4R2ACs6Z68dE4KP3k0vaFwHBnf3d/E9mSGplG4S6Dg/sNK4Cymn2t7LbnNPuZSg==
+vuex-oidc@^4.0.2:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/vuex-oidc/-/vuex-oidc-4.0.2.tgz#035d42457f3d292958964de03b6b1bdfda2f696f"
+  integrity sha512-GOm4UTEJnrRI1nCI7BTzQdbD3w0Jm2O3mFHQtWI98n332+C8oPpcQUbWx2EhybditleLZOXZWbA9jtMvp4XEsA==
 
 vuex@^3.6.2:
   version "3.6.2"
