@@ -41,10 +41,6 @@ class CIDRTest(TestCase):
 
         assert net.cidr.prefixlen == 31
         assert net.parent == self.cidrLink
-        # assert gw.cidr.prefixlen == 32
-        # assert gw.parent == net
-        # assert ip.cidr.prefixlen == 32
-        # assert ip.parent == net
 
     def test_assign_until_full(self):
         # Should raise an exception
