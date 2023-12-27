@@ -30,11 +30,11 @@ class PoolTest(TestCase):
     def test_assign_from_pool(self):
         ip = self.pool.assignFromPool(IP.v4, "Desc", "host")
         assert isinstance(ip.cidr, IPv4Network)
-
-        net, gw, ip = self.linkPool.assignFromPool(IP.v4, "Desc", "physhost")
+        # does not anymore return gw, ip
+        net = self.linkPool.assignFromPool(IP.v4, "Desc", "physhost")
         assert isinstance(net.cidr, IPv4Network)
-        assert isinstance(gw.cidr, IPv4Network)
-        assert isinstance(ip.cidr, IPv4Network)
+        # assert isinstance(gw.cidr, IPv4Network)
+        # assert isinstance(ip.cidr, IPv4Network)
 
     def test_pool_serializer(self):
         serializer = PoolSerializer(instance=self.pool)
