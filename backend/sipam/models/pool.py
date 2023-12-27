@@ -44,7 +44,7 @@ class Pool(BaseModel):
         return [prefix for prefix in prefixes if prefix.version == version]
 
     @transaction.atomic
-    def assignFromPool(self, version: IP, description: str, hostname: str) -> Optional['CIDR'] | None:
+    def assignFromPool(self, version: IP, description: str, hostname: str) -> Optional["CIDR"] | None:
         """Assign a Network or IP from this pool.
 
         Arguments:

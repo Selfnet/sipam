@@ -76,7 +76,7 @@ class CIDR(MPTTModel, BaseModel):
         return {label.name: label.value for label in self.labels.all()}
 
     @transaction.atomic
-    def assignLinknet(self, description: str, hostname=None) -> 'CIDR': #tuple["CIDR", "CIDR", "CIDR"]:
+    def assignLinknet(self, description: str, hostname=None) -> "CIDR":  # tuple["CIDR", "CIDR", "CIDR"]:
         """Assigns a new linknet from the pool to be used with physical nodes.
 
         Arguments:
