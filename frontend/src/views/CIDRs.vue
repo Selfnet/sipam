@@ -64,6 +64,7 @@
       v-bind:item="cidr"
       :key="cidr.id"
       :cidr="cidr"
+      :pools="pools"
     >
     </tree>
     <cidr-form :edit="false" />
@@ -83,20 +84,36 @@ export default {
     return {
       loading: true,
       cidrs: [],
+      pools: [],
     };
   },
   methods: {
-    ...mapGetters('CIDR', {
-      getCIDRs: 'cidrs',
+    ...mapGetters({
+      getCIDRs: 'CIDR/cidrs',
+      getPools: 'Pool/poolList',
     }),
     ...mapActions({
       fetchCIDRs: 'CIDR/FETCH_CIDRS',
       searchCIDR: 'CIDR/SEARCH_CIDR',
+      fetchPools: 'Pool/FETCH_POOLS',
     }),
   },
   created() {
     this.fetchCIDRs().then(() => {
       this.cidrs = this.getCIDRs();
+    });
+    // Fetch Pools so they can be shown in a dropdown list
+    this.fetchPools().then(() => {
+      // Generate a list of objects with value/text keys which can be interpreted by the select form
+      this.pools = this.getPools().map(pool => ({
+        value: pool.id,
+        text: `${pool.label} - ${pool.description}`,
+      }));
+      // Add an "unassigned" option at the front
+    });
+    this.pools.unshift({
+      value: null,
+      text: 'No Pool',
     });
     // eslint-disable-next-line no-unused-vars
     this.$store.subscribe((mutation) => {

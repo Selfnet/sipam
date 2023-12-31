@@ -46,7 +46,6 @@ router.register(r"pool", views.PoolViewSet)
 cidr_router = routers.NestedSimpleRouter(router, r"cidr", lookup="cidr")
 cidr_router.register(r"labels", views.LabelViewSet, basename="cidr-labels")
 
-
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [

@@ -33,8 +33,8 @@
           <cidr-form
             :cidr="cidr"
             :edit="true"
+            :pools="pools"
           ></cidr-form>
-
           <b-dropdown-item
             v-b-modal="modalCIDRAddSubID"
             v-if="!isIP"
@@ -42,8 +42,13 @@
           <cidr-form
             :cidr="cidr"
             :parentCIDR="cidr.cidr"
+            :pools="pools"
             :edit="false"
           ></cidr-form>
+          <b-dropdown-item
+            variant="info"
+            @click="findParents"
+          >{{$t('GENERAL.BUTTON.PARENTS')}}</b-dropdown-item>
           <b-dropdown-item
             variant="danger"
             @click="confirmDelete"
@@ -71,6 +76,7 @@ export default {
   name: 'CidrComponent',
   props: {
     cidrID: String,
+    pools: Array,
   },
   components: {
     'cidr-form': CIDRForm,
@@ -107,7 +113,11 @@ export default {
   methods: {
     ...mapActions({
       deleteCIDR: 'CIDR/DELETE_CIDR',
+      fetchParents: 'CIDR/FETCH_PARENTS',
     }),
+    findParents() {
+      this.fetchParents(this.cidrID)
+    },
     confirmDelete() {
       this.$bvModal
         .msgBoxConfirm(

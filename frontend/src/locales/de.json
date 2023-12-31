@@ -54,6 +54,7 @@
     },
     "BUTTON": {
       "BACK": "Zurück",
+      "PARENTS": "Elternobjekte",
       "CANCEL": "Abbrechen",
       "SUBMIT": "Senden",
       "EDIT": "Bearbeiten",

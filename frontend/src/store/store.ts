@@ -1,6 +1,6 @@
 import Vuex, { StoreOptions } from 'vuex';
 import { vuexOidcCreateStoreModule, VuexOidcStoreListeners } from 'vuex-oidc';
-import { User } from 'oidc-client';
+import { User } from 'oidc-client-ts';
 import Pool from '@/store/modules/Pool.ts';
 import Auth from '@/store/modules/Auth.ts';
 import CIDR from '@/store/modules/CIDR.ts';
@@ -12,7 +12,7 @@ import { Api } from '@/types/api.ts';
 
 export default function storeFactory(config: SIPAMConfiguration, SIPAM: Api) {
   const listeners: VuexOidcStoreListeners = {
-    userLoaded: (user: User) => SIPAM.setSecurityData(user.access_token),
+    userLoaded: (user: User): void => SIPAM.setSecurityData(user.access_token),
     userUnloaded: () => SIPAM.setSecurityData(null),
   };
 

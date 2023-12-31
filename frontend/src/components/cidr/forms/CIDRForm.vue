@@ -105,7 +105,7 @@
 </template>
 
 <script  lang="ts">
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions } from 'vuex';
 
 export default {
   name: 'cidr-form',
@@ -113,6 +113,7 @@ export default {
     cidr: Object,
     edit: Boolean,
     parentCIDR: String,
+    pools: Array,
   },
   data() {
     return {
@@ -125,7 +126,6 @@ export default {
       },
       flags: ['assignment', 'host', 'reservation'],
       show: true,
-      pools: [],
     };
   },
   created() {
@@ -139,28 +139,11 @@ export default {
       this.form.pool = this.cidr.pool;
       this.form.description = this.cidr.description;
     }
-    // Fetch Pools so they can be shown in a dropdown list
-    this.fetchPools().then(() => {
-      // Generate a list of objects with value/text keys which can be interpreted by the select form
-      this.pools = this.getPools().map(pool => ({
-        value: pool.id,
-        text: `${pool.label} - ${pool.description}`,
-      }));
-      // Add an "unassigned" option at the front
-      this.pools.unshift({
-        value: null,
-        text: 'No Pool',
-      });
-    });
   },
   methods: {
     ...mapActions({
       updateCIDR: 'CIDR/UPDATE_CIDR',
       createCIDR: 'CIDR/CREATE_CIDR',
-      fetchPools: 'Pool/FETCH_POOLS',
-    }),
-    ...mapGetters('Pool', {
-      getPools: 'poolList',
     }),
     id() {
       if (this.parentCIDR !== undefined) {

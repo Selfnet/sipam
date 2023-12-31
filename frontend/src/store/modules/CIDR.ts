@@ -72,6 +72,18 @@ export default {
       const response = await context.rootState.api.cidr.cidrList();
       context.commit('OVERRIDE_CIDRS', response.data);
     },
+    async FETCH_PARENTS(context: { commit: any; rootState: RootState }, cidrID: string) {
+      console.log(cidrID)
+      const response = await context.rootState.api.cidr.cidrSupercidrs(
+        cidrID
+      )
+      if (response.status === 200) {
+        context.commit('OVERRIDE_CIDRS', response.data);
+      }
+      else {
+        console.log(response);
+      }
+    },
     async UPDATE_CIDR(
       context: { commit: any; rootState: RootState },
       payload: { cidrID: string; formData: CIDR },

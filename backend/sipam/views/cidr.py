@@ -1,7 +1,9 @@
 import logging
 from ipaddress import ip_network
 
+from django.db import transaction
 from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from netfields.functions import Masklen
 from rest_framework import status
 from rest_framework.decorators import action
@@ -52,6 +54,7 @@ class CIDRViewSet(ModelViewSet):
 
         return Response(self.serializer_class(cidr, context={"request": request}).data)
 
+    @transaction.atomic
     def create(self, request, *args, **kwargs):
         """Create a new cidr object by automatically detecting parents."""
         serializer = self.serializer_class(data=request.data, context={"request": request})
@@ -66,12 +69,37 @@ class CIDRViewSet(ModelViewSet):
         ip = ip_network(data["cidr"])
 
         parent = CIDR.objects.filter(cidr__net_contains=ip).order_by(Masklen("cidr").desc()).first()
-
         cidr = CIDR(**data, parent=parent)
         cidr.save()
-
+        if parent is not None:
+            for child in parent.get_children():
+                if child.id == cidr.id:
+                    continue
+                if ip.supernet_of(child.cidr):
+                    child.parent = cidr
+                    child.save()
+        else:
+            children = CIDR.objects.filter(cidr__net_contained=ip, parent=None)
+            if children is not None:
+                for child in children:
+                    child.parent = cidr
+                    child.save()
         return Response(self.serializer_class(cidr, context={"request": request}).data, status=status.HTTP_201_CREATED)
 
+    @swagger_auto_schema(responses={200: CIDRSerializer(many=True, read_only=True)})
+    @action(detail=True)
+    def supercidrs(self, request, pk=None):
+        """API endpont that allow to get the whole parent tree from the perspective of the current prefix."""
+        return Response(
+            CIDRSerializer(
+                self.get_object().get_ancestors(include_self=False),
+                many=True,
+                read_only=True,
+                context={"request": request},
+            ).data
+        )
+
+    @swagger_auto_schema(responses={200: CIDRSerializer(many=True, read_only=True)})
     @action(detail=True)
     def supercidr(self, request, pk=None):
         """API endpoint that allows direct super cidr (network) to be viewed."""
@@ -80,6 +108,7 @@ class CIDRViewSet(ModelViewSet):
         )
 
     @action(detail=True)
+    @swagger_auto_schema(responses={200: CIDRSerializer(many=True, read_only=True)})
     def subcidr(self, request, pk=None):
         """API endpoint that allows direct subordinary cidr (networks) to be viewed."""
         return Response(
@@ -87,6 +116,7 @@ class CIDRViewSet(ModelViewSet):
         )
 
     @action(detail=True)
+    @swagger_auto_schema(responses={200: CIDRSerializer(many=True, read_only=True)})
     def ips(self, request, pk=None):
         """API Endpoint that allows direct children ips to be viewed."""
         return Response(

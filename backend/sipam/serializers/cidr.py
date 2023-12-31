@@ -1,4 +1,5 @@
 from ipaddress import IPv4Network, IPv6Network
+from typing import Any
 
 from drf_yasg.utils import swagger_serializer_method
 from rest_framework.serializers import (
@@ -9,6 +10,7 @@ from rest_framework.serializers import (
     SerializerMethodField,
     ValidationError,
 )
+from rest_framework.utils.serializer_helpers import ReturnDict, ReturnList
 
 from sipam.models import CIDR
 from sipam.utilities import subcidr
@@ -25,6 +27,7 @@ class DocumentField(DictField):
 class CIDRSerializer(ModelSerializer):
     children = SerializerMethodField()
     labels = SerializerMethodField()
+    instance: CIDR
 
     class Meta:
         model = CIDR
@@ -44,16 +47,20 @@ class CIDRSerializer(ModelSerializer):
         read_only_fields = ("parent", "children", "id")
 
     @swagger_serializer_method(serializer_or_field=StringListField)
-    def get_children(self, obj) -> list[str]:
+    def get_children(self, obj: CIDR) -> list[str]:
         return obj.getChildIDs()
 
     @swagger_serializer_method(serializer_or_field=DocumentField)
-    def get_labels(self, obj) -> dict[str, str]:
+    def get_labels(self, obj: CIDR) -> dict[str, str]:
         return obj.labelDict
+
+    def get_supercidr(self) -> Any | ReturnDict:
+        return CIDRSerializer(self.instance.parent, many=False, read_only=True, context=self.context).data
 
 
 class RecursiveCIDRSerializer(CIDRSerializer):
-    def get_children(self, obj) -> list["CIDR"]:
+    @swagger_serializer_method(serializer_or_field="RecursiveCIDRSerializer(many=True, read_only=True)")
+    def get_children(self, obj: CIDR) -> ReturnList | Any | ReturnDict:
         return RecursiveCIDRSerializer(obj.subcidr, many=True, read_only=True, context=self.context).data
 
     def validate(self, data):

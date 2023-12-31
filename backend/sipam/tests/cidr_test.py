@@ -36,7 +36,7 @@ class CIDRTest(TestCase):
         assert ip.cidr == IPv4Network("10.3.141.11/32")
 
     def test_assign_linknet(self):
-        # does not anymore return gw, ip 
+        # does not anymore return gw, ip
         net = self.cidrLink.assignLinknet("Some net")
 
         assert net.cidr.prefixlen == 31

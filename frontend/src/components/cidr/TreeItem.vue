@@ -12,6 +12,7 @@
       <b-col>
         <cidr
           :cidrID="item.id"
+          :pools="pools"
           v-on:cidrClicked="toggle"
         ></cidr>
       </b-col>
@@ -45,6 +46,7 @@ export default {
   name: 'tree-item',
   props: {
     item: Object,
+    pools: Array,
   },
   components: {
     cidr: CIDR,

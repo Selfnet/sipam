@@ -6,6 +6,7 @@
         <tree-item
           class="item"
           :item="cidr"
+          :pools="pools"
           @make-folder="makeFolder"
           @add-item="addItem"
         />
@@ -23,6 +24,7 @@ export default {
   name: 'TreeComponent',
   props: {
     cidr: Object,
+    pools: Array
   },
   components: {
     TreeItem,

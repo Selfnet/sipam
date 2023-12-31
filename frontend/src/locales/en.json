@@ -54,6 +54,7 @@
     },
     "BUTTON": {
       "BACK": "Back",
+      "PARENTS": "Parent tree",
       "CANCEL": "Cancel",
       "EDIT": "Edit",
       "DELETE": "Delete",

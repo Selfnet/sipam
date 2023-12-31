@@ -1,5 +1,5 @@
-/* tslint:disable */
 /* eslint-disable */
+/* tslint:disable */
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -10,193 +10,356 @@
  */
 
 export interface CIDR {
+  /**
+   * Id
+   * @format uuid
+   */
   id?: string;
+  /** Cidr */
   cidr: string;
-  parent?: string;
+  /**
+   * Parent
+   * @format uuid
+   */
+  parent?: string | null;
   children?: string[];
+  /**
+   * Created
+   * @format date-time
+   */
   created?: string;
+  /**
+   * Edited
+   * @format date-time
+   */
   edited?: string;
+  /** Pool */
   pool?: string | null;
-  flag?: "reservation" | "assignment" | "host";
+  /** Flag */
+  flag?: 'reservation' | 'assignment' | 'host';
+  /**
+   * Fqdn
+   * @maxLength 200
+   */
   fqdn?: string | null;
+  /** Description */
   description?: string | null;
+  /** Labels */
   labels?: Record<string, string>;
 }
 
 export interface Label {
+  /**
+   * Name
+   * @minLength 1
+   * @maxLength 30
+   */
   name: string;
+  /**
+   * Value
+   * @minLength 1
+   * @maxLength 1000
+   */
   value: string;
 }
 
 export interface TokenObtainPair {
+  /**
+   * Username
+   * @minLength 1
+   */
   username: string;
+  /**
+   * Password
+   * @minLength 1
+   */
   password: string;
 }
 
 export interface TokenRefresh {
+  /**
+   * Refresh
+   * @minLength 1
+   */
   refresh: string;
+  /**
+   * Access
+   * @minLength 1
+   */
+  access?: string;
 }
 
 export interface TokenVerify {
+  /**
+   * Token
+   * @minLength 1
+   */
   token: string;
 }
 
 export interface Pool {
+  /**
+   * Id
+   * @minLength 1
+   * @maxLength 10
+   */
   id: string;
+  /**
+   * Label
+   * @minLength 1
+   * @maxLength 100
+   */
   label: string;
+  /** Description */
   description?: string;
-  poolType?: "Host Linknet" | "VM Linknet" | "Arbitrary";
+  /** PoolType */
+  poolType?: 'Host Linknet' | 'VM Linknet' | 'Arbitrary';
+  /**
+   * DefaultDomain
+   * @maxLength 100
+   */
   defaultDomain?: string;
   prefixes?: CIDR[];
 }
 
 export interface Assignment {
+  /**
+   * Hostname
+   * @minLength 1
+   */
   hostname?: string;
-
-  /** Use pools default domain */
+  /**
+   * Usedefaultdomain
+   * Use pools default domain
+   * @default true
+   */
   useDefaultDomain?: boolean;
+  /**
+   * Description
+   * @minLength 1
+   */
   description: string;
   assignments?: CIDR[];
 }
 
 export interface Token {
+  /**
+   * Key
+   * @minLength 1
+   */
   key?: string;
+  /** User */
   user?: string;
+  /** Write */
   write?: boolean;
+  /** Description */
   description?: string | null;
 }
 
-export type RequestParams = Omit<RequestInit, "body" | "method"> & {
+export type QueryParamsType = Record<string | number, any>;
+export type ResponseFormat = keyof Omit<Body, 'body' | 'bodyUsed'>;
+
+export interface FullRequestParams extends Omit<RequestInit, 'body'> {
+  /** set parameter to `true` for call `securityWorker` for this request */
   secure?: boolean;
-};
-
-export type RequestQueryParamsType = Record<string | number, any>;
-
-interface ApiConfig<SecurityDataType> {
+  /** request path */
+  path: string;
+  /** content type of request body */
+  type?: ContentType;
+  /** query params */
+  query?: QueryParamsType;
+  /** format of response (i.e. response.json() -> format: "json") */
+  format?: ResponseFormat;
+  /** request body */
+  body?: unknown;
+  /** base url */
   baseUrl?: string;
-  baseApiParams?: RequestParams;
-  securityWorker?: (securityData: SecurityDataType) => RequestParams;
+  /** request cancellation token */
+  cancelToken?: CancelToken;
 }
 
-/** Overrided Promise type. Needs for additional typings of `.catch` callback */
-type TPromise<ResolveType, RejectType = any> = Omit<Promise<ResolveType>, "then" | "catch"> & {
-  then<TResult1 = ResolveType, TResult2 = never>(
-    onfulfilled?: ((value: ResolveType) => TResult1 | PromiseLike<TResult1>) | undefined | null,
-    onrejected?: ((reason: RejectType) => TResult2 | PromiseLike<TResult2>) | undefined | null,
-  ): TPromise<TResult1 | TResult2, RejectType>;
-  catch<TResult = never>(
-    onrejected?: ((reason: RejectType) => TResult | PromiseLike<TResult>) | undefined | null,
-  ): TPromise<ResolveType | TResult, RejectType>;
-};
+export type RequestParams = Omit<FullRequestParams, 'body' | 'method' | 'query' | 'path'>;
 
-interface HttpResponse<D extends unknown, E extends unknown = unknown> extends Response {
-  data: D | null;
-  error: E | null;
+export interface ApiConfig<SecurityDataType = unknown> {
+  baseUrl?: string;
+  baseApiParams?: Omit<RequestParams, 'baseUrl' | 'cancelToken' | 'signal'>;
+  securityWorker?: (securityData: SecurityDataType | null) => Promise<RequestParams | void> | RequestParams | void;
+  customFetch?: typeof fetch;
 }
 
-enum BodyType {
-  Json,
+export interface HttpResponse<D extends unknown, E extends unknown = unknown> extends Response {
+  data: D;
+  error: E;
 }
 
-class HttpClient<SecurityDataType> {
-  public baseUrl: string = "http://localhost:8000/api/v1";
-  private securityData: SecurityDataType = null as any;
-  private securityWorker: null | ApiConfig<SecurityDataType>["securityWorker"] = null;
+type CancelToken = Symbol | string | number;
+
+export enum ContentType {
+  Json = 'application/json',
+  FormData = 'multipart/form-data',
+  UrlEncoded = 'application/x-www-form-urlencoded',
+  Text = 'text/plain',
+}
+
+export class HttpClient<SecurityDataType = unknown> {
+  public baseUrl: string = 'http://localhost:8000/api/v1';
+  private securityData: SecurityDataType | null = null;
+  private securityWorker?: ApiConfig<SecurityDataType>['securityWorker'];
+  private abortControllers = new Map<CancelToken, AbortController>();
+  private customFetch = (...fetchParams: Parameters<typeof fetch>) => fetch(...fetchParams);
 
   private baseApiParams: RequestParams = {
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    redirect: "follow",
-    referrerPolicy: "no-referrer",
+    credentials: 'same-origin',
+    headers: {},
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
   };
 
   constructor(apiConfig: ApiConfig<SecurityDataType> = {}) {
     Object.assign(this, apiConfig);
   }
 
-  public setSecurityData = (data: SecurityDataType) => {
+  public setSecurityData = (data: SecurityDataType | null) => {
     this.securityData = data;
   };
 
-  private addQueryParam(query: RequestQueryParamsType, key: string) {
-    return (
-      encodeURIComponent(key) + "=" + encodeURIComponent(Array.isArray(query[key]) ? query[key].join(",") : query[key])
-    );
+  protected encodeQueryParam(key: string, value: any) {
+    const encodedKey = encodeURIComponent(key);
+    return `${encodedKey}=${encodeURIComponent(typeof value === 'number' ? value : `${value}`)}`;
   }
 
-  protected addQueryParams(rawQuery?: RequestQueryParamsType): string {
+  protected addQueryParam(query: QueryParamsType, key: string) {
+    return this.encodeQueryParam(key, query[key]);
+  }
+
+  protected addArrayQueryParam(query: QueryParamsType, key: string) {
+    const value = query[key];
+    return value.map((v: any) => this.encodeQueryParam(key, v)).join('&');
+  }
+
+  protected toQueryString(rawQuery?: QueryParamsType): string {
     const query = rawQuery || {};
-    const keys = Object.keys(query).filter((key) => "undefined" !== typeof query[key]);
-    return keys.length
-      ? `?${keys
-          .map((key) =>
-            typeof query[key] === "object" && !Array.isArray(query[key])
-              ? this.addQueryParams(query[key] as object).substring(1)
-              : this.addQueryParam(query, key),
-          )
-          .join("&")}`
-      : "";
+    const keys = Object.keys(query).filter((key) => 'undefined' !== typeof query[key]);
+    return keys
+      .map((key) => (Array.isArray(query[key]) ? this.addArrayQueryParam(query, key) : this.addQueryParam(query, key)))
+      .join('&');
   }
 
-  private bodyFormatters: Record<BodyType, (input: any) => any> = {
-    [BodyType.Json]: JSON.stringify,
+  protected addQueryParams(rawQuery?: QueryParamsType): string {
+    const queryString = this.toQueryString(rawQuery);
+    return queryString ? `?${queryString}` : '';
+  }
+
+  private contentFormatters: Record<ContentType, (input: any) => any> = {
+    [ContentType.Json]: (input: any) =>
+      input !== null && (typeof input === 'object' || typeof input === 'string') ? JSON.stringify(input) : input,
+    [ContentType.Text]: (input: any) => (input !== null && typeof input !== 'string' ? JSON.stringify(input) : input),
+    [ContentType.FormData]: (input: any) =>
+      Object.keys(input || {}).reduce((formData, key) => {
+        const property = input[key];
+        formData.append(
+          key,
+          property instanceof Blob
+            ? property
+            : typeof property === 'object' && property !== null
+            ? JSON.stringify(property)
+            : `${property}`,
+        );
+        return formData;
+      }, new FormData()),
+    [ContentType.UrlEncoded]: (input: any) => this.toQueryString(input),
   };
 
-  private mergeRequestOptions(params: RequestParams, securityParams?: RequestParams): RequestParams {
+  protected mergeRequestParams(params1: RequestParams, params2?: RequestParams): RequestParams {
     return {
       ...this.baseApiParams,
-      ...params,
-      ...(securityParams || {}),
+      ...params1,
+      ...(params2 || {}),
       headers: {
         ...(this.baseApiParams.headers || {}),
-        ...(params.headers || {}),
-        ...((securityParams && securityParams.headers) || {}),
+        ...(params1.headers || {}),
+        ...((params2 && params2.headers) || {}),
       },
     };
   }
 
-  private safeParseResponse = <T = any, E = any>(response: Response): Promise<HttpResponse<T, E>> => {
-    const r = response as HttpResponse<T, E>;
-    r.data = null;
-    r.error = null;
+  protected createAbortSignal = (cancelToken: CancelToken): AbortSignal | undefined => {
+    if (this.abortControllers.has(cancelToken)) {
+      const abortController = this.abortControllers.get(cancelToken);
+      if (abortController) {
+        return abortController.signal;
+      }
+      return void 0;
+    }
 
-    return response
-      .json()
-      .then((data) => {
-        if (r.ok) {
-          r.data = data;
-        } else {
-          r.error = data;
-        }
-        return r;
-      })
-      .catch((e) => {
-        r.error = e;
-        return r;
-      });
+    const abortController = new AbortController();
+    this.abortControllers.set(cancelToken, abortController);
+    return abortController.signal;
   };
 
-  public request = <T = any, E = any>(
-    path: string,
-    method: string,
-    { secure, ...params }: RequestParams = {},
-    body?: any,
-    bodyType?: BodyType,
-    secureByDefault?: boolean,
-  ): TPromise<HttpResponse<T, E>> => {
-    const requestUrl = `${this.baseUrl}${path}`;
-    const secureOptions =
-      (secureByDefault || secure) && this.securityWorker ? this.securityWorker(this.securityData) : {};
-    const requestOptions = {
-      ...this.mergeRequestOptions(params, secureOptions),
-      method,
-      body: body ? this.bodyFormatters[bodyType || BodyType.Json](body) : null,
-    };
+  public abortRequest = (cancelToken: CancelToken) => {
+    const abortController = this.abortControllers.get(cancelToken);
 
-    return fetch(requestUrl, requestOptions).then(async (response) => {
-      const data = await this.safeParseResponse<T, E>(response);
+    if (abortController) {
+      abortController.abort();
+      this.abortControllers.delete(cancelToken);
+    }
+  };
+
+  public request = async <T = any, E = any>({
+    body,
+    secure,
+    path,
+    type,
+    query,
+    format,
+    baseUrl,
+    cancelToken,
+    ...params
+  }: FullRequestParams): Promise<HttpResponse<T, E>> => {
+    const secureParams =
+      ((typeof secure === 'boolean' ? secure : this.baseApiParams.secure) &&
+        this.securityWorker &&
+        (await this.securityWorker(this.securityData))) ||
+      {};
+    const requestParams = this.mergeRequestParams(params, secureParams);
+    const queryString = query && this.toQueryString(query);
+    const payloadFormatter = this.contentFormatters[type || ContentType.Json];
+    const responseFormat = format || requestParams.format;
+
+    return this.customFetch(`${baseUrl || this.baseUrl || ''}${path}${queryString ? `?${queryString}` : ''}`, {
+      ...requestParams,
+      headers: {
+        ...(requestParams.headers || {}),
+        ...(type && type !== ContentType.FormData ? { 'Content-Type': type } : {}),
+      },
+      signal: cancelToken ? this.createAbortSignal(cancelToken) : requestParams.signal,
+      body: typeof body === 'undefined' || body === null ? null : payloadFormatter(body),
+    }).then(async (response) => {
+      const r = response as HttpResponse<T, E>;
+      r.data = null as unknown as T;
+      r.error = null as unknown as E;
+
+      const data = !responseFormat
+        ? r
+        : await response[responseFormat]()
+            .then((data) => {
+              if (r.ok) {
+                r.data = data;
+              } else {
+                r.error = data;
+              }
+              return r;
+            })
+            .catch((e) => {
+              r.error = e;
+              return r;
+            });
+
+      if (cancelToken) {
+        this.abortControllers.delete(cancelToken);
+      }
+
       if (!response.ok) throw data;
       return data;
     });
@@ -206,349 +369,645 @@ class HttpClient<SecurityDataType> {
 /**
  * @title SIPAM API
  * @version v1
+ * @license MIT License
+ * @termsOfService https://www.google.com/policies/terms/
  * @baseUrl http://localhost:8000/api/v1
+ * @contact <support@selfnet.de>
+ *
  * Selfnet e.V. IP Address Management API
  */
-export class Api<SecurityDataType = any> extends HttpClient<SecurityDataType> {
+export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   cidr = {
     /**
+     * @description Get the Root Prefixes with their children.
+     *
      * @tags cidr
-     * @name cidr_list
+     * @name CidrList
      * @request GET:/cidr/
      * @secure
-     * @description Get the Root Prefixes with their children
      * @response `200` `(CIDR)[]`
      */
-    cidrList: (query?: { search?: string }, params?: RequestParams) =>
-      this.request<CIDR[], any>(`/cidr/${this.addQueryParams(query)}`, "GET", params, null, BodyType.Json, true),
+    cidrList: (
+      query?: {
+        /** A search term. */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<CIDR[], any>({
+        path: `/cidr/`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description Create a new cidr object by automatically detecting parents.
+     *
      * @tags cidr
-     * @name cidr_create
+     * @name CidrCreate
      * @request POST:/cidr/
      * @secure
-     * @description Create a new cidr object by automatically detecting parents
      * @response `201` `CIDR`
      */
-    cidrCreate: (data: CIDR, params?: RequestParams) =>
-      this.request<CIDR, any>(`/cidr/`, "POST", params, data, BodyType.Json, true),
+    cidrCreate: (data: CIDR, params: RequestParams = {}) =>
+      this.request<CIDR, any>({
+        path: `/cidr/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description Get labels as key-value pair.
+     *
      * @tags cidr
-     * @name cidr_labels_list
+     * @name CidrLabelsList
      * @request GET:/cidr/{cidr_pk}/labels/
      * @secure
-     * @description Get labels as key-value pair
      * @response `200` `(Label)[]`
      */
-    cidrLabelsList: (cidr_pk: string, params?: RequestParams) =>
-      this.request<Label[], any>(`/cidr/${cidr_pk}/labels/`, "GET", params, null, BodyType.Json, true),
+    cidrLabelsList: (cidrPk: string, params: RequestParams = {}) =>
+      this.request<Label[], any>({
+        path: `/cidr/${cidrPk}/labels/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Labels to be added and removed from a network.
+     *
      * @tags cidr
-     * @name cidr_labels_create
+     * @name CidrLabelsCreate
      * @request POST:/cidr/{cidr_pk}/labels/
      * @secure
-     * @description API endpoint that allows Labels to be added and removed from a network.
      * @response `201` `Label`
      */
-    cidrLabelsCreate: (cidr_pk: string, data: Label, params?: RequestParams) =>
-      this.request<Label, any>(`/cidr/${cidr_pk}/labels/`, "POST", params, data, BodyType.Json, true),
+    cidrLabelsCreate: (cidrPk: string, data: Label, params: RequestParams = {}) =>
+      this.request<Label, any>({
+        path: `/cidr/${cidrPk}/labels/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Labels to be added and removed from a network.
+     *
      * @tags cidr
-     * @name cidr_labels_read
+     * @name CidrLabelsRead
      * @request GET:/cidr/{cidr_pk}/labels/{id}/
      * @secure
-     * @description API endpoint that allows Labels to be added and removed from a network.
      * @response `200` `Label`
      */
-    cidrLabelsRead: (cidr_pk: string, id: string, params?: RequestParams) =>
-      this.request<Label, any>(`/cidr/${cidr_pk}/labels/${id}/`, "GET", params, null, BodyType.Json, true),
+    cidrLabelsRead: (cidrPk: string, id: string, params: RequestParams = {}) =>
+      this.request<Label, any>({
+        path: `/cidr/${cidrPk}/labels/${id}/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description Updates a given label.
+     *
      * @tags cidr
-     * @name cidr_labels_update
+     * @name CidrLabelsUpdate
      * @request PUT:/cidr/{cidr_pk}/labels/{id}/
      * @secure
-     * @description Updates a given label
      * @response `200` `Label`
      */
-    cidrLabelsUpdate: (cidr_pk: string, id: string, data: Label, params?: RequestParams) =>
-      this.request<Label, any>(`/cidr/${cidr_pk}/labels/${id}/`, "PUT", params, data, BodyType.Json, true),
+    cidrLabelsUpdate: (cidrPk: string, id: string, data: Label, params: RequestParams = {}) =>
+      this.request<Label, any>({
+        path: `/cidr/${cidrPk}/labels/${id}/`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Labels to be added and removed from a network.
+     *
      * @tags cidr
-     * @name cidr_labels_partial_update
+     * @name CidrLabelsPartialUpdate
      * @request PATCH:/cidr/{cidr_pk}/labels/{id}/
      * @secure
-     * @description API endpoint that allows Labels to be added and removed from a network.
      * @response `200` `Label`
      */
-    cidrLabelsPartialUpdate: (cidr_pk: string, id: string, data: Label, params?: RequestParams) =>
-      this.request<Label, any>(`/cidr/${cidr_pk}/labels/${id}/`, "PATCH", params, data, BodyType.Json, true),
+    cidrLabelsPartialUpdate: (cidrPk: string, id: string, data: Label, params: RequestParams = {}) =>
+      this.request<Label, any>({
+        path: `/cidr/${cidrPk}/labels/${id}/`,
+        method: 'PATCH',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description Delete this label.
+     *
      * @tags cidr
-     * @name cidr_labels_delete
+     * @name CidrLabelsDelete
      * @request DELETE:/cidr/{cidr_pk}/labels/{id}/
      * @secure
-     * @description Delete this label
-     * @response `204` `any`
+     * @response `204` `void`
      */
-    cidrLabelsDelete: (cidr_pk: string, id: string, params?: RequestParams) =>
-      this.request<any, any>(`/cidr/${cidr_pk}/labels/${id}/`, "DELETE", params, null, BodyType.Json, true),
+    cidrLabelsDelete: (cidrPk: string, id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/cidr/${cidrPk}/labels/${id}/`,
+        method: 'DELETE',
+        secure: true,
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Prefixes to be viewed or edited.
+     *
      * @tags cidr
-     * @name cidr_read
+     * @name CidrRead
      * @request GET:/cidr/{id}/
      * @secure
-     * @description API endpoint that allows Prefixes to be viewed or edited.
      * @response `200` `CIDR`
      */
-    cidrRead: (id: string, params?: RequestParams) =>
-      this.request<CIDR, any>(`/cidr/${id}/`, "GET", params, null, BodyType.Json, true),
+    cidrRead: (id: string, params: RequestParams = {}) =>
+      this.request<CIDR, any>({
+        path: `/cidr/${id}/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Prefixes to be viewed or edited.
+     *
      * @tags cidr
-     * @name cidr_update
+     * @name CidrUpdate
      * @request PUT:/cidr/{id}/
      * @secure
-     * @description API endpoint that allows Prefixes to be viewed or edited.
      * @response `200` `CIDR`
      */
-    cidrUpdate: (id: string, data: CIDR, params?: RequestParams) =>
-      this.request<CIDR, any>(`/cidr/${id}/`, "PUT", params, data, BodyType.Json, true),
+    cidrUpdate: (id: string, data: CIDR, params: RequestParams = {}) =>
+      this.request<CIDR, any>({
+        path: `/cidr/${id}/`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Prefixes to be viewed or edited.
+     *
      * @tags cidr
-     * @name cidr_partial_update
+     * @name CidrPartialUpdate
      * @request PATCH:/cidr/{id}/
      * @secure
-     * @description API endpoint that allows Prefixes to be viewed or edited.
      * @response `200` `CIDR`
      */
-    cidrPartialUpdate: (id: string, data: CIDR, params?: RequestParams) =>
-      this.request<CIDR, any>(`/cidr/${id}/`, "PATCH", params, data, BodyType.Json, true),
+    cidrPartialUpdate: (id: string, data: CIDR, params: RequestParams = {}) =>
+      this.request<CIDR, any>({
+        path: `/cidr/${id}/`,
+        method: 'PATCH',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Prefixes to be viewed or edited.
+     *
      * @tags cidr
-     * @name cidr_delete
+     * @name CidrDelete
      * @request DELETE:/cidr/{id}/
      * @secure
-     * @description API endpoint that allows Prefixes to be viewed or edited.
-     * @response `204` `any`
+     * @response `204` `void`
      */
-    cidrDelete: (id: string, params?: RequestParams) =>
-      this.request<any, any>(`/cidr/${id}/`, "DELETE", params, null, BodyType.Json, true),
+    cidrDelete: (id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/cidr/${id}/`,
+        method: 'DELETE',
+        secure: true,
+        ...params,
+      }),
 
     /**
+     * @description API Endpoint that allows direct children ips to be viewed.
+     *
      * @tags cidr
-     * @name cidr_ips
+     * @name CidrIps
      * @request GET:/cidr/{id}/ips/
      * @secure
-     * @description API Endpoint that allows direct children ips to be viewed.
-     * @response `200` `CIDR`
+     * @response `200` `(CIDR)[]`
      */
-    cidrIps: (id: string, params?: RequestParams) =>
-      this.request<CIDR, any>(`/cidr/${id}/ips/`, "GET", params, null, BodyType.Json, true),
+    cidrIps: (id: string, params: RequestParams = {}) =>
+      this.request<CIDR[], any>({
+        path: `/cidr/${id}/ips/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows direct subordinary cidr (networks) to be viewed.
+     *
      * @tags cidr
-     * @name cidr_subcidr
+     * @name CidrSubcidr
      * @request GET:/cidr/{id}/subcidr/
      * @secure
-     * @description API endpoint that allows direct subordinary cidr (networks) to be viewed.
-     * @response `200` `CIDR`
+     * @response `200` `(CIDR)[]`
      */
-    cidrSubcidr: (id: string, params?: RequestParams) =>
-      this.request<CIDR, any>(`/cidr/${id}/subcidr/`, "GET", params, null, BodyType.Json, true),
+    cidrSubcidr: (id: string, params: RequestParams = {}) =>
+      this.request<CIDR[], any>({
+        path: `/cidr/${id}/subcidr/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows direct super cidr (network) to be viewed.
+     *
      * @tags cidr
-     * @name cidr_supercidr
+     * @name CidrSupercidr
      * @request GET:/cidr/{id}/supercidr/
      * @secure
-     * @description API endpoint that allows direct super cidr (network) to be viewed.
-     * @response `200` `CIDR`
+     * @response `200` `(CIDR)[]`
      */
-    cidrSupercidr: (id: string, params?: RequestParams) =>
-      this.request<CIDR, any>(`/cidr/${id}/supercidr/`, "GET", params, null, BodyType.Json, true),
+    cidrSupercidr: (id: string, params: RequestParams = {}) =>
+      this.request<CIDR[], any>({
+        path: `/cidr/${id}/supercidr/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
+
+    /**
+     * @description API endpoint that allows Prefixes to be viewed or edited.
+     *
+     * @tags cidr
+     * @name CidrSupercidrs
+     * @request GET:/cidr/{id}/supercidrs/
+     * @secure
+     * @response `200` `(CIDR)[]`
+     */
+    cidrSupercidrs: (id: string, params: RequestParams = {}) =>
+      this.request<CIDR[], any>({
+        path: `/cidr/${id}/supercidrs/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
   };
   jwt = {
     /**
-     * @tags jwt
-     * @name jwt_create
-     * @request POST:/jwt/
-     * @secure
-     * @response `200` `{ refresh: string, access: string }`
-     */
-    jwtCreate: (data: TokenObtainPair, params?: RequestParams) =>
-      this.request<{ refresh: string; access: string }, any>(`/jwt/`, "POST", params, data, BodyType.Json, true),
+ * No description
+ *
+ * @tags jwt
+ * @name JwtCreate
+ * @request POST:/jwt/
+ * @secure
+ * @response `200` `{
+  \** Refresh token *\
+    refresh: string,
+  \** Access token *\
+    access: string,
+
+}`
+ */
+    jwtCreate: (data: TokenObtainPair, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** Refresh token */
+          refresh: string;
+          /** Access token */
+          access: string;
+        },
+        any
+      >({
+        path: `/jwt/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
 
     /**
-     * @tags jwt
-     * @name jwt_refresh_create
-     * @request POST:/jwt/refresh/
-     * @secure
-     * @response `200` `{ access: string }`
-     */
-    jwtRefreshCreate: (data: TokenRefresh, params?: RequestParams) =>
-      this.request<{ access: string }, any>(`/jwt/refresh/`, "POST", params, data, BodyType.Json, true),
+ * No description
+ *
+ * @tags jwt
+ * @name JwtRefreshCreate
+ * @request POST:/jwt/refresh/
+ * @secure
+ * @response `200` `{
+  \** Access token *\
+    access: string,
+
+}`
+ */
+    jwtRefreshCreate: (data: TokenRefresh, params: RequestParams = {}) =>
+      this.request<
+        {
+          /** Access token */
+          access: string;
+        },
+        any
+      >({
+        path: `/jwt/refresh/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * No description
+     *
      * @tags jwt
-     * @name jwt_verify_create
+     * @name JwtVerifyCreate
      * @request POST:/jwt/verify/
      * @secure
      * @response `200` `object`
      */
-    jwtVerifyCreate: (data: TokenVerify, params?: RequestParams) =>
-      this.request<object, any>(`/jwt/verify/`, "POST", params, data, BodyType.Json, true),
+    jwtVerifyCreate: (data: TokenVerify, params: RequestParams = {}) =>
+      this.request<object, any>({
+        path: `/jwt/verify/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
   };
   pool = {
     /**
+     * @description List all pools.
+     *
      * @tags pool
-     * @name pool_list
+     * @name PoolList
      * @request GET:/pool/
      * @secure
-     * @description List all pools
      * @response `200` `(Pool)[]`
      */
-    poolList: (params?: RequestParams) => this.request<Pool[], any>(`/pool/`, "GET", params, null, BodyType.Json, true),
+    poolList: (params: RequestParams = {}) =>
+      this.request<Pool[], any>({
+        path: `/pool/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Pools to be viewed or edited.
+     *
      * @tags pool
-     * @name pool_create
+     * @name PoolCreate
      * @request POST:/pool/
      * @secure
-     * @description API endpoint that allows Pools to be viewed or edited.
      * @response `201` `Pool`
      */
-    poolCreate: (data: Pool, params?: RequestParams) =>
-      this.request<Pool, any>(`/pool/`, "POST", params, data, BodyType.Json, true),
+    poolCreate: (data: Pool, params: RequestParams = {}) =>
+      this.request<Pool, any>({
+        path: `/pool/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Pools to be viewed or edited.
+     *
      * @tags pool
-     * @name pool_read
+     * @name PoolRead
      * @request GET:/pool/{id}/
      * @secure
-     * @description API endpoint that allows Pools to be viewed or edited.
      * @response `200` `Pool`
      */
-    poolRead: (id: string, params?: RequestParams) =>
-      this.request<Pool, any>(`/pool/${id}/`, "GET", params, null, BodyType.Json, true),
+    poolRead: (id: string, params: RequestParams = {}) =>
+      this.request<Pool, any>({
+        path: `/pool/${id}/`,
+        method: 'GET',
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Pools to be viewed or edited.
+     *
      * @tags pool
-     * @name pool_update
+     * @name PoolUpdate
      * @request PUT:/pool/{id}/
      * @secure
-     * @description API endpoint that allows Pools to be viewed or edited.
      * @response `200` `Pool`
      */
-    poolUpdate: (id: string, data: Pool, params?: RequestParams) =>
-      this.request<Pool, any>(`/pool/${id}/`, "PUT", params, data, BodyType.Json, true),
+    poolUpdate: (id: string, data: Pool, params: RequestParams = {}) =>
+      this.request<Pool, any>({
+        path: `/pool/${id}/`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Pools to be viewed or edited.
+     *
      * @tags pool
-     * @name pool_partial_update
+     * @name PoolPartialUpdate
      * @request PATCH:/pool/{id}/
      * @secure
-     * @description API endpoint that allows Pools to be viewed or edited.
      * @response `200` `Pool`
      */
-    poolPartialUpdate: (id: string, data: Pool, params?: RequestParams) =>
-      this.request<Pool, any>(`/pool/${id}/`, "PATCH", params, data, BodyType.Json, true),
+    poolPartialUpdate: (id: string, data: Pool, params: RequestParams = {}) =>
+      this.request<Pool, any>({
+        path: `/pool/${id}/`,
+        method: 'PATCH',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows Pools to be viewed or edited.
+     *
      * @tags pool
-     * @name pool_delete
+     * @name PoolDelete
      * @request DELETE:/pool/{id}/
      * @secure
-     * @description API endpoint that allows Pools to be viewed or edited.
-     * @response `204` `any`
+     * @response `204` `void`
      */
-    poolDelete: (id: string, params?: RequestParams) =>
-      this.request<any, any>(`/pool/${id}/`, "DELETE", params, null, BodyType.Json, true),
+    poolDelete: (id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/pool/${id}/`,
+        method: 'DELETE',
+        secure: true,
+        ...params,
+      }),
 
     /**
+     * @description Adds a new address within the pool.
+     *
      * @tags pool
-     * @name pool_assign_create
+     * @name PoolAssignCreate
      * @request POST:/pool/{id}/assign/
      * @secure
-     * @description Adds a new address within the pool
      * @response `201` `Assignment`
      */
-    poolAssignCreate: (id: string, data: Assignment, params?: RequestParams) =>
-      this.request<Assignment, any>(`/pool/${id}/assign/`, "POST", params, data, BodyType.Json, true),
+    poolAssignCreate: (id: string, data: Assignment, params: RequestParams = {}) =>
+      this.request<Assignment, any>({
+        path: `/pool/${id}/assign/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        type: ContentType.Json,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description Deletes an assigned address.
+     *
      * @tags pool
-     * @name pool_assign_delete
+     * @name PoolAssignDelete
      * @request DELETE:/pool/{id}/assign/
      * @secure
-     * @description Deletes an assigned address
-     * @response `204` `any`
+     * @response `204` `void`
      */
-    poolAssignDelete: (id: string, params?: RequestParams) =>
-      this.request<any, any>(`/pool/${id}/assign/`, "DELETE", params, null, BodyType.Json, true),
+    poolAssignDelete: (id: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/pool/${id}/assign/`,
+        method: 'DELETE',
+        secure: true,
+        ...params,
+      }),
   };
   token = {
     /**
+     * @description Get own tokens or all tokens if admin.
+     *
      * @tags token
-     * @name token_list
+     * @name TokenList
      * @request GET:/token/
      * @secure
-     * @description Get own tokens or all tokens if admin
      * @response `200` `(Token)[]`
      */
-    tokenList: (query?: { search?: string }, params?: RequestParams) =>
-      this.request<Token[], any>(`/token/${this.addQueryParams(query)}`, "GET", params, null, BodyType.Json, true),
+    tokenList: (
+      query?: {
+        /** A search term. */
+        search?: string;
+      },
+      params: RequestParams = {},
+    ) =>
+      this.request<Token[], any>({
+        path: `/token/`,
+        method: 'GET',
+        query: query,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description Create a new authtoken for this user.
+     *
      * @tags token
-     * @name token_create
+     * @name TokenCreate
      * @request POST:/token/
      * @secure
-     * @description Create a new authtoken for this user.
      * @response `201` `Token`
      */
-    tokenCreate: (data: Token, params?: RequestParams) =>
-      this.request<Token, any>(`/token/`, "POST", params, data, BodyType.Json, true),
+    tokenCreate: (data: Token, params: RequestParams = {}) =>
+      this.request<Token, any>({
+        path: `/token/`,
+        method: 'POST',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description Update Description oder Write Flag.
+     *
      * @tags token
-     * @name token_update
+     * @name TokenUpdate
      * @request PUT:/token/{key}/
      * @secure
-     * @description Update Description oder Write Flag
      * @response `200` `Token`
      */
-    tokenUpdate: (key: string, data: Token, params?: RequestParams) =>
-      this.request<Token, any>(`/token/${key}/`, "PUT", params, data, BodyType.Json, true),
+    tokenUpdate: (key: string, data: Token, params: RequestParams = {}) =>
+      this.request<Token, any>({
+        path: `/token/${key}/`,
+        method: 'PUT',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description API endpoint that allows tokens to be manged by a user or staffer.
+     *
      * @tags token
-     * @name token_partial_update
+     * @name TokenPartialUpdate
      * @request PATCH:/token/{key}/
      * @secure
-     * @description API endpoint that allows tokens to be manged by a user or staffer.
      * @response `200` `Token`
      */
-    tokenPartialUpdate: (key: string, data: Token, params?: RequestParams) =>
-      this.request<Token, any>(`/token/${key}/`, "PATCH", params, data, BodyType.Json, true),
+    tokenPartialUpdate: (key: string, data: Token, params: RequestParams = {}) =>
+      this.request<Token, any>({
+        path: `/token/${key}/`,
+        method: 'PATCH',
+        body: data,
+        secure: true,
+        format: 'json',
+        ...params,
+      }),
 
     /**
+     * @description Delete a token.
+     *
      * @tags token
-     * @name token_delete
+     * @name TokenDelete
      * @request DELETE:/token/{key}/
      * @secure
-     * @description Delete a token
-     * @response `204` `any`
+     * @response `204` `void`
      */
-    tokenDelete: (key: string, params?: RequestParams) =>
-      this.request<any, any>(`/token/${key}/`, "DELETE", params, null, BodyType.Json, true),
+    tokenDelete: (key: string, params: RequestParams = {}) =>
+      this.request<void, any>({
+        path: `/token/${key}/`,
+        method: 'DELETE',
+        secure: true,
+        ...params,
+      }),
   };
 }
